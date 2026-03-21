@@ -1,0 +1,1 @@
+import "./src/server.js";//canvas requires that the project must run with node index.js so this import makes sure the project doesnt brick

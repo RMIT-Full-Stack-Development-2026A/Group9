@@ -1,11 +1,13 @@
+//handles wallet deposits and subscription payments.
+
 // {
-//   userId: ObjectId,
+//   userId: { type: ObjectId, ref: "User" },
 
-//   type: "deposit" | "subscription",
+//   type: { type: String, enum: ["deposit", "subscription"] },
 
-//   amount: number,
+//   amount: { type: Number },
 
-//   status: "pending" | "completed" | "failed",
+//   status: { type: String, enum: ["pending", "completed", "failed"] },
 
-//   createdAt: date
+//   createdAt: { type: Date }
 // }

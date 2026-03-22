@@ -1,9 +1,11 @@
+//stores individual moves in a game for replay functionality.
+
 // {
-//   gameId: gameSessionId,
-//   playerId: userId,
+//   gameId: { type: ObjectId, ref: "GameSession" },
+//   playerId: { type: ObjectId, ref: "User" },
 
-//   position: string, // "c2"
-//   moveNumber: number,
+//   position: { type: String }, // e.g., "c2"
+//   moveNumber: { type: Number },
 
-//   createdAt: date
+//   createdAt: { type: Date }
 // }

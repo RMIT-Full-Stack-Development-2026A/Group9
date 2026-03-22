@@ -1,17 +1,21 @@
+//stores account, authentication, and profile information for players and admins
+
 // {
-//   username: string,
-//   email: string (unique),
-//   password: string (hashed),
-//   country: string,
+//   username: { type: String },
+//   email: { type: String, unique: true },
+//   password: { type: String }, // hashed
+//   country: { type: String },
 
-//   role: "player" | "admin",
-//   isActive: boolean,
+//   role: { type: String, enum: ["player", "admin"] },
+//   isActive: { type: Boolean },
 
-//   isPremium: boolean,
-//   walletBalance: number,
+//   avatar: { type: String },
 
-//   failedLoginAttempts: number,
-//   lastFailedLogin: date,
+//   isPremium: { type: Boolean },
+//   walletBalance: { type: Number },
 
-//   createdAt: date
+//   failedLoginAttempts: { type: Number },
+//   lastFailedLogin: { type: Date },
+
+//   createdAt: { type: Date }
 // }

@@ -1,12 +1,16 @@
+//stores match history, including players, game settings, results, and timestamps.
+
 // {
-//   players: [userId],
+//   players: [{ type: ObjectId, ref: "User" }],
 
-//   gameType: "single" | "local" | "online",
-//   boardSize: number,
+//   gameType: { type: String, enum: ["single", "local", "online"] },
+//   boardSize: { type: Number },
 
-//   winner: userId,
-//   result: "win" | "lose" | "draw" | "aborted",
+//   winner: { type: ObjectId, ref: "User" },
+//   result: { type: String, enum: ["win", "lose", "draw", "aborted"] },
 
-//   startTime: date,
-//   endTime: date
+//   startTime: { type: Date },
+//   endTime: { type: Date },
+
+//   moves: [{ type: ObjectId, ref: "Move" }]
 // }

@@ -1,14 +1,16 @@
+//manages online multiplayer rooms and player matchmaking.
+
 // {
-//   roomNumber: string,
+//   roomNumber: { type: String },
 
-//   player1: ObjectId,
-//   player2: ObjectId,
+//   player1: { type: ObjectId, ref: "User" },
+//   player2: { type: ObjectId, ref: "User" },
 
-//   status: "waiting" | "playing" | "finished",
+//   status: { type: String, enum: ["waiting", "playing", "finished"] },
 
-//   selectedBoardSize: number,
-//   selectedMarkers: [string],
+//   selectedBoardSize: { type: Number },
+//   selectedMarkers: [{ type: String }],
 
-//   startTime: date,
-//   endTime: date
+//   startTime: { type: Date },
+//   endTime: { type: Date }
 // }

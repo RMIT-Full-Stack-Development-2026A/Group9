@@ -1,1 +1,4 @@
-import "./src/server.js";//canvas requires that the project must run with node index.js so this import makes sure the project doesnt brick
+import 'dotenv/config'; 
+import connectDB from './src/config/db.js';
+connectDB();
+import "./src/server.js";

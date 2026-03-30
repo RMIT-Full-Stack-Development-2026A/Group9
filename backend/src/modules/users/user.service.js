@@ -88,7 +88,6 @@ export const getGameHistory = async (userId, query) => {
   if (search) {
     const searchLower = search.toLowerCase();
     sessions = sessions.filter((session) => {
-      if (session.sessionNumber.toString().includes(search)) return true;
       const otherPlayers = session.players.filter(
         (p) => p._id.toString() !== userId
       );

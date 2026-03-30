@@ -57,9 +57,9 @@ const Profile = ({ onUserUpdate }) => {
   };
 
   const getGameTypeShort = (gameType) => {
-    if (gameType === "Single Player") return "AI";
-    if (gameType === "Two Players") return "Local";
-    return "Online";
+    if (gameType === "Single Player") return "Single Player";
+    if (gameType === "Two Players") return "Two Players";
+    return "Online Match";
   };
 
   const handleProfileSubmit = async (e) => {
@@ -253,9 +253,9 @@ const Profile = ({ onUserUpdate }) => {
                 onChange={handleFilterChange}
               >
                 <option value="">All Types</option>
-                <option value="single">AI</option>
-                <option value="local">Local</option>
-                <option value="online">Online</option>
+                <option value="single">Single Player</option>
+                <option value="local">Two Players</option>
+                <option value="online">Online Match</option>
               </select>
 
               <select

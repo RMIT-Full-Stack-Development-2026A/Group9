@@ -1,1 +1,121 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-h);
+  text-decoration: none;
+}
+
+.navbar-logo .logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--cyan);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.navbar-logo .tic {
+  color: var(--cyan);
+}
+
+.navbar-logo .toang {
+  color: var(--orange);
+}
+
+.navbar-links {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.navbar-links a {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.navbar-links a:hover,
+.navbar-links a.active {
+  color: var(--cyan);
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg);
+}
+
+.navbar-username {
+  color: var(--cyan);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.navbar-logout {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.navbar-logout:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.navbar-login-link {
+  color: var(--cyan);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 16px;
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.navbar-login-link:hover {
+  background: rgba(6, 182, 212, 0.1);
+}
 

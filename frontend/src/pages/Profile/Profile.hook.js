@@ -6,6 +6,7 @@ export const useProfile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
+  const [activeTab, setActiveTab] = useState("history");
 
   // Profile form
   const [formData, setFormData] = useState({
@@ -14,7 +15,6 @@ export const useProfile = () => {
     country: "",
     currentPassword: "",
     newPassword: "",
-    confirmPassword: "",
   });
 
   // Game history
@@ -23,6 +23,7 @@ export const useProfile = () => {
 
   // Search & filters
   const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [filters, setFilters] = useState({
     gameType: "",
     result: "",
@@ -48,7 +49,10 @@ export const useProfile = () => {
         country: data.country || "",
       }));
     } catch (error) {
-      showMessage(error.response?.data?.message || "Failed to load profile", "error");
+      showMessage(
+        error.response?.data?.message || "Failed to load profile",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -59,7 +63,6 @@ export const useProfile = () => {
       setHistoryLoading(true);
       const params = { ...filters };
       if (search) params.search = search;
-      // Remove empty params
       Object.keys(params).forEach((key) => {
         if (!params[key]) delete params[key];
       });
@@ -90,11 +93,6 @@ export const useProfile = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
-    if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
-      showMessage("New passwords do not match", "error");
-      return;
-    }
-
     try {
       setSaving(true);
       const updateData = {
@@ -113,9 +111,7 @@ export const useProfile = () => {
         ...prev,
         currentPassword: "",
         newPassword: "",
-        confirmPassword: "",
       }));
-      // Update stored user
       localStorage.setItem("user", JSON.stringify(data));
       showMessage("Profile updated successfully");
     } catch (error) {
@@ -129,12 +125,12 @@ export const useProfile = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("avatar", file);
+    const fd = new FormData();
+    fd.append("avatar", file);
 
     try {
       setSaving(true);
-      const { data } = await profileService.uploadAvatar(formData);
+      const { data } = await profileService.uploadAvatar(fd);
       setUser(data);
       localStorage.setItem("user", JSON.stringify(data));
       showMessage("Avatar updated successfully");
@@ -145,8 +141,8 @@ export const useProfile = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
+  const handleSearchSubmit = () => {
+    setSearch(searchInput);
   };
 
   const handleFilterChange = (e) => {
@@ -162,6 +158,7 @@ export const useProfile = () => {
 
   const clearFilters = () => {
     setSearch("");
+    setSearchInput("");
     setFilters({
       gameType: "",
       result: "",
@@ -177,14 +174,17 @@ export const useProfile = () => {
     saving,
     message,
     formData,
+    activeTab,
+    setActiveTab,
     gameHistory,
     historyLoading,
-    search,
+    searchInput,
+    setSearchInput,
     filters,
     handleFormChange,
     handleUpdateProfile,
     handleAvatarUpload,
-    handleSearch,
+    handleSearchSubmit,
     handleFilterChange,
     toggleSortOrder,
     clearFilters,

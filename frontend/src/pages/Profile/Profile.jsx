@@ -1,5 +1,4 @@
 ﻿import { useProfile } from "./Profile.hook.js";
-import { API_BASE_URL } from "../../config/api.config.js";
 import "./Profile.css";
 
 const COUNTRIES = [
@@ -35,9 +34,7 @@ const Profile = ({ onUserUpdate }) => {
   if (!user)
     return <div className="profile-loading">Please log in to view your profile.</div>;
 
-  const avatarSrc = user.avatar
-    ? `${API_BASE_URL.replace("/api", "")}${user.avatar}`
-    : null;
+  const avatarSrc = user.avatar || null;
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "—";

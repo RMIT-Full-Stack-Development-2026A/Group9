@@ -30,8 +30,7 @@ export const uploadAvatar = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "No image file provided" });
     }
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-    const user = await userService.updateAvatar(req.userId, avatarUrl);
+    const user = await userService.updateAvatar(req.userId, req.file.cloudinaryUrl);
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });

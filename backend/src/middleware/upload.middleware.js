@@ -1,12 +1,18 @@
 import multer from "multer";
-import sharp from "sharp";
-import path from "path";
-import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
 
-const uploadDir = path.join(process.cwd(), "uploads", "avatars");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+let cloudinaryConfigured = false;
+
+const ensureCloudinary = () => {
+  if (!cloudinaryConfigured) {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+    cloudinaryConfigured = true;
+  }
+};
 
 const storage = multer.memoryStorage();
 
@@ -24,20 +30,31 @@ export const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
-export const resizeAvatar = async (req, res, next) => {
+export const uploadToCloudinary = async (req, res, next) => {
   if (!req.file) return next();
 
   try {
-    const filename = `avatar-${req.userId}-${Date.now()}.jpeg`;
-    await sharp(req.file.buffer)
-      .resize(200, 200, { fit: "cover" })
-      .toFormat("jpeg")
-      .jpeg({ quality: 90 })
-      .toFile(path.join(uploadDir, filename));
+    ensureCloudinary();
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "avatars",
+          public_id: `avatar-${req.userId}`,
+          overwrite: true,
+          transformation: [{ width: 200, height: 200, crop: "fill" }],
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      stream.end(req.file.buffer);
+    });
 
-    req.file.filename = filename;
+    req.file.cloudinaryUrl = result.secure_url;
     next();
   } catch (error) {
-    return res.status(500).json({ message: "Error processing image" });
+    console.error("Cloudinary upload error:", error);
+    return res.status(500).json({ message: "Error uploading image" });
   }
 };

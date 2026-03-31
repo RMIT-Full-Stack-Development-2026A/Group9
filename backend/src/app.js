@@ -1,13 +1,17 @@
 import express from "express";
 import cors from "cors";
+import authRoutes from "./modules/auth/auth.route.js";
 
 const app = express();
 
-// middleware
+//middleware
 app.use(cors());
 app.use(express.json());
 
-// test route
+//routes
+app.use("/api/auth", authRoutes);
+
+//test route
 app.get("/", (req, res) => {
   res.send("API test success uwu");
 });

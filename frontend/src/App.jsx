@@ -1,5 +1,5 @@
 function App() {
-  return <h1>Group 9 Project</h1>;
+  return;
 }
 
 export default App;

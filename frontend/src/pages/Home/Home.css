@@ -1,1 +1,112 @@
+body { 
+    background: #0A1929; 
+}
+
+h1 {
+    color: #FFFFFF;
+    text-align: center;
+    font-weight: 557px;
+}
+
+p{
+    color: #8B92A0;
+    text-align: center;
+}
+
+.heroTitleA{
+    color: #8853FF;
+}
+.heroTitleB{
+    color: #EC4899;
+}
+
+.btn1{
+    background-color: #1A2332;
+    color: #FFFFFF;
+    border: 1px solid #2D3E50;
+
+    
+    width: 325.33px;
+    height: 239.64px;
+    border-radius: 16px;
+    text-align: left;
+    
+    padding-top: 25px;
+    padding-left: 20px;
+    display: grid;
+    gap: 10px;
+
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 35);
+    cursor: pointer;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+
+}
+
+.btn1:hover{
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(0,210,255,0.25);
+}
+
+.modeRow{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    
+}
+
+.row1{
+    padding: 20px 10px;
+    gap: 24px;
+}
+
+.row2{
+    padding: 20px 10px;
+    gap: 16px;
+}
+
+.Model_icon{
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background-color: #0F1A27;
+    display: grid;
+    place-items: center;
+
+}
+
+.Model_name{
+    font-size: larger;
+    padding-top: 10px;
+    padding-left: 5px;
+}
+
+.Model_desc{
+    font-size: 14px;
+    color: #8B92A0;
+    font-size: inherit;
+    padding-bottom: 30px;
+}
+
+.actionBtn--cyan   { background: #06b6d4; }
+.actionBtn--purple { background: #8b5cf6; }
+.actionBtn--orange { background: #f97316; }
+
+.btn{
+    width: 172px;
+    height: 46;
+    border-radius: 14px;
+    border: 0;
+}
+
+.bi{
+    font-size: 20px;
+    color: #FFFFFF;
+}
+
+
+
+
+
+
 

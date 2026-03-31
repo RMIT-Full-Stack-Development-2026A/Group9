@@ -88,13 +88,13 @@ p{
     padding-bottom: 30px;
 }
 
-.actionBtn--cyan   { background: #06b6d4; }
-.actionBtn--purple { background: #8b5cf6; }
-.actionBtn--orange { background: #f97316; }
+.actionBtn--cyan   { background-color: #06b6d4; }
+.actionBtn--purple { background-color: #8b5cf6; }
+.actionBtn--orange { background-color: #f97316; }
 
 .btn{
     width: 172px;
-    height: 46;
+    height: 46px;
     border-radius: 14px;
     border: 0;
 }

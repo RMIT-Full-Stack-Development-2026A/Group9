@@ -38,21 +38,21 @@ export default function Home() {
         </section>
 
         <section className="modeRow row2">
-            <button className="btn text-white actionBtn--cyan">
+            <button className="btn text-white actionBtn actionBtn--cyan">
             <span className="btn_icon">
                  <i className="bi bi-people me-2"></i>
             </span>
             <span className="btn_name">Browse Rooms</span>
             </button>
 
-            <button className="btn text-white actionBtn--purple">
+            <button className="btn text-white actionBtn actionBtn--purple">
                 <span className="btn_icon">
                      <i className="bi bi-book me-2"></i>
                 </span>
                 <span className="btn_name">My History</span>
             </button>
 
-            <button className="btn text-white actionBtn--orange">
+            <button className="btn text-white actionBtn actionBtn--orange">
                 <span className="btn_icon me-2">
                     <i className="bi bi-gem"></i>
                 </span>

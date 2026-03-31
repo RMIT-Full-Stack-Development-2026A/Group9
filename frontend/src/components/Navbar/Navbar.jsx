@@ -3,6 +3,7 @@ import "./Navbar.css";
 
 const Navbar = ({ user, onLogout }) => {
   const location = useLocation();
+  const avatarSrc = user?.avatar || null;
 
   return (
     <nav className="navbar">
@@ -36,7 +37,15 @@ const Navbar = ({ user, onLogout }) => {
         {user ? (
           <>
             <div className="navbar-avatar">
-              {user.username?.charAt(0)?.toUpperCase() || "?"}
+              {avatarSrc ? (
+                <img
+                  src={avatarSrc}
+                  alt={user.username || "Avatar"}
+                  className="navbar-avatar-image"
+                />
+              ) : (
+                user.username?.charAt(0)?.toUpperCase() || "?"
+              )}
             </div>
             <span className="navbar-username">{user.username}</span>
             <button className="navbar-logout" title="Logout" onClick={onLogout}>

@@ -28,7 +28,7 @@ const Profile = ({ onUserUpdate }) => {
     handleFilterChange,
     toggleSortOrder,
     clearFilters,
-  } = useProfile();
+  } = useProfile(onUserUpdate);
 
   if (loading) return <div className="profile-loading">Loading profile...</div>;
   if (!user)
@@ -60,20 +60,6 @@ const Profile = ({ onUserUpdate }) => {
     if (gameType === "Single Player") return "Single Player";
     if (gameType === "Two Players") return "Two Players";
     return "Online Match";
-  };
-
-  const handleProfileSubmit = async (e) => {
-    await handleUpdateProfile(e);
-    if (onUserUpdate) {
-      const stored = localStorage.getItem("user");
-      if (stored) {
-        try {
-          onUserUpdate(JSON.parse(stored));
-        } catch {
-          /* ignore */
-        }
-      }
-    }
   };
 
   return (
@@ -146,7 +132,7 @@ const Profile = ({ onUserUpdate }) => {
         {/* ===== EDIT PROFILE TAB ===== */}
         {activeTab === "edit" && (
           <div className="edit-panel">
-            <form className="edit-form" onSubmit={handleProfileSubmit}>
+            <form className="edit-form" onSubmit={handleUpdateProfile}>
               <div className="form-group">
                 <label htmlFor="username">Username</label>
                 <input

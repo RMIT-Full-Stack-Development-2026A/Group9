@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useCallback } from "react";
 import * as profileService from "./Profile.service.js";
 
-export const useProfile = () => {
+export const useProfile = (onUserUpdate) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -37,11 +37,22 @@ export const useProfile = () => {
     setTimeout(() => setMessage({ text: "", type: "" }), 4000);
   };
 
+  const syncUser = useCallback(
+    (nextUser) => {
+      setUser(nextUser);
+      localStorage.setItem("user", JSON.stringify(nextUser));
+      if (onUserUpdate) {
+        onUserUpdate(nextUser);
+      }
+    },
+    [onUserUpdate]
+  );
+
   const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await profileService.getProfile();
-      setUser(data);
+      syncUser(data);
       setFormData((prev) => ({
         ...prev,
         username: data.username || "",
@@ -56,7 +67,7 @@ export const useProfile = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [syncUser]);
 
   const fetchGameHistory = useCallback(async () => {
     try {
@@ -106,13 +117,12 @@ export const useProfile = () => {
       }
 
       const { data } = await profileService.updateProfile(updateData);
-      setUser(data);
+      syncUser(data);
       setFormData((prev) => ({
         ...prev,
         currentPassword: "",
         newPassword: "",
       }));
-      localStorage.setItem("user", JSON.stringify(data));
       showMessage("Profile updated successfully");
     } catch (error) {
       showMessage(error.response?.data?.message || "Update failed", "error");
@@ -131,8 +141,7 @@ export const useProfile = () => {
     try {
       setSaving(true);
       const { data } = await profileService.uploadAvatar(fd);
-      setUser(data);
-      localStorage.setItem("user", JSON.stringify(data));
+      syncUser(data);
       showMessage("Avatar updated successfully");
     } catch (error) {
       showMessage(error.response?.data?.message || "Upload failed", "error");

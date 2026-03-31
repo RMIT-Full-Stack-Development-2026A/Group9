@@ -20,6 +20,10 @@ p{
     color: #EC4899;
 }
 
+.heroTitleC{
+    font-size: 38px;
+}
+
 .btn1{
     background-color: #1A2332;
     color: #FFFFFF;
@@ -99,6 +103,7 @@ p{
     border: 0;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     font-weight: 600;
 }
 

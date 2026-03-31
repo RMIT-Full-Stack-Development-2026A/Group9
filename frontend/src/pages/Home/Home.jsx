@@ -4,7 +4,8 @@ export default function Home() {
   return (
     <main>
         <section>
-            <h1 className="fw-bold">Choose Your <br /> 
+            <h1 className="fw-bold">
+                <span className="heroTitleC">Choose Your</span><br /> 
                 <span className="heroTitleA">Battle</span>
                 <span className="heroTitleB"> Mode</span>
             </h1>

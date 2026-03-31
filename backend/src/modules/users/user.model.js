@@ -11,7 +11,7 @@
 
 //   avatar: { type: String },
 
-//   isPremium: { type: Boolean },
+//   premiumUntil (Replaces isPremium. Type: Date),
 //   walletBalance: { type: Number },
 
 //   failedLoginAttempts: { type: Number },

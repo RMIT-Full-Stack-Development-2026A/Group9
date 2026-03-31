@@ -109,16 +109,19 @@ p{
 
 .btn.actionBtn--cyan:hover, 
 .btn.actionBtn--cyan:focus-visible{
+    transform: translateY(-2px);
     background-color: rgba(2, 255, 255, 0.788);
 }
 
 .btn.actionBtn--purple:hover,
 .btn.actionBtn--purple:focus-visible{
+    transform: translateY(-2px);
     background-color: rgb(114, 94, 243);
 }
 
 .btn.actionBtn--orange:hover,
 .btn.actionBtn--orange:focus-visible{
+    transform: translateY(-2px);
     background-color: darkorange;
 }
 

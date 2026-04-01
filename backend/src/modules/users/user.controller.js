@@ -17,6 +17,7 @@ export const updateProfile = async (req, res) => {
   } catch (error) {
     const messages = {
       "Email already in use": 409,
+      "New password is required": 400,
       "Current password is required": 400,
       "Current password is incorrect": 400,
       "User not found": 404,

@@ -11,6 +11,10 @@ export const updateProfile = async (userId, updateData) => {
   const user = await userRepository.findByIdWithPassword(userId);
   if (!user) throw new Error("User not found");
 
+  if (updateData.currentPassword && !updateData.newPassword) {
+    throw new Error("New password is required");
+  }
+
   if (updateData.email && updateData.email !== user.email) {
     const existing = await userRepository.findByEmail(updateData.email);
     if (existing) throw new Error("Email already in use");

@@ -104,6 +104,16 @@ export const useProfile = (onUserUpdate) => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
+    if (formData.currentPassword && !formData.newPassword) {
+      showMessage("New password is required", "error");
+      return;
+    }
+
+    if (formData.newPassword && !formData.currentPassword) {
+      showMessage("Current password is required", "error");
+      return;
+    }
+
     try {
       setSaving(true);
       const updateData = {

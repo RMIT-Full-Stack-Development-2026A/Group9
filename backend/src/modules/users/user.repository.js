@@ -8,3 +8,9 @@ export const findByEmail = (email) => User.findOne({ email });
 
 export const updateUser = (id, data) =>
   User.findByIdAndUpdate(id, data, { new: true }).select("-password");
+
+export const saveUser = async (user) => {
+  await user.save();
+  const { password, ...userData } = user.toObject();
+  return userData;
+};

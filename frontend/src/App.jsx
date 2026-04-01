@@ -5,9 +5,9 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        <header>
+        {/* <header>
           <h1 style={{textAlign:"center"}}>TicTacToang</h1>
-        </header>
+        </header> */}
 
         <Routes>
           <Route path="/" element={<Login />} />

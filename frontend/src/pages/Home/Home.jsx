@@ -1,5 +1,20 @@
 import "./Home.css";
 
+// TODO(login-integration): Remove mock users after real login stores authenticated user data.
+const MOCK_NORMAL_USER = {
+    _id: "65f0a1b2c3d4e5f6a7b8c9d1",
+    username: "DragonSlayer99",
+    role: "player",
+    premiumUntil: null,
+};
+
+const MOCK_PREMIUM_USER = {
+    _id: "65f0a1b2c3d4e5f6a7b8c9d1",
+    username: "DragonSlayer99",
+    role: "premium",
+    premiumUntil: "2099-12-31T00:00:00.000Z",
+};
+
 function extractUserRecord(payload) {
     if (!payload || typeof payload !== "object") {
         return null;
@@ -84,14 +99,47 @@ function getWelcomeLine(user) {
     };
 }
 
+// TODO(login-integration): Delete this helper when login flow is merged.
+function applyMockUser(mode) {
+    const storageKeys = ["currentUser", "user", "authUser"];
+
+    for (const key of storageKeys) {
+        localStorage.removeItem(key);
+    }
+
+    if (mode === "normal") {
+        localStorage.setItem("currentUser", JSON.stringify(MOCK_NORMAL_USER));
+    }
+
+    if (mode === "premium") {
+        localStorage.setItem("currentUser", JSON.stringify(MOCK_PREMIUM_USER));
+    }
+
+    window.location.reload();
+}
+
 export default function Home() {
     const currentUser = getStoredUser();
     const welcome = getWelcomeLine(currentUser);
+    // TODO(login-integration): Remove DEV toggle with mock buttons after login integration.
+    const isDev = import.meta.env.DEV;
 
   return (
     <main>
         <section>
-            <p className={`welcomeLine welcomeLine--${welcome.type}`}>{welcome.text}</p>
+            <p className={`welcomeLine welcomeLine--${welcome.type}`}>
+                {welcome.type === "premium" && <i className="bi bi-stars welcomeLineStar" aria-hidden="true"></i>}
+                {welcome.text}
+                {welcome.type === "premium" && <i className="bi bi-stars welcomeLineStar" aria-hidden="true"></i>}
+            </p>
+            {/* TODO(login-integration): Remove this DEV-only mock switcher after login integration. */}
+            {isDev && (
+                <div className="welcomeTestTools" role="group" aria-label="Welcome line mock states">
+                    <button className="welcomeTestBtn" onClick={() => applyMockUser("guest")} type="button">Guest</button>
+                    <button className="welcomeTestBtn" onClick={() => applyMockUser("normal")} type="button">Normal</button>
+                    <button className="welcomeTestBtn" onClick={() => applyMockUser("premium")} type="button">Premium</button>
+                </div>
+            )}
             <h1 className="fw-bold">
                 <span className="heroTitleC">Choose Your</span><br /> 
                 <span className="heroTitleA">Battle</span>

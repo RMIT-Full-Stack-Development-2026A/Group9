@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import players from './players';
+import './PlayerTable.css';
 
-let PlayerTable = () => {
-    const [gamers, setgamers] = useState(players);
+let PlayerTable = ({ gamers, setgamers }) => {
+    
 
     const [searchQuery,setSearchQuery]= useState('');
 
@@ -23,7 +23,7 @@ let PlayerTable = () => {
 
     return (
         <div className='container' >
-            <h2 className='title'>All players</h2>
+            <h5 className='title'>All players</h5>
 
             <div className='searchBar'>
                 <input 
@@ -36,10 +36,10 @@ let PlayerTable = () => {
             </div>
 
             <div className='tableContainer'>
-                <table className='table'>
+                <table className='tablePlayer'>
                     <thead>
                         <tr>
-                            <td>Username</td>
+                            <td >Username</td>
                             <td>Email</td>
                             <td>Prenium Status</td>
                             <td>Account Status</td>

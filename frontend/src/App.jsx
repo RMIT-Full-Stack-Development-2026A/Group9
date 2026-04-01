@@ -1,12 +1,10 @@
-import PlayerTable from "./components/PlayerTable/PlayerTable";
-
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import './App.css'
 let App = () => {
   return (
     <div>
-
-      <h1>Group 9 Project</h1>
       <div>
-        <PlayerTable/>
+        <AdminDashboard/>
       </div>
       
     </div>

@@ -1,5 +1,6 @@
 ﻿import jwt from "jsonwebtoken";
 import * as authRepository from "./auth.repository.js";
+import { toAuthDTO } from "../users/user.dto.js";
 
 export const register = async ({ username, email, password, country }) => {
   const existing = await authRepository.findByEmail(email);
@@ -16,16 +17,7 @@ export const register = async ({ username, email, password, country }) => {
     expiresIn: "7d",
   });
 
-  return {
-    token,
-    user: {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      country: user.country,
-      avatar: user.avatar,
-    },
-  };
+  return { token, user: toAuthDTO(user) };
 };
 
 export const login = async ({ email, password }) => {
@@ -39,14 +31,5 @@ export const login = async ({ email, password }) => {
     expiresIn: "7d",
   });
 
-  return {
-    token,
-    user: {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      country: user.country,
-      avatar: user.avatar,
-    },
-  };
+  return { token, user: toAuthDTO(user) };
 };

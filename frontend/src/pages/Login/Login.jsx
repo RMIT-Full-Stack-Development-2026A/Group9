@@ -26,7 +26,7 @@ const Login = () => {
       {/*header*/}
       <div className="text-center mb-4">
         <div className="mb-3">
-            <span className="p-2 rounded-4 border border-secondary d-inline-block" style={{ backgroundColor: "#112240", fontSize: "25px" }}>
+            <span className="p-2 rounded-4  d-inline-block" style={{ backgroundColor: "#112240", fontSize: "25px" }}>
                 🔒
             </span>
         </div>

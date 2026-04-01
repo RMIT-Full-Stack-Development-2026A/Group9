@@ -16,7 +16,16 @@ const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form 
+      onSubmit={handleSubmit}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        width: "250px",
+        margin: "0 auto"
+      }}
+    >
       <input 
         type="text" 
         placeholder="Username or Email" 

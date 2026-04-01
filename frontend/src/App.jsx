@@ -6,7 +6,7 @@ function App() {
     <Router>
       <div className="app-container">
         <header>
-          <h1>Group 9 Project</h1>
+          <h1 style={{textAlign:"center"}}>TicTacToang</h1>
         </header>
 
         <Routes>

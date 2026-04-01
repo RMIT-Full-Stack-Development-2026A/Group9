@@ -1,4 +1,6 @@
 import { useLogin } from "./Login.hook.js";
+import Button from "../../components/Button/Button.jsx";
+import Input from "../../components/Input/Input.jsx";
 import "./Login.css";
 
 const Login = ({ onUserUpdate }) => {
@@ -17,33 +19,29 @@ const Login = ({ onUserUpdate }) => {
         {error && <div className="login-error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <div className="login-field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-              required
-            />
-          </div>
-          <div className="login-field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              required
-            />
-          </div>
-          <button type="submit" className="login-btn" disabled={loading}>
+          <Input
+            label="Email"
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="you@example.com"
+            required
+          />
+          <Input
+            label="Password"
+            id="password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="••••••••"
+            required
+          />
+          <Button type="submit" variant="primary" size="lg" disabled={loading}>
             {loading ? "Signing in..." : "Sign In"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

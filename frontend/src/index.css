@@ -64,6 +64,7 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  background-color: #0f172a;
 }
 
 h1,

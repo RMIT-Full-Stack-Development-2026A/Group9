@@ -13,6 +13,28 @@ p{
     text-align: center;
 }
 
+.welcomeLine {
+    margin: 20px auto 8px;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #06B6D4;
+    text-align: center;
+    width: fit-content;
+}
+
+.welcomeLine--normal {
+    color: #06B6D4;
+}
+
+.welcomeLine--premium {
+    color: #F97316;
+}
+
+.welcomeLine--guest {
+    color: #06B6D4;
+}
+
 .heroTitleA{
     color: #8853FF;
 }

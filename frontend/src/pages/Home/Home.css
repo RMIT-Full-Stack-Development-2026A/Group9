@@ -42,32 +42,6 @@ p{
     vertical-align: middle;
 }
 
-/* TODO(login-integration): Remove mock state toolbar styles after login integration. */
-.welcomeTestTools {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 4px 0 16px;
-}
-
-/* TODO(login-integration): Remove mock button styles after login integration. */
-.welcomeTestBtn {
-    border: 1px solid #2D3E50;
-    background-color: #0F1A27;
-    color: #C8D5E6;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    padding: 6px 12px;
-    cursor: pointer;
-}
-
-.welcomeTestBtn:hover {
-    color: #FFFFFF;
-    border-color: #06B6D4;
-}
-
 .heroTitleA{
     color: #8853FF;
 }

@@ -1,12 +1,13 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-// import User from '../../models/User.js';
+import multer from 'multer';
 import User from '../users/user.model.js';
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Route: POST /api/register
-router.post('/register', async (req, res) => {
+router.post('/register', upload.single('avatar'), async (req, res) => {
   const { username, email, password, country } = req.body;
   
   // 1. Backend Validation (Medium & Ultimo Requirements)
@@ -50,12 +51,19 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     // Save user
-    const newUser = new User({ 
-      username, 
-      email, 
-      password: hashedPassword, 
-      country 
-    });
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      country,
+      role: 'player',
+      isActive: true,
+      avatar: req.file?.path || '',
+      premiumUntil: null,
+      walletBalance: 0,
+      failedLoginAttempts: 0,
+      lastFailedLogin: null
+});
     await newUser.save();
 
     res.status(201).json({ message: "Registration Successful" });

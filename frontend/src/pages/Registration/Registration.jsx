@@ -14,8 +14,6 @@ const Registration = () => {
     handleAvatarChange,
     handleSubmit,
     getFieldError,
-    isUsernameValid,
-    passRegex
   } = useRegistration();
 
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Germany', 'Vietnam', 'France', 'India', 'China', 'Japan'];
@@ -74,8 +72,6 @@ const Registration = () => {
             />
             {getFieldError('username') ? (
               <div className="validation-msg error"><ErrorIcon/> {getFieldError('username').cause}</div>
-            ) : isUsernameValid ? (
-              <div className="validation-msg success"><SuccessIcon/> Username is available</div>
             ) : null}
           </div>
 
@@ -90,9 +86,7 @@ const Registration = () => {
             />
             {getFieldError('email') ? (
               <div className="validation-msg error"><ErrorIcon/> {getFieldError('email').cause}</div>
-            ) : (
-              <div className="hint-text">We'll send a verification email to this address</div>
-            )}
+            )  : null}
           </div>
 
           <div className="form-group">
@@ -106,11 +100,6 @@ const Registration = () => {
             />
             {getFieldError('password') ? (
               <div className="validation-msg error"><ErrorIcon/> {getFieldError('password').cause}</div>
-            ) : passRegex.test(formData.password) ? (
-              <>
-                <div className="strength-bar"></div>
-                <div className="hint-text">Password strength: Strong</div>
-              </>
             ) : null}
           </div>
 

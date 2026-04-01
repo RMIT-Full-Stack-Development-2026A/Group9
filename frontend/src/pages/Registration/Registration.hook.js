@@ -82,7 +82,6 @@ export const useRegistration = () => {
   const getFieldError = (fieldName) => apiError.find(err => err.field === fieldName);
   const isUsernameValid = formData.username.length > 2 && !getFieldError('username');
 
-  // Expose exactly what the UI needs
   return {
     formData,
     setformData,

@@ -1,6 +1,8 @@
 export const registerPlayer = async (submitData) => {
+  const apiBase = import.meta.env.VITE_API_URL || '';
+
   try {
-    const response = await fetch('/api/register', {
+    const response = await fetch(`${apiBase}/api/register`, {
       method: 'POST',
       body: submitData,
     });

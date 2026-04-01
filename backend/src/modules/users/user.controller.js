@@ -1,9 +1,10 @@
 ﻿import * as userService from "./user.service.js";
+import { toProfileDTO } from "./user.dto.js";
 
 export const getProfile = async (req, res) => {
   try {
     const user = await userService.getProfile(req.userId);
-    res.json(user);
+    res.json(toProfileDTO(user));
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -12,7 +13,7 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const user = await userService.updateProfile(req.userId, req.body);
-    res.json(user);
+    res.json(toProfileDTO(user));
   } catch (error) {
     const messages = {
       "Email already in use": 409,
@@ -31,7 +32,7 @@ export const uploadAvatar = async (req, res) => {
       return res.status(400).json({ message: "No image file provided" });
     }
     const user = await userService.updateAvatar(req.userId, req.file.cloudinaryUrl);
-    res.json(user);
+    res.json(toProfileDTO(user));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

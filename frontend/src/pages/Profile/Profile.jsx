@@ -1,4 +1,6 @@
 ﻿import { useProfile } from "./Profile.hook.js";
+import Button from "../../components/Button/Button.jsx";
+import Input from "../../components/Input/Input.jsx";
 import "./Profile.css";
 
 const COUNTRIES = [
@@ -101,7 +103,7 @@ const Profile = ({ onUserUpdate }) => {
           </div>
         </div>
         {!user.isPremium && (
-          <button className="go-premium-btn">👑 Go Premium</button>
+          <Button variant="accent" size="md" className="go-premium-btn">👑 Go Premium</Button>
         )}
       </div>
 
@@ -133,29 +135,27 @@ const Profile = ({ onUserUpdate }) => {
         {activeTab === "edit" && (
           <div className="edit-panel">
             <form className="edit-form" onSubmit={handleUpdateProfile}>
-              <div className="form-group">
-                <label htmlFor="username">Username</label>
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  value={formData.username}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
+              <Input
+                label="Username"
+                id="username"
+                name="username"
+                type="text"
+                value={formData.username}
+                onChange={handleFormChange}
+                className="form-group"
+                required
+              />
 
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
+              <Input
+                label="Email"
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleFormChange}
+                className="form-group"
+                required
+              />
 
               <div className="form-group">
                 <label htmlFor="country">Country</label>
@@ -178,31 +178,29 @@ const Profile = ({ onUserUpdate }) => {
                 change password (leave blank to keep current)
               </p>
 
-              <div className="form-group">
-                <label htmlFor="currentPassword">Current Password</label>
-                <input
-                  id="currentPassword"
-                  name="currentPassword"
-                  type="password"
-                  value={formData.currentPassword}
-                  onChange={handleFormChange}
-                />
-              </div>
+              <Input
+                label="Current Password"
+                id="currentPassword"
+                name="currentPassword"
+                type="password"
+                value={formData.currentPassword}
+                onChange={handleFormChange}
+                className="form-group"
+              />
 
-              <div className="form-group">
-                <label htmlFor="newPassword">New Password</label>
-                <input
-                  id="newPassword"
-                  name="newPassword"
-                  type="password"
-                  value={formData.newPassword}
-                  onChange={handleFormChange}
-                />
-              </div>
+              <Input
+                label="New Password"
+                id="newPassword"
+                name="newPassword"
+                type="password"
+                value={formData.newPassword}
+                onChange={handleFormChange}
+                className="form-group"
+              />
 
-              <button type="submit" className="save-btn" disabled={saving}>
+              <Button type="submit" variant="primary" size="md" className="save-btn" disabled={saving}>
                 {saving ? "Saving..." : "Save Changes"}
-              </button>
+              </Button>
             </form>
           </div>
         )}
@@ -222,13 +220,14 @@ const Profile = ({ onUserUpdate }) => {
                   onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
                 />
               </div>
-              <button
+              <Button
+                variant="primary"
+                size="md"
                 className="search-btn"
-                type="button"
                 onClick={handleSearchSubmit}
               >
                 Search
-              </button>
+              </Button>
             </div>
 
             {/* Filters */}
@@ -270,21 +269,23 @@ const Profile = ({ onUserUpdate }) => {
                 onChange={handleFilterChange}
               />
 
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
                 className="filter-btn"
                 onClick={toggleSortOrder}
               >
                 Date {filters.sortOrder === "desc" ? "↓" : "↑"}
-              </button>
+              </Button>
 
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
                 className="filter-btn clear"
                 onClick={clearFilters}
               >
                 Clear
-              </button>
+              </Button>
             </div>
 
             {/* Sessions */}
@@ -321,7 +322,7 @@ const Profile = ({ onUserUpdate }) => {
                         </span>
                       </div>
                     </div>
-                    <button className="replay-btn">▷ Replay</button>
+                    <Button variant="primary" size="sm" className="replay-btn">▷ Replay</Button>
                   </div>
                 ))}
               </div>

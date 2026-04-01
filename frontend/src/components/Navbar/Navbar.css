@@ -75,7 +75,89 @@
 .authActions {
 	justify-self: end;
 	display: inline-flex;
-	gap: 8px;
+	align-items: center;
+	gap: 12px;
+}
+
+.userPill {
+	min-width: 109px;
+	height: 48px;
+	padding: 0 14px 0 60px;
+	border-radius: 999px;
+	background: #06b6d4;
+	display: inline-flex;
+	align-items: center;
+	gap: 0;
+	max-width: 220px;
+	overflow: visible;
+	position: relative;
+}
+
+.userPillAvatar {
+	width: 47px;
+	height: 49px;
+	border-radius: 50%;
+	overflow: hidden;
+	background: #001b3a;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	position: absolute;
+	left: -1px;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+}
+
+.userPillAvatarImage {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.userPillAvatarFallback {
+	font-size: 30px;
+	font-weight: 700;
+	color: #06b6d4;
+}
+
+.userPillName {
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.2;
+	padding-bottom: 1px;
+	color: #021b34;
+	max-width: 146px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.logoutIconBtn {
+	width: 48px;
+	height: 48px;
+	border-radius: 14px;
+	border: 2px solid #8b5cf6;
+	background: rgba(91, 33, 182, 0.12);
+	color: #8b5cf6;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.logoutIconBtn .bi {
+	font-size: 22px;
+	color: #8b5cf6;
+}
+
+.logoutIconBtn:hover,
+.logoutIconBtn:focus-visible {
+	transform: translateY(-2px);
+	filter: brightness(1.12);
 }
 
 .authBtn {

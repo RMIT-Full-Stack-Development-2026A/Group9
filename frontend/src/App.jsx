@@ -1,6 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import Navbar from "./components/Navbar/Navbar.jsx";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
 import Login from "./pages/Login/Login.jsx";
 import "./App.css";
@@ -34,7 +35,14 @@ function App() {
         <Routes>
           <Route path="/" element={<h1 style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-h)" }}>Group 9 Project</h1>} />
           <Route path="/login" element={<Login onUserUpdate={setUser} />} />
-          <Route path="/profile" element={<Profile onUserUpdate={setUser} />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={["player", "admin"]}>
+                <Profile onUserUpdate={setUser} />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
     </div>

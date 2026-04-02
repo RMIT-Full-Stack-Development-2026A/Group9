@@ -124,6 +124,7 @@ p{
 .actionBtn--cyan   { background-color: #06b6d4;}
 .actionBtn--purple { background-color: #8b5cf6;; }
 .actionBtn--orange { background-color: #f97316; }
+.actionBtn--red    { background-color: #ef4444; }
 
 .btn{
     width: 172px;
@@ -152,6 +153,12 @@ p{
 .btn.actionBtn--orange:focus-visible{
     transform: translateY(-2px);
     background-color: darkorange;
+}
+
+.btn.actionBtn--red:hover,
+.btn.actionBtn--red:focus-visible{
+    transform: translateY(-2px);
+    background-color: #dc2626;
 }
 
 .bi{

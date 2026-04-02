@@ -126,7 +126,9 @@
 .userPillName {
 	font-size: 13px;
 	font-weight: 700;
-	line-height: 1;
+	line-height: 1.25;
+	display: inline-block;
+	padding-bottom: 1px;
 	color: #021b34;
 	max-width: 146px;
 	overflow: hidden;

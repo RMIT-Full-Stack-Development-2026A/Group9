@@ -91,6 +91,7 @@ function getWelcomeLine(user) {
 export default function Home() {
     const currentUser = getStoredUser();
     const welcome = getWelcomeLine(currentUser);
+    const showRankings = Boolean(currentUser) && isPremiumUser(currentUser);
 
   return (
     <main>
@@ -149,11 +150,11 @@ export default function Home() {
                 <span className="btn_name">My History</span>
             </button>
 
-            <button className="btn text-white actionBtn actionBtn--orange">
+            <button className={`btn text-white actionBtn ${showRankings ? "actionBtn--red" : "actionBtn--orange"}`}>
                 <span className="btn_icon me-2">
-                    <i className="bi bi-gem"></i>
+                    <i className={`bi ${showRankings ? "bi-trophy" : "bi-gem"}`}></i>
                 </span>
-                <span className="btn_name">Go Premium</span>
+                <span className="btn_name">{showRankings ? "Rankings" : "Go Premium"}</span>
             </button>
         </section>
     </main>

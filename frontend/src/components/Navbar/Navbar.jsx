@@ -1,4 +1,5 @@
 import "./Navbar.css";
+import { useAuth } from "../../context/authContext";
 
 const NAV_LINKS = [
 	{ label: "Home", href: "#", active: true },
@@ -6,11 +7,25 @@ const NAV_LINKS = [
 	{ label: "Profile", href: "#" },
 ];
 
-export default function Navbar({ currentUser, onSignInClick, onHomeClick, onLogoutClick }) {
+export default function Navbar() {
+	const { user: currentUser, logout } = useAuth();
 	const isAuthenticated = Boolean(currentUser);
 	const displayName = currentUser?.username || "Player";
 	const avatarSrc = currentUser?.avatar || "";
 	const fallbackInitial = displayName.charAt(0).toUpperCase();
+
+	const openHome = () => {
+		window.location.hash = "#/";
+	};
+
+	const openLogin = () => {
+		window.location.hash = "#/login";
+	};
+
+	const handleLogout = async () => {
+		await logout();
+		openHome();
+	};
 
 	return (
 		<header className="topNavbar" role="banner">
@@ -34,7 +49,7 @@ export default function Navbar({ currentUser, onSignInClick, onHomeClick, onLogo
 							item.label === "Home"
 								? (event) => {
 									event.preventDefault();
-									onHomeClick?.();
+									openHome();
 								}
 								: undefined
 						}
@@ -57,13 +72,13 @@ export default function Navbar({ currentUser, onSignInClick, onHomeClick, onLogo
 							</span>
 							<span className="userPillName">{displayName}</span>
 						</div>
-						<button className="logoutIconBtn" type="button" onClick={onLogoutClick} aria-label="Logout">
+						<button className="logoutIconBtn" type="button" onClick={handleLogout} aria-label="Logout">
 							<i className="bi bi-box-arrow-right"></i>
 						</button>
 					</>
 				) : (
 					<>
-						<button className="authBtn authBtn--ghost" type="button" onClick={onSignInClick}>Sign In</button>
+						<button className="authBtn authBtn--ghost" type="button" onClick={openLogin}>Sign In</button>
 						<button className="authBtn authBtn--solid" type="button">Register</button>
 					</>
 				)}

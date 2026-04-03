@@ -7,4 +7,5 @@ const authRouter = Router();
 authRouter.post("/login", loginController);
 authRouter.post("/logout", authMiddleware, logoutController);
 
+
 export default authRouter;

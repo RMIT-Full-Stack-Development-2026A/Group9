@@ -1,5 +1,6 @@
 import "./Home.css";
 import { useHome } from "./Home.hook";
+import Button from "../../components/Button/Button.jsx";
 
 export default function Home() {
     const { welcome, showRankings } = useHome();
@@ -47,26 +48,38 @@ export default function Home() {
         </section>
 
         <section className="modeRow row2">
-            <button className="btn text-white actionBtn actionBtn--cyan">
-            <span className="btn_icon">
-                 <i className="bi bi-people me-2"></i>
-            </span>
-            <span className="btn_name">Browse Rooms</span>
-            </button>
+            <Button
+                className="btn text-white actionBtn actionBtn--cyan"
+                color="#06b6d4"
+                icon={
+                    <span className="btn_icon">
+                        <i className="bi bi-people me-2"></i>
+                    </span>
+                }
+                text="Browse Rooms"
+            />
 
-            <button className="btn text-white actionBtn actionBtn--purple">
-                <span className="btn_icon">
-                     <i className="bi bi-book me-2"></i>
-                </span>
-                <span className="btn_name">My History</span>
-            </button>
+            <Button
+                className="btn text-white actionBtn actionBtn--purple"
+                color="#8b5cf6"
+                icon={
+                    <span className="btn_icon">
+                        <i className="bi bi-book me-2"></i>
+                    </span>
+                }
+                text="My History"
+            />
 
-            <button className={`btn text-white actionBtn ${showRankings ? "actionBtn--red" : "actionBtn--orange"}`}>
-                <span className="btn_icon me-2">
-                    <i className={`bi ${showRankings ? "bi-trophy" : "bi-gem"}`}></i>
-                </span>
-                <span className="btn_name">{showRankings ? "Rankings" : "Go Premium"}</span>
-            </button>
+            <Button
+                className={`btn text-white actionBtn ${showRankings ? "actionBtn--red" : "actionBtn--orange"}`}
+                color={showRankings ? "#ef4444" : "#f97316"}
+                icon={
+                    <span className="btn_icon me-2">
+                        <i className={`bi ${showRankings ? "bi-trophy" : "bi-gem"}`}></i>
+                    </span>
+                }
+                text={showRankings ? "Rankings" : "Go Premium"}
+            />
         </section>
     </main>
     

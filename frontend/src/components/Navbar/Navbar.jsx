@@ -1,25 +1,27 @@
 import "./Navbar.css";
 import { useAuth } from "../../context/authContext";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const NAV_LINKS = [
-	{ label: "Home", href: "#", active: true },
-	{ label: "Arena", href: "#" },
-	{ label: "Profile", href: "#" },
+	{ label: "Home", to: "/" },
+	{ label: "Arena", to: "/arena" },
+	{ label: "Profile", to: "/profile" },
 ];
 
 export default function Navbar() {
 	const { user: currentUser, logout } = useAuth();
+	const navigate = useNavigate();
 	const isAuthenticated = Boolean(currentUser);
 	const displayName = currentUser?.username || "Player";
 	const avatarSrc = currentUser?.avatar || "";
 	const fallbackInitial = displayName.charAt(0).toUpperCase();
 
 	const openHome = () => {
-		window.location.hash = "#/";
+		navigate("/");
 	};
 
 	const openLogin = () => {
-		window.location.hash = "#/login";
+		navigate("/login");
 	};
 
 	const handleLogout = async () => {
@@ -41,21 +43,13 @@ export default function Navbar() {
 
 			<nav className="mainNav" aria-label="Main navigation">
 				{NAV_LINKS.map((item) => (
-					<a
+					<NavLink
 						key={item.label}
-						className={`mainNavLink${item.active ? " mainNavLink--active" : ""}`}
-						href={item.label === "Home" ? "#/" : item.href}
-						onClick={
-							item.label === "Home"
-								? (event) => {
-									event.preventDefault();
-									openHome();
-								}
-								: undefined
-						}
+						className={({ isActive }) => `mainNavLink${isActive ? " mainNavLink--active" : ""}`}
+						to={item.to}
 					>
 						{item.label}
-					</a>
+					</NavLink>
 				))}
 			</nav>
 

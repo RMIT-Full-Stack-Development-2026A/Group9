@@ -20,17 +20,41 @@ const Navbar = ({ user, onLogout }) => {
           Home
         </Link>
         <Link
-          to="/arena"
-          className={location.pathname === "/arena" ? "active" : ""}
+          to="/game"
+          className={location.pathname === "/game" ? "active" : ""}
         >
-          Arena
+          Play
         </Link>
         <Link
-          to="/profile"
-          className={location.pathname === "/profile" ? "active" : ""}
+          to="/leaderboard"
+          className={location.pathname === "/leaderboard" ? "active" : ""}
         >
-          Profile
+          Leaderboard
         </Link>
+        {user && (
+          <>
+            <Link
+              to="/profile"
+              className={location.pathname === "/profile" ? "active" : ""}
+            >
+              Profile
+            </Link>
+            <Link
+              to="/payment"
+              className={location.pathname === "/payment" ? "active" : ""}
+            >
+              Wallet
+            </Link>
+          </>
+        )}
+        {user?.role === "admin" && (
+          <Link
+            to="/admin"
+            className={location.pathname === "/admin" ? "active" : ""}
+          >
+            Admin
+          </Link>
+        )}
       </div>
 
       <div className="navbar-user">

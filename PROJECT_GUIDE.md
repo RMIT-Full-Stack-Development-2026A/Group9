@@ -110,8 +110,11 @@ When editing the profile:
 
 ### Backend Features
 
-- User registration
-- User login with JWT
+- User registration with validation (username, email, password, country)
+- User login with JWT (by email or username)
+- Brute-force protection (5 failed attempts within 60s blocks login)
+- Token blacklisting on logout
+- Account activation/deactivation (admin controlled)
 - Authenticated profile retrieval
 - Edit username, email, country
 - Change password with current-password verification
@@ -120,21 +123,39 @@ When editing the profile:
 - Search game history by opponent name or bot name
 - Filter game history by game type, result, and date range
 - Sort game history by date
+- Game engine: 5-in-a-row on 10x10 or 15x15 board
+- AI opponents: Easy (random), Medium (defensive), Hard (attack + defense)
+- Game session management (create, record moves, end)
+- Algebraic notation for moves
+- Wallet system: deposit funds, view balance
+- Premium subscription ($10 from wallet balance)
+- Email notification on subscription via nodemailer
+- Leaderboard: ranked by wins, win rate, or total games
+- Admin: view all players, toggle active status, view/search/close game rooms
+- Multiplayer: create/join/list game rooms with auto-increment room numbers
+- WebSocket (Socket.IO): real-time game moves and chat
 
 ### Frontend Features
 
-- Login page
+- Login page (email or username)
+- Registration page with real-time field validation
 - Persistent session via `localStorage`
-- Navbar with current user and logout
+- Navbar with dynamic links based on auth state and role
+- Home page with game mode selection cards
+- Game arena with setup (mode, board size, style, markers, difficulty, first player)
+- 3 board styles (Classic, Forest, Ocean) and 6 marker choices
+- Win animation overlay
 - Profile page with tabs:
   - History
   - Edit Profile
-  - Wallet placeholder
-- Dark-themed profile design
+- Dark-themed design
 - Avatar upload from the profile page
 - Editable profile form
 - Error handling for incorrect current password on profile update
 - Game history cards with opponent, result, type, board size, and date
+- Leaderboard page with sort controls and personal stats
+- Payment page: wallet balance, deposit, premium subscription, transaction history
+- Admin dashboard: player management (block/unblock), game room management (search/close)
 
 ## Current API Endpoints
 
@@ -142,6 +163,7 @@ When editing the profile:
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
+- `POST /api/auth/logout`
 
 ### Users
 
@@ -149,6 +171,41 @@ When editing the profile:
 - `PUT /api/users/profile`
 - `POST /api/users/profile/avatar`
 - `GET /api/users/game-history`
+
+### Game
+
+- `POST /api/game/sessions`
+- `GET /api/game/sessions/:id`
+- `PUT /api/game/sessions/:id/end`
+- `POST /api/game/moves`
+- `GET /api/game/sessions/:id/moves`
+- `POST /api/game/ai-move`
+
+### Billing
+
+- `GET /api/billing/wallet`
+- `POST /api/billing/deposit`
+- `POST /api/billing/subscribe`
+- `GET /api/billing/transactions`
+
+### Leaderboard
+
+- `GET /api/leaderboard`
+- `GET /api/leaderboard/me`
+
+### Admin
+
+- `GET /api/admin/players`
+- `PUT /api/admin/players/:id/status`
+- `GET /api/admin/game-rooms`
+- `PUT /api/admin/game-rooms/:id/close`
+
+### Multiplayer
+
+- `POST /api/multiplayer/rooms`
+- `GET /api/multiplayer/rooms`
+- `POST /api/multiplayer/rooms/:id/join`
+- `GET /api/multiplayer/rooms/:id`
 
 ## Environment Setup
 
@@ -163,6 +220,10 @@ JWT_SECRET=your_jwt_secret
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
 ```
 
 ## How To Run The Project

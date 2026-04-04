@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useLogin } from "./Login.hook.js";
 import Button from "../../components/Button/Button.jsx";
 import Input from "../../components/Input/Input.jsx";
@@ -20,13 +21,13 @@ const Login = ({ onUserUpdate }) => {
 
         <form onSubmit={handleSubmit}>
           <Input
-            label="Email"
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
+            label="Email or Username"
+            id="identifier"
+            name="identifier"
+            type="text"
+            value={formData.identifier}
             onChange={handleChange}
-            placeholder="you@example.com"
+            placeholder="you@example.com or username"
             required
           />
           <Input
@@ -43,6 +44,10 @@ const Login = ({ onUserUpdate }) => {
             {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
+
+        <p className="login-footer">
+          Don't have an account? <Link to="/register">Create one</Link>
+        </p>
       </div>
     </div>
   );

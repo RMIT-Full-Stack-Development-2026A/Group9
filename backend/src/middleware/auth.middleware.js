@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../modules/users/user.model.js";
+import { isTokenBlacklisted } from "../shared/security/tokenBlacklistService.js";
 
 export const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -9,13 +10,24 @@ export const authenticate = async (req, res, next) => {
 
   try {
     const token = authHeader.split(" ")[1];
+
+    // Check if token has been blacklisted (Req 2.3.2)
+    if (isTokenBlacklisted(token)) {
+      return res.status(401).json({ message: "Token has been revoked. Please log in again." });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.userId;
 
-    const user = await User.findById(decoded.userId).select("role");
+    const user = await User.findById(decoded.userId).select("role isActive");
     if (!user) {
       return res.status(401).json({ message: "User no longer exists" });
     }
+
+    if (!user.isActive) {
+      return res.status(403).json({ message: "Account has been deactivated" });
+    }
+
     req.userRole = user.role;
     next();
   } catch (error) {

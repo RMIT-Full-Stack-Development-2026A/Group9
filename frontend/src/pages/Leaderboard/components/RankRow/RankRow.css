@@ -1,0 +1,72 @@
+.rank-row {
+  transition: background 0.15s;
+}
+
+.rank-row:hover {
+  background: rgba(6, 182, 212, 0.04);
+}
+
+.rank-row--top {
+  background: rgba(6, 182, 212, 0.06);
+}
+
+.rank-pos {
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  width: 50px;
+}
+
+.rank-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rank-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cyan);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.rank-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rank-username {
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.rank-premium {
+  color: var(--orange);
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+.rank-country {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.rank-stat {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.rank-wins {
+  color: var(--green);
+  font-weight: 600;
+}

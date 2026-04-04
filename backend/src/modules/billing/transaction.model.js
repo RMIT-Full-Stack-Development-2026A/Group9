@@ -1,13 +1,13 @@
-//handles wallet deposits and subscription payments.
+import mongoose from "mongoose";
 
-// {
-//   userId: { type: ObjectId, ref: "User" },
+const transactionSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  type: { type: String, enum: ["deposit", "subscription"], required: true },
+  amount: { type: Number, required: true },
+  status: { type: String, enum: ["pending", "completed", "failed"], default: "completed" },
+  description: { type: String, default: "" },
+  createdAt: { type: Date, default: Date.now },
+});
 
-//   type: { type: String, enum: ["deposit", "subscription"] },
-
-//   amount: { type: Number },
-
-//   status: { type: String, enum: ["pending", "completed", "failed"] },
-
-//   createdAt: { type: Date }
-// }
+const Transaction = mongoose.model("Transaction", transactionSchema);
+export default Transaction;

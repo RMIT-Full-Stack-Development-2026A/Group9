@@ -4,7 +4,7 @@ import * as loginService from "./Login.service.js";
 
 export const useLogin = (onUserUpdate) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ identifier: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

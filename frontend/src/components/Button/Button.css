@@ -40,6 +40,21 @@
   color: #fff;
 }
 
+.btn--danger {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  color: var(--text-h);
+  opacity: 1;
+}
+
 /* Sizes */
 .btn--sm {
   padding: 6px 14px;

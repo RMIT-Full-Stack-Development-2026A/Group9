@@ -1,0 +1,127 @@
+.leaderboard-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.leaderboard-title {
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+}
+
+/* My Rank Card */
+.my-rank-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+
+.my-rank-card h4 {
+  color: var(--text-h);
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.my-rank-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.my-rank-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.my-rank-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.my-rank-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Controls */
+.leaderboard-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.leaderboard-controls label {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.sort-options {
+  display: flex;
+  gap: 6px;
+}
+
+.sort-btn {
+  padding: 6px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.sort-btn:hover {
+  border-color: var(--cyan);
+  color: var(--text-h);
+}
+
+.sort-btn.active {
+  border-color: var(--cyan);
+  background: var(--cyan-bg);
+  color: var(--cyan);
+}
+
+/* Table */
+.leaderboard-table-wrapper {
+  overflow-x: auto;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.leaderboard-table th {
+  padding: 12px 16px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+.leaderboard-table th:nth-child(2) {
+  text-align: left;
+}
+
+.leaderboard-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(26, 35, 51, 0.5);
+}
+
+.leaderboard-loading,
+.leaderboard-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px 0;
+}

@@ -5,17 +5,39 @@ export const register = async (req, res) => {
     const result = await authService.register(req.body);
     res.status(201).json(result);
   } catch (error) {
-    const status = error.message === "Email already registered" ? 409 : 500;
-    res.status(status).json({ message: error.message });
+    const status = error.statusCode || 500;
+    const response = { message: error.message };
+    if (error.validationErrors) {
+      response.errors = error.validationErrors;
+    }
+    res.status(status).json(response);
   }
 };
 
 export const login = async (req, res) => {
   try {
-    const result = await authService.login(req.body);
+    // Support both { identifier, password } and legacy { email, password }
+    const { identifier, email, password } = req.body;
+    const result = await authService.login({
+      identifier: identifier || email,
+      password,
+    });
     res.json(result);
   } catch (error) {
-    const status = error.message === "Invalid email or password" ? 401 : 500;
-    res.status(status).json({ message: error.message });
+    const status = error.statusCode || 500;
+    res.status(status).json({ message: error.message, errorCode: error.errorCode });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      authService.logout(token);
+    }
+    res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

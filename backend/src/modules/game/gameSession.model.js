@@ -4,6 +4,7 @@ const gameSessionSchema = new mongoose.Schema({
   sessionNumber: { type: Number, unique: true },
   players: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   botName: { type: String, default: null },
+  localPlayer2Name: { type: String, default: null },
 
   gameType: {
     type: String,

@@ -8,10 +8,18 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Route: POST /api/register
 router.post('/register', upload.single('avatar'), async (req, res) => {
-  const { username, email, password, country } = req.body;
+  const { username, email, password, country } = req.body || {};
   
   // 1. Backend Validation (Medium & Ultimo Requirements)
   const errors = [];
+  
+  if (!username || !email || !password || !country) {
+    errors.push({
+      error: 'Missing Required Fields',
+      cause: 'All fields (username, email, password, country) are required.',
+      examples: 'Ensure all fields are provided in the request body.'
+    });
+  }
   
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {

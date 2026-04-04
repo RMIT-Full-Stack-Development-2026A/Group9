@@ -1,6 +1,17 @@
 import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "../../config/api.config";
 import { api } from "../../services/api";
 
+export function validateLoginInput(identity, password) {
+	const normalizedIdentity = String(identity || "").trim();
+	const normalizedPassword = String(password || "");
+
+	if (!normalizedIdentity || !normalizedPassword) {
+		return "Username/email and password are required";
+	}
+
+	return "";
+}
+
 export async function login(identity, password) {
 	const payload = await api.post("/api/auth/login", { identity, password });
 

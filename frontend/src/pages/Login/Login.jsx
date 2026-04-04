@@ -1,15 +1,9 @@
 import "./Login.css";
 import { useLogin } from "./Login.hook";
-import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button/Button.jsx";
 
 export default function Login() {
-	const navigate = useNavigate();
-
-	const handleLoginSuccess = () => {
-		navigate("/", { replace: true });
-	};
-
-	const { form, isSubmitting, errorMessage, handleChange, handleSubmit } = useLogin(handleLoginSuccess);
+	const { form, isSubmitting, errorMessage, handleChange, handleSubmit } = useLogin();
 	const hasCredentialError = Boolean(errorMessage);
 
 	return (
@@ -85,10 +79,15 @@ export default function Login() {
 						<button type="button" className="textButton">Forgot password?</button>
 					</div>
 
-					<button className="submitButton" type="submit">
-						<i className="bi bi-lock"></i>
-						<span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
-					</button>
+					<Button
+						className="submitButton"
+						type="submit"
+						color="#06b6d4"
+						textColor="#0a1929"
+						disabled={isSubmitting}
+						icon={<i className="bi bi-lock"></i>}
+						text={isSubmitting ? "Signing in..." : "Sign In"}
+					/>
 
 					<p className="loginFooterText">
 						Don't have an account?

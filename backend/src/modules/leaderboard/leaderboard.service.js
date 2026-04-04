@@ -1,5 +1,5 @@
 import * as repo from "./leaderboard.repository.js";
-import GameSession from "../game/gameSession.model.js";
+import * as gameFacade from "../game/game.facade.js";
 
 export const getLeaderboard = async (sortBy = "wins") => {
   const allowed = ["wins", "winRate", "totalGames"];
@@ -17,49 +17,23 @@ export const getPlayerRank = async (userId) => {
 /**
  * Recalculate rank stats for a user from their game sessions.
  * Called after a game ends.
+ * Uses game facade interface (A.3.1) instead of direct model access.
  */
 export const recalculateRank = async (userId) => {
-  const sessions = await GameSession.find({
-    players: userId,
-    result: { $in: ["win", "draw"] },
-  });
+  const completed = await gameFacade.getCompletedSessionsForUser(userId);
 
   let wins = 0;
   let losses = 0;
   let draws = 0;
 
-  for (const s of sessions) {
+  for (const s of completed) {
     if (s.result === "draw") {
       draws++;
-    } else if (s.winner && s.winner.toString() === userId.toString()) {
+    } else if (s.winner && s.winner._id.toString() === userId.toString()) {
       wins++;
     } else {
       losses++;
     }
-  }
-
-  // Also count losses from sessions where result is "win" but user is not the winner
-  const allSessions = await GameSession.find({
-    players: userId,
-    result: "win",
-    winner: { $ne: userId },
-  });
-  losses += allSessions.length;
-
-  // Subtract the already-counted losses to avoid double-count
-  // Actually let's simplify: count all completed sessions
-  const completed = await GameSession.find({
-    players: userId,
-    result: { $in: ["win", "draw"] },
-  });
-
-  wins = 0;
-  losses = 0;
-  draws = 0;
-  for (const s of completed) {
-    if (s.result === "draw") draws++;
-    else if (s.winner && s.winner.toString() === userId.toString()) wins++;
-    else losses++;
   }
 
   const totalGames = wins + losses + draws;

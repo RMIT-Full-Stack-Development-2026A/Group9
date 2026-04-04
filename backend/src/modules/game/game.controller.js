@@ -1,4 +1,5 @@
 import * as gameService from "./game.service.js";
+import { toGameSessionDTO, toMoveDTO } from "./game.dto.js";
 
 export const createSession = async (req, res) => {
   try {
@@ -6,7 +7,7 @@ export const createSession = async (req, res) => {
       userId: req.userId,
       ...req.body,
     });
-    res.status(201).json(session);
+    res.status(201).json(toGameSessionDTO(session));
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
@@ -15,7 +16,7 @@ export const createSession = async (req, res) => {
 export const endSession = async (req, res) => {
   try {
     const session = await gameService.endGameSession(req.params.id, req.body);
-    res.json(session);
+    res.json(toGameSessionDTO(session));
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
@@ -24,7 +25,7 @@ export const endSession = async (req, res) => {
 export const recordMove = async (req, res) => {
   try {
     const move = await gameService.recordMove(req.body);
-    res.status(201).json(move);
+    res.status(201).json(toMoveDTO(move));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -33,7 +34,7 @@ export const recordMove = async (req, res) => {
 export const getGameMoves = async (req, res) => {
   try {
     const moves = await gameService.getGameMoves(req.params.id);
-    res.json(moves);
+    res.json(moves.map(toMoveDTO));
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
@@ -42,7 +43,7 @@ export const getGameMoves = async (req, res) => {
 export const getSession = async (req, res) => {
   try {
     const session = await gameService.getGameSession(req.params.id);
-    res.json(session);
+    res.json(toGameSessionDTO(session));
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }

@@ -1,4 +1,5 @@
 import * as billingService from "./billing.service.js";
+import { toTransactionDTO } from "./billing.dto.js";
 
 export const deposit = async (req, res) => {
   try {
@@ -21,7 +22,7 @@ export const subscribe = async (req, res) => {
 export const getTransactions = async (req, res) => {
   try {
     const transactions = await billingService.getTransactions(req.userId);
-    res.json(transactions);
+    res.json(transactions.map(toTransactionDTO));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

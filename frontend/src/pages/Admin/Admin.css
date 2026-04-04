@@ -187,3 +187,77 @@
   color: var(--text-muted);
   padding: 40px 0;
 }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 20px 12px;
+  }
+
+  .admin-title {
+    font-size: 1.4rem;
+  }
+
+  .admin-tabs {
+    gap: 0;
+  }
+
+  .admin-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .admin-search-row {
+    flex-direction: column;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  /* Hide less critical columns on tablet */
+  .admin-table th:nth-child(3),
+  .admin-table td:nth-child(3) {
+    display: none;
+  }
+
+  .admin-avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-page {
+    padding: 12px 8px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  /* Hide more columns on small mobile */
+  .admin-table th:nth-child(4),
+  .admin-table td:nth-child(4),
+  .admin-table th:nth-child(5),
+  .admin-table td:nth-child(5) {
+    display: none;
+  }
+
+  .admin-user-cell {
+    gap: 6px;
+  }
+
+  .role-badge,
+  .room-status {
+    padding: 2px 7px;
+    font-size: 11px;
+  }
+}

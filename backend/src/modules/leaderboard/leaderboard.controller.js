@@ -1,10 +1,11 @@
 import * as leaderboardService from "./leaderboard.service.js";
+import { toRankDTO } from "./leaderboard.dto.js";
 
 export const getLeaderboard = async (req, res) => {
   try {
     const { sortBy } = req.query;
     const ranks = await leaderboardService.getLeaderboard(sortBy);
-    res.json(ranks);
+    res.json(ranks.map(toRankDTO));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

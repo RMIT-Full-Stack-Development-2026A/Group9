@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useAuth } from "../../context/authContext";
+import { useNavigate } from "react-router-dom";
+import { validateLoginInput } from "./Login.service";
 
-export function useLogin(onSuccess) {
+export function useLogin() {
 	const { login } = useAuth();
+	const navigate = useNavigate();
 	const [form, setForm] = useState({
 		identity: "",
 		password: "",
@@ -25,6 +28,13 @@ export function useLogin(onSuccess) {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+
+		const validationError = validateLoginInput(form.identity, form.password);
+		if (validationError) {
+			setErrorMessage(validationError);
+			return;
+		}
+
 		setIsSubmitting(true);
 		setErrorMessage("");
 
@@ -36,7 +46,7 @@ export function useLogin(onSuccess) {
 				return;
 			}
 
-			onSuccess?.(result.user);
+			navigate("/", { replace: true });
 		} catch (error) {
 			setErrorMessage(error.message || "Sign in failed");
 		} finally {

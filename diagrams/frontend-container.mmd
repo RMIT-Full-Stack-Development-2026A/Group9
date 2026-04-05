@@ -4,7 +4,8 @@ C4Container
     Person(player, "Player", "Plays games and manages account")
     Person(admin, "Admin", "Manages players and game rooms")
 
-    Container_Boundary(frontend, "Frontend [React + Vite SPA]") {
+    System_Boundary(frontend, "Frontend [React + Vite SPA]") {
+        Container(shared, "Shared Components", "React", "Navbar, Button, Input, ProtectedRoute")
         Container(home, "Home Page", "React Component", "Landing page with feature cards and CTA")
         Container(login, "Login Page", "React Component", "Email/username authentication form")
         Container(register, "Registration Page", "React Component", "Account creation with validation")
@@ -13,19 +14,24 @@ C4Container
         Container(leaderboardPage, "Leaderboard Page", "React Component", "Rankings table and personal stats")
         Container(payment, "Payment Page", "React Component", "Wallet, deposits, premium subscription")
         Container(adminPage, "Admin Page", "React Component", "Player and room management dashboard")
-        Container(shared, "Shared Components", "React", "Navbar, Button, Input, ProtectedRoute")
-        Container(config, "API Config", "JavaScript", "Base URL, route configs, Axios interceptors")
+        Container(config, "API Config and HTTP Helper", "Axios", "Base URL, route configs, interceptors")
     }
 
     Container(localStorage, "Local Storage", "Browser API", "Stores JWT token and user data")
     System_Ext(backend, "Backend API", "Express + MongoDB REST API")
 
-    Rel(player, frontend, "Uses", "HTTPS")
-    Rel(admin, frontend, "Manages", "HTTPS")
+    Rel(player, shared, "Uses", "HTTPS")
+    Rel(admin, shared, "Manages", "HTTPS")
+    Rel(shared, home, "Navigates to")
+    Rel(shared, login, "Navigates to")
+    Rel(shared, gamearena, "Navigates to")
+    Rel(shared, leaderboardPage, "Navigates to")
+    Rel(shared, profile, "Navigates to")
+    Rel(shared, payment, "Navigates to")
+    Rel(shared, adminPage, "Navigates to")
     Rel(login, localStorage, "Stores token and user")
     Rel(register, localStorage, "Stores token and user")
     Rel(shared, localStorage, "Reads auth state")
-    Rel(home, config, "Uses API routes")
     Rel(login, config, "Uses HTTP helper")
     Rel(register, config, "Uses HTTP helper")
     Rel(profile, config, "Uses HTTP helper")

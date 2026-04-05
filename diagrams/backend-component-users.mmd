@@ -1,0 +1,28 @@
+C4Component
+    title Component Diagram - Users Module
+
+    Container(mw, "Middleware Layer", "Express", "JWT Auth + Role Authorization")
+
+    Container_Boundary(users, "Users Module") {
+        Component(route, "User Route", "Express Router", "GET/PUT /profile, POST /avatar, GET /game-history")
+        Component(controller, "User Controller", "Express Handler", "Handles user profile requests and responses")
+        Component(service, "User Service", "Business Logic", "Profile updates, avatar management, game history")
+        Component(repository, "User Repository", "Data Access", "User CRUD queries")
+        Component(model, "User Model", "Mongoose Schema", "username, email, password, avatar, role, wallet")
+        Component(dto, "User DTO", "Transfer Object", "toAuthDTO, toProfileDTO")
+    }
+
+    Container(gameFacade, "Game Facade", "Module Interface", "Game history for user")
+    Container(upload, "Upload Middleware", "Multer + Cloudinary", "Avatar file processing")
+    ContainerDb(db, "MongoDB", "Database")
+    System_Ext(cloudinary, "Cloudinary", "Image storage")
+
+    Rel(mw, route, "Forwards authenticated requests")
+    Rel(route, controller, "Routes to handler")
+    Rel(controller, service, "Calls business logic")
+    Rel(controller, dto, "Shapes response data")
+    Rel(service, repository, "Queries data")
+    Rel(service, gameFacade, "Gets game history")
+    Rel(repository, model, "Uses schema")
+    Rel(repository, db, "Reads/Writes")
+    Rel(upload, cloudinary, "Uploads images")

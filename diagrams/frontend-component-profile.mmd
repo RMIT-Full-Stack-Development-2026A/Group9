@@ -1,0 +1,20 @@
+C4Component
+    title Component Diagram - Profile Page Module
+
+    Container_Boundary(profile, "Profile Page Module") {
+        Component(profileJsx, "Profile.jsx", "React Component", "Tabbed profile with history, edit, and wallet views")
+        Component(profileHook, "Profile.hook.js", "Custom Hook", "Profile state, history filters, tab management")
+        Component(profileService, "Profile.service.js", "API Service", "getProfile, updateProfile, uploadAvatar, getGameHistory")
+        Component(profileCss, "Profile.css", "Stylesheet", "Responsive profile layout with media breakpoints")
+    }
+
+    Container(shared, "Shared Components", "React", "Button, Input")
+    Container(config, "HTTP Helper", "Axios", "Base URL + Bearer token interceptor")
+    System_Ext(backend, "Backend API", "/api/users endpoints")
+
+    Rel(profileJsx, profileHook, "Uses hook for state")
+    Rel(profileJsx, profileCss, "Imports styles")
+    Rel(profileJsx, shared, "Uses Button and Input")
+    Rel(profileHook, profileService, "Calls API methods")
+    Rel(profileService, config, "Uses HTTP helper")
+    Rel(config, backend, "GET/PUT /api/users/profile", "HTTP/JSON")

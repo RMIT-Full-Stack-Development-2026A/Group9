@@ -1,0 +1,30 @@
+C4Component
+    title Component Diagram - Game Arena Page Module
+
+    Container_Boundary(gamearena, "Game Arena Page Module") {
+        Component(arenaJsx, "GameArena.jsx", "React Component", "Game setup form and playing interface with result overlay")
+        Component(arenaHook, "GameArena.hook.js", "Custom Hook", "Game state, board logic, AI integration, move handling")
+        Component(arenaService, "GameArena.service.js", "API Service", "createSession, endSession, recordMove, getAIMove")
+        Component(arenaCss, "GameArena.css", "Stylesheet", "Game layout, setup form, win animations")
+        Component(board, "Board.jsx", "Sub-Component", "NxN grid with algebraic notation and win highlights")
+        Component(boardCss, "Board.css", "Stylesheet", "Board grid and cell styling")
+        Component(chatBox, "ChatBox.jsx", "Sub-Component", "Real-time multiplayer chat interface")
+        Component(chatHook, "ChatBox.hook.js", "Custom Hook", "Message state and socket event management")
+        Component(chatCss, "ChatBox.css", "Stylesheet", "Chat message list and input styling")
+    }
+
+    Container(shared, "Shared Components", "React", "Button")
+    Container(config, "HTTP Helper", "Axios", "Base URL + Bearer token interceptor")
+    System_Ext(backend, "Backend API", "/api/game endpoints")
+
+    Rel(arenaJsx, arenaHook, "Uses hook for game state")
+    Rel(arenaJsx, arenaCss, "Imports styles")
+    Rel(arenaJsx, board, "Renders game board")
+    Rel(arenaJsx, chatBox, "Renders chat for multiplayer")
+    Rel(arenaJsx, shared, "Uses Button")
+    Rel(board, boardCss, "Imports styles")
+    Rel(chatBox, chatHook, "Uses chat hook")
+    Rel(chatBox, chatCss, "Imports styles")
+    Rel(arenaHook, arenaService, "Calls API methods")
+    Rel(arenaService, config, "Uses HTTP helper")
+    Rel(config, backend, "POST/GET /api/game/*", "HTTP/JSON")

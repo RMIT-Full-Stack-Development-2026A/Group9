@@ -1,0 +1,23 @@
+C4Component
+    title Component Diagram - Auth Module
+
+    Container(mw, "Middleware Layer", "Express", "JWT Auth + Role Authorization")
+
+    Container_Boundary(auth, "Auth Module") {
+        Component(route, "Auth Route", "Express Router", "POST /register, /login, /logout")
+        Component(controller, "Auth Controller", "Express Handler", "Handles auth HTTP requests and responses")
+        Component(service, "Auth Service", "Business Logic", "Registration, login with brute-force protection, logout")
+        Component(repository, "Auth Repository", "Data Access", "User lookup and creation queries")
+    }
+
+    Container(shared, "Shared Security Services", "Node.js", "Token Blacklist, Login Attempt Tracker, Validators")
+    Container(userModel, "User Model", "Mongoose Schema", "From Users Module")
+    ContainerDb(db, "MongoDB", "Database")
+
+    Rel(mw, route, "Forwards requests")
+    Rel(route, controller, "Routes to handler")
+    Rel(controller, service, "Calls business logic")
+    Rel(service, repository, "Queries data")
+    Rel(service, shared, "Uses security services")
+    Rel(repository, userModel, "Uses User Model")
+    Rel(repository, db, "Reads/Writes")

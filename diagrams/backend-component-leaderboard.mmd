@@ -1,0 +1,25 @@
+C4Component
+    title Component Diagram - Leaderboard Module
+
+    Container(mw, "Middleware Layer", "Express", "JWT Auth + Role Authorization")
+
+    Container_Boundary(leaderboard, "Leaderboard Module") {
+        Component(route, "Leaderboard Route", "Express Router", "GET / (public), GET /me (protected)")
+        Component(controller, "Leaderboard Controller", "Express Handler", "Handles leaderboard requests and responses")
+        Component(service, "Leaderboard Service", "Business Logic", "Rankings, rank recalculation from game data")
+        Component(repository, "Leaderboard Repository", "Data Access", "Rank upsert and sorted queries")
+        Component(model, "Rank Model", "Mongoose Schema", "userId, wins, losses, draws, totalGames, winRate")
+        Component(dto, "Leaderboard DTO", "Transfer Object", "toRankDTO - excludes sensitive user data")
+    }
+
+    Container(gameFacade, "Game Facade", "Module Interface", "Completed sessions for rank calculation")
+    ContainerDb(db, "MongoDB", "Database")
+
+    Rel(mw, route, "Forwards requests")
+    Rel(route, controller, "Routes to handler")
+    Rel(controller, service, "Calls business logic")
+    Rel(controller, dto, "Shapes response data")
+    Rel(service, repository, "Queries data")
+    Rel(service, gameFacade, "getCompletedSessionsForUser")
+    Rel(repository, model, "Uses schema")
+    Rel(repository, db, "Reads/Writes")

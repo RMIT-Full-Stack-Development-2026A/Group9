@@ -1,0 +1,24 @@
+C4Component
+    title Component Diagram - Leaderboard Page Module
+
+    Container_Boundary(leaderboard, "Leaderboard Page Module") {
+        Component(lbJsx, "Leaderboard.jsx", "React Component", "Rankings table with sort controls and personal stats card")
+        Component(lbHook, "Leaderboard.hook.js", "Custom Hook", "Leaderboard and myRank state, sort management")
+        Component(lbService, "Leaderboard.service.js", "API Service", "getLeaderboard, getMyRank")
+        Component(lbCss, "Leaderboard.css", "Stylesheet", "Leaderboard table and stats card styling")
+        Component(rankRow, "RankRow.jsx", "Sub-Component", "Table row with medals for top 3, avatar, stats")
+        Component(rankRowCss, "RankRow.css", "Stylesheet", "Rank row medal and stat styling")
+    }
+
+    Container(shared, "Shared Components", "React", "Button")
+    Container(config, "HTTP Helper", "Axios", "Base URL + Bearer token interceptor")
+    System_Ext(backend, "Backend API", "/api/leaderboard endpoints")
+
+    Rel(lbJsx, lbHook, "Uses hook for state")
+    Rel(lbJsx, lbCss, "Imports styles")
+    Rel(lbJsx, rankRow, "Renders for each rank entry")
+    Rel(lbJsx, shared, "Uses Button for sort controls")
+    Rel(rankRow, rankRowCss, "Imports styles")
+    Rel(lbHook, lbService, "Calls API methods")
+    Rel(lbService, config, "Uses HTTP helper")
+    Rel(config, backend, "GET /api/leaderboard", "HTTP/JSON")

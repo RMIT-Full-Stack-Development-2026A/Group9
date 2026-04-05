@@ -1,0 +1,44 @@
+C4Container
+    title Backend Modular Monolith - Container Diagram
+
+    Person(player, "Player", "Plays Tic-Tac-Toe games and manages profile")
+    Person(admin, "Admin", "Manages players and game rooms")
+
+    System_Ext(frontend, "Frontend SPA", "React + Vite User Interface")
+
+    Container_Boundary(backend, "Backend [Node.js + Express]") {
+        Container(mw, "Middleware Layer", "Express", "JWT Authentication, Role Authorization, File Upload")
+        Container(auth, "Auth Module", "Express, JWT, bcrypt", "Register, Login, Logout, Token Blacklist")
+        Container(users, "Users Module", "Express, Mongoose", "Profile CRUD, Avatar Upload, Game History")
+        Container(game, "Game Module", "Express, Mongoose", "Game Sessions, Moves, AI Engine")
+        Container(billing, "Billing Module", "Express, Mongoose", "Wallet, Deposits, Premium Subscription")
+        Container(leaderboard, "Leaderboard Module", "Express, Mongoose", "Rankings and Statistics")
+        Container(adminmod, "Admin Module", "Express, Mongoose", "Player and Room Management")
+        Container(multiplayer, "Multiplayer Module", "Express, Socket.io", "Room Matchmaking and Real-time Play")
+    }
+
+    ContainerDb(db, "MongoDB", "NoSQL Database", "Stores all application data")
+    System_Ext(cloudinary, "Cloudinary", "Cloud image storage for avatars")
+    System_Ext(smtp, "Email Service", "Nodemailer SMTP for emails")
+
+    Rel(player, frontend, "Uses", "HTTPS")
+    Rel(admin, frontend, "Manages", "HTTPS")
+    Rel(frontend, mw, "Makes API Calls", "HTTP/JSON, WebSocket")
+    Rel(mw, auth, "Routes /api/auth")
+    Rel(mw, users, "Routes /api/users")
+    Rel(mw, game, "Routes /api/game")
+    Rel(mw, billing, "Routes /api/billing")
+    Rel(mw, leaderboard, "Routes /api/leaderboard")
+    Rel(mw, adminmod, "Routes /api/admin")
+    Rel(mw, multiplayer, "Routes /api/multiplayer")
+    Rel(users, game, "Via Game Facade")
+    Rel(leaderboard, game, "Via Game Facade")
+    Rel(adminmod, game, "Via Game Facade")
+    Rel(auth, db, "Reads/Writes")
+    Rel(users, db, "Reads/Writes")
+    Rel(game, db, "Reads/Writes")
+    Rel(billing, db, "Reads/Writes")
+    Rel(leaderboard, db, "Reads/Writes")
+    Rel(multiplayer, db, "Reads/Writes")
+    Rel(users, cloudinary, "Uploads avatars")
+    Rel(billing, smtp, "Sends subscription emails")

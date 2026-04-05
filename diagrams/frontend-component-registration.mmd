@@ -1,0 +1,22 @@
+C4Component
+    title Component Diagram - Registration Page Module
+
+    Container_Boundary(register, "Registration Page Module") {
+        Component(regJsx, "Registration.jsx", "React Component", "Registration form with validation indicators")
+        Component(regHook, "Registration.hook.js", "Custom Hook", "Form state, real-time validation, submit handler")
+        Component(regService, "Registration.service.js", "API Service", "register POST /auth/register")
+        Component(regCss, "Registration.css", "Stylesheet", "Registration page styling and layout")
+    }
+
+    Container(shared, "Shared Components", "React", "Input, Button")
+    Container(validators, "Validators", "JavaScript Utility", "Email, password, username validation functions")
+    Container(config, "HTTP Helper", "Axios", "Base URL + Bearer token interceptor")
+    System_Ext(backend, "Backend API", "/api/auth endpoints")
+
+    Rel(regJsx, regHook, "Uses hook for form state")
+    Rel(regJsx, regCss, "Imports styles")
+    Rel(regJsx, shared, "Uses Input and Button")
+    Rel(regHook, regService, "Calls API methods")
+    Rel(regHook, validators, "Validates form fields")
+    Rel(regService, config, "Uses HTTP helper")
+    Rel(config, backend, "POST /api/auth/register", "HTTP/JSON")

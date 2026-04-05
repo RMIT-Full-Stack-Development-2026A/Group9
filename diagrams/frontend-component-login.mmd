@@ -1,0 +1,20 @@
+C4Component
+    title Component Diagram - Login Page Module
+
+    Container_Boundary(login, "Login Page Module") {
+        Component(loginJsx, "Login.jsx", "React Component", "Login form with identifier and password fields")
+        Component(loginHook, "Login.hook.js", "Custom Hook", "Form state, validation, submit handler, error display")
+        Component(loginService, "Login.service.js", "API Service", "login POST /auth/login, logout POST /auth/logout")
+        Component(loginCss, "Login.css", "Stylesheet", "Login page styling and layout")
+    }
+
+    Container(shared, "Shared Components", "React", "Input, Button")
+    Container(config, "HTTP Helper", "Axios", "Base URL + Bearer token interceptor")
+    System_Ext(backend, "Backend API", "/api/auth endpoints")
+
+    Rel(loginJsx, loginHook, "Uses hook for form state")
+    Rel(loginJsx, loginCss, "Imports styles")
+    Rel(loginJsx, shared, "Uses Input and Button")
+    Rel(loginHook, loginService, "Calls API methods")
+    Rel(loginService, config, "Uses HTTP helper")
+    Rel(config, backend, "POST /api/auth/login", "HTTP/JSON")

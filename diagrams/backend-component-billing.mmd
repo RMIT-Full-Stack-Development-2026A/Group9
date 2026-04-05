@@ -1,0 +1,25 @@
+C4Component
+    title Component Diagram - Billing Module
+
+    Container(mw, "Middleware Layer", "Express", "JWT Auth + Role Authorization")
+
+    Container_Boundary(billing, "Billing Module") {
+        Component(route, "Billing Route", "Express Router", "GET /wallet, POST /deposit, /subscribe, GET /transactions")
+        Component(controller, "Billing Controller", "Express Handler", "Handles billing requests and responses")
+        Component(service, "Billing Service", "Business Logic", "Deposits, premium subscription, email notification")
+        Component(repository, "Billing Repository", "Data Access", "User wallet and transaction queries")
+        Component(model, "Transaction Model", "Mongoose Schema", "userId, type, amount, status, description")
+        Component(dto, "Billing DTO", "Transfer Object", "toWalletDTO, toTransactionDTO")
+    }
+
+    ContainerDb(db, "MongoDB", "Database")
+    System_Ext(smtp, "Email Service", "Nodemailer SMTP")
+
+    Rel(mw, route, "Forwards authenticated requests")
+    Rel(route, controller, "Routes to handler")
+    Rel(controller, service, "Calls business logic")
+    Rel(controller, dto, "Shapes response data")
+    Rel(service, repository, "Queries data")
+    Rel(service, smtp, "Sends subscription email")
+    Rel(repository, model, "Uses schema")
+    Rel(repository, db, "Reads/Writes")

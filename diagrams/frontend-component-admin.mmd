@@ -1,0 +1,22 @@
+C4Component
+    title Component Diagram - Admin Page Module
+
+    Container_Boundary(adminPage, "Admin Page Module") {
+        Component(adminJsx, "Admin.jsx", "React Component", "Player and room management tables with tab navigation")
+        Component(adminHook, "Admin.hook.js", "Custom Hook", "Players and rooms state, toggle and close handlers")
+        Component(adminService, "Admin.service.js", "API Service", "getAllPlayers, toggleStatus, getAllGameRooms, closeRoom")
+        Component(adminCss, "Admin.css", "Stylesheet", "Admin dashboard responsive styling with breakpoints")
+    }
+
+    Container(shared, "Shared Components", "React", "Button")
+    Container(protectedRoute, "ProtectedRoute", "React HOC", "Restricts access to admin role only")
+    Container(config, "HTTP Helper", "Axios", "Base URL + Bearer token interceptor")
+    System_Ext(backend, "Backend API", "/api/admin endpoints")
+
+    Rel(protectedRoute, adminJsx, "Renders if user role is admin")
+    Rel(adminJsx, adminHook, "Uses hook for state")
+    Rel(adminJsx, adminCss, "Imports styles")
+    Rel(adminJsx, shared, "Uses Button for actions")
+    Rel(adminHook, adminService, "Calls API methods")
+    Rel(adminService, config, "Uses HTTP helper")
+    Rel(config, backend, "GET/PUT /api/admin/*", "HTTP/JSON")

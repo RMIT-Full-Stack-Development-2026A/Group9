@@ -1,0 +1,21 @@
+C4Component
+    title Component Diagram - Multiplayer Module
+
+    Container(mw, "Middleware Layer", "Express + Socket.io", "JWT Auth + Role Authorization")
+
+    Container_Boundary(multiplayer, "Multiplayer Module") {
+        Component(route, "Multiplayer Route", "Express Router", "POST /rooms, GET /rooms, POST /rooms/:id/join")
+        Component(controller, "Multiplayer Controller", "Express Handler", "Handles room matchmaking requests and responses")
+        Component(service, "Multiplayer Service", "Business Logic", "Room creation, joining, status management")
+        Component(repository, "Multiplayer Repository", "Data Access", "Room CRUD and status queries")
+        Component(model, "GameRoom Model", "Mongoose Schema", "player1, player2, markers, boardSize, status")
+    }
+
+    ContainerDb(db, "MongoDB", "Database")
+
+    Rel(mw, route, "Forwards authenticated requests")
+    Rel(route, controller, "Routes to handler")
+    Rel(controller, service, "Calls business logic")
+    Rel(service, repository, "Queries data")
+    Rel(repository, model, "Uses schema")
+    Rel(repository, db, "Reads/Writes")

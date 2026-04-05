@@ -1,0 +1,36 @@
+C4Container
+    title Frontend Modularized Component - Container Diagram
+
+    Person(player, "Player", "Plays games and manages account")
+    Person(admin, "Admin", "Manages players and game rooms")
+
+    Container_Boundary(frontend, "Frontend [React + Vite SPA]") {
+        Container(home, "Home Page", "React Component", "Landing page with feature cards and CTA")
+        Container(login, "Login Page", "React Component", "Email/username authentication form")
+        Container(register, "Registration Page", "React Component", "Account creation with validation")
+        Container(profile, "Profile Page", "React Component", "Edit profile, game history, avatar upload")
+        Container(gamearena, "Game Arena Page", "React Component", "Game setup, board play, AI opponent")
+        Container(leaderboardPage, "Leaderboard Page", "React Component", "Rankings table and personal stats")
+        Container(payment, "Payment Page", "React Component", "Wallet, deposits, premium subscription")
+        Container(adminPage, "Admin Page", "React Component", "Player and room management dashboard")
+        Container(shared, "Shared Components", "React", "Navbar, Button, Input, ProtectedRoute")
+        Container(config, "API Config", "JavaScript", "Base URL, route configs, Axios interceptors")
+    }
+
+    Container(localStorage, "Local Storage", "Browser API", "Stores JWT token and user data")
+    System_Ext(backend, "Backend API", "Express + MongoDB REST API")
+
+    Rel(player, frontend, "Uses", "HTTPS")
+    Rel(admin, frontend, "Manages", "HTTPS")
+    Rel(login, localStorage, "Stores token and user")
+    Rel(register, localStorage, "Stores token and user")
+    Rel(shared, localStorage, "Reads auth state")
+    Rel(home, config, "Uses API routes")
+    Rel(login, config, "Uses HTTP helper")
+    Rel(register, config, "Uses HTTP helper")
+    Rel(profile, config, "Uses HTTP helper")
+    Rel(gamearena, config, "Uses HTTP helper")
+    Rel(leaderboardPage, config, "Uses HTTP helper")
+    Rel(payment, config, "Uses HTTP helper")
+    Rel(adminPage, config, "Uses HTTP helper")
+    Rel(config, backend, "Makes REST API calls", "HTTP/JSON")

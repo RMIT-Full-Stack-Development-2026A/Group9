@@ -1,0 +1,38 @@
+C4Component
+    title Component Diagram - Game Module
+
+    Container(mw, "Middleware Layer", "Express", "JWT Auth + Role Authorization")
+
+    Container_Boundary(game, "Game Module") {
+        Component(route, "Game Route", "Express Router", "Sessions, Moves, AI-Move endpoints")
+        Component(controller, "Game Controller", "Express Handler", "Handles game HTTP requests and responses")
+        Component(service, "Game Service", "Business Logic", "Session management, move processing, AI routing")
+        Component(repository, "Game Repository", "Data Access", "Session and move queries")
+        Component(sessionModel, "GameSession Model", "Mongoose Schema", "players, gameType, boardSize, result, winner")
+        Component(moveModel, "Move Model", "Mongoose Schema", "gameId, playerId, marker, position, row, col")
+        Component(dto, "Game DTO", "Transfer Object", "toGameSessionDTO, toMoveDTO")
+        Component(facade, "Game Facade", "Module Interface", "External API for Users, Leaderboard, Admin")
+        Component(engine, "Game Engine", "Logic", "Board creation, win detection, move validation")
+        Component(ai, "AI Engine", "Logic", "Easy, Medium, Hard difficulty levels")
+    }
+
+    Container(usersModule, "Users Module", "Mongoose", "Cross-module consumer")
+    Container(leaderboardModule, "Leaderboard Module", "Mongoose", "Cross-module consumer")
+    Container(adminModule, "Admin Module", "Mongoose", "Cross-module consumer")
+    ContainerDb(db, "MongoDB", "Database")
+
+    Rel(mw, route, "Forwards authenticated requests")
+    Rel(route, controller, "Routes to handler")
+    Rel(controller, service, "Calls business logic")
+    Rel(controller, dto, "Shapes response data")
+    Rel(service, repository, "Queries data")
+    Rel(service, engine, "Validates moves and checks wins")
+    Rel(service, ai, "Gets AI moves by difficulty")
+    Rel(repository, sessionModel, "Uses schema")
+    Rel(repository, moveModel, "Uses schema")
+    Rel(repository, db, "Reads/Writes")
+    Rel(facade, service, "Delegates to service")
+    Rel(facade, repository, "Delegates to repository")
+    Rel(usersModule, facade, "getGameHistoryForUser")
+    Rel(leaderboardModule, facade, "getCompletedSessionsForUser")
+    Rel(adminModule, facade, "getOnlineGameRooms, closeGameSession")

@@ -1,0 +1,20 @@
+C4Component
+    title Component Diagram - Payment Page Module
+
+    Container_Boundary(payment, "Payment Page Module") {
+        Component(payJsx, "Payment.jsx", "React Component", "Wallet card, deposit form, subscription, transaction history")
+        Component(payHook, "Payment.hook.js", "Custom Hook", "Wallet state, deposit and subscribe handlers")
+        Component(payService, "Payment.service.js", "API Service", "getWallet, deposit, subscribe, getTransactions")
+        Component(payCss, "Payment.css", "Stylesheet", "Payment page layout and card styling")
+    }
+
+    Container(shared, "Shared Components", "React", "Button, Input")
+    Container(config, "HTTP Helper", "Axios", "Base URL + Bearer token interceptor")
+    System_Ext(backend, "Backend API", "/api/billing endpoints")
+
+    Rel(payJsx, payHook, "Uses hook for state")
+    Rel(payJsx, payCss, "Imports styles")
+    Rel(payJsx, shared, "Uses Button and Input")
+    Rel(payHook, payService, "Calls API methods")
+    Rel(payService, config, "Uses HTTP helper")
+    Rel(config, backend, "GET/POST /api/billing/*", "HTTP/JSON")

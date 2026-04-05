@@ -1,0 +1,25 @@
+C4Component
+    title Component Diagram - Admin Module
+
+    Container(mw, "Middleware Layer", "Express", "JWT Auth + authorize admin only")
+
+    Container_Boundary(admin, "Admin Module") {
+        Component(route, "Admin Route", "Express Router", "GET /players, PUT /players/:id/status, /game-rooms")
+        Component(controller, "Admin Controller", "Express Handler", "Handles admin management requests and responses")
+        Component(service, "Admin Service", "Business Logic", "Player toggle, room management via facade")
+        Component(repository, "Admin Repository", "Data Access", "Player queries using User model")
+        Component(dto, "Admin DTO", "Transfer Object", "toPlayerListDTO - excludes password and wallet")
+    }
+
+    Container(gameFacade, "Game Facade", "Module Interface", "Room listing and closing operations")
+    Container(userModel, "User Model", "Mongoose Schema", "From Users Module")
+    ContainerDb(db, "MongoDB", "Database")
+
+    Rel(mw, route, "Forwards admin-only requests")
+    Rel(route, controller, "Routes to handler")
+    Rel(controller, service, "Calls business logic")
+    Rel(controller, dto, "Shapes response data")
+    Rel(service, repository, "Queries player data")
+    Rel(service, gameFacade, "getOnlineGameRooms, closeGameSession")
+    Rel(repository, userModel, "Uses schema")
+    Rel(repository, db, "Reads/Writes")

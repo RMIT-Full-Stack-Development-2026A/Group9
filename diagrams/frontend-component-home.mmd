@@ -1,0 +1,17 @@
+C4Component
+    title Component Diagram - Home Page Module
+
+    Container_Boundary(home, "Home Page Module") {
+        Component(homeJsx, "Home.jsx", "React Component", "Landing page with hero section and feature cards")
+        Component(homeHook, "Home.hook.js", "Custom Hook", "Page state management placeholder")
+        Component(homeService, "Home.service.js", "API Service", "API call methods placeholder")
+        Component(homeCss, "Home.css", "Stylesheet", "Page styling and responsive layout")
+    }
+
+    Container(shared, "Shared Components", "React", "Navbar, Button")
+    Container(router, "React Router", "react-router-dom", "Navigation to /game, /leaderboard, /login")
+
+    Rel(homeJsx, homeHook, "Uses hook")
+    Rel(homeJsx, homeCss, "Imports styles")
+    Rel(homeJsx, shared, "Uses Button component")
+    Rel(homeJsx, router, "Links to other pages")

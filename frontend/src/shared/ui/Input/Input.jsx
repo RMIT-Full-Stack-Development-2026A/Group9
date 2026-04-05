@@ -1,3 +1,19 @@
+/**
+ * ============================================================================
+ * SHARED INPUT COMPONENT (The Data Entry Gate)
+ * ============================================================================
+ * Location: src/shared/ui/Input/Input.jsx
+ * * 🎯 CORE PRINCIPLE:
+ * A unified text entry system for the TicTacToang ecosystem. Whether it's 
+ * logging in, searching the leaderboard, or updating a profile, this 
+ * component ensures consistent focus states, error styling, and accessibility.
+ * * * FEATURES INCLUDED:
+ * 1. Multi-Type Support: Handles text, password, email, and number.
+ * 2. Icon Integration: Supports leading icons (e.g., a magnifying glass for search).
+ * 3. Validation States: Visual "Error" and "Success" feedback built-in.
+ * 4. Accessibility: Automated ID generation for labels and ARIA support.
+ */
+
 export default function Input({
 	id,
 	name,

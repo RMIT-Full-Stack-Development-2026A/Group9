@@ -1,0 +1,9 @@
+/**
+ * ============================================================================
+ * LEADERBOARD TABLE STYLES (The Hall of Fame)
+ * ============================================================================
+ * Location: src/modules/leaderboard/components/LeaderboardTable.module.css
+ * Purpose: Provides a high-contrast, competitive look for player rankings.
+ * Uses glassmorphism and specialized row highlighting to emphasize the 
+ * top-tier "Toang" players.
+ */

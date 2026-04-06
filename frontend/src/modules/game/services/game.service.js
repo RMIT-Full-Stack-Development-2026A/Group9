@@ -12,3 +12,19 @@
  * 3. Match Analytics: Calculating win rates or XP gains from match data.
  * 4. Sound/Effect Triggers: Determining which "Toang" sounds to play.
  */
+
+import { http } from "../../../shared/utils/http.helper.js";
+
+export const createSession = async (payload) => {
+	return http("/game/sessions", {
+		method: "POST",
+		body: JSON.stringify(payload),
+	});
+};
+
+export const makeMove = async (payload) => {
+	return http("/game/sessions/move", {
+		method: "POST",
+		body: JSON.stringify(payload),
+	});
+};

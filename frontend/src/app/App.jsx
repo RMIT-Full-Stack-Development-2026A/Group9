@@ -13,3 +13,12 @@
  * 3. Base Styles: Imports global.css and variables.css to apply the theme.
  * 4. Error Boundary: (Optional/Suggested) Prevents a single "Toang" from crashing the app.
  */
+
+import Router from "./Router.jsx";
+import "../shared/styles/global.css";
+
+function App() {
+	return <Router />;
+}
+
+export default App;

@@ -13,3 +13,70 @@
  * 3. Security Integration: Uses ProtectedRoute to gatekeep sensitive areas.
  * 4. Fallback Logic: Handles 404 (Not Found) errors gracefully.
  */
+
+import { Navigate, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "../shared/ui/ProtectedRoute.jsx";
+
+import Admin from "../pages/Admin.jsx";
+import GameArena from "../pages/GameArena.jsx";
+import Home from "../pages/Home.jsx";
+import Leaderboard from "../pages/Leaderboard.jsx";
+import Login from "../pages/Login.jsx";
+import Payment from "../pages/Payment.jsx";
+import Profile from "../pages/Profile.jsx";
+import Registration from "../pages/Registration.jsx";
+
+function Router() {
+	return (
+		<Routes>
+			<Route path="/" element={<Home />} />
+			<Route path="/login" element={<Login />} />
+			<Route path="/register" element={<Registration />} />
+
+			<Route
+				path="/game"
+				element={
+					<ProtectedRoute>
+						<GameArena />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/leaderboard"
+				element={
+					<ProtectedRoute requirePremium>
+						<Leaderboard />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/payment"
+				element={
+					<ProtectedRoute>
+						<Payment />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/profile"
+				element={
+					<ProtectedRoute>
+						<Profile />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/admin"
+				element={
+					<ProtectedRoute roles={["admin"]}>
+						<Admin />
+					</ProtectedRoute>
+				}
+			/>
+
+			<Route path="*" element={<Navigate to="/" replace />} />
+		</Routes>
+	);
+}
+
+export default Router;

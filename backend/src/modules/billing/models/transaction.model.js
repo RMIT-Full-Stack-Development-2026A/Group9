@@ -16,16 +16,42 @@
  * business logic OUT of here and in the Billing Service!
  */
 
-//handles wallet deposits and subscription payments.
+import mongoose from "mongoose";
 
-// {
-//   userId: { type: ObjectId, ref: "User" },
+const transactionSchema = new mongoose.Schema(
+	{
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+			index: true,
+		},
+		type: {
+			type: String,
+			enum: ["deposit", "subscription"],
+			required: true,
+		},
+		amount: {
+			type: Number,
+			required: true,
+			min: 0,
+		},
+		status: {
+			type: String,
+			enum: ["pending", "completed", "failed"],
+			default: "pending",
+			index: true,
+		},
+	},
+	{
+		timestamps: true,
+		collection: process.env.MONGO_TRANSACTION_COLLECTION || "Transactions",
+	}
+);
 
-//   type: { type: String, enum: ["deposit", "subscription"] },
+transactionSchema.index({ userId: 1, createdAt: -1 });
 
-//   amount: { type: Number },
+const Transaction =
+	mongoose.models.Transaction || mongoose.model("Transaction", transactionSchema);
 
-//   status: { type: String, enum: ["pending", "completed", "failed"] },
-
-//   createdAt: { type: Date }
-// }
+export default Transaction;

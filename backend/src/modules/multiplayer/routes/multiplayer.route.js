@@ -1,16 +1,24 @@
-/**
- * ============================================================================
- * MULTIPLAYER ROUTER (The Matchmaking Hub)
- * ============================================================================
- * Purpose: This file defines the entry points for human-vs-human interactions.
- * It manages the "Lobby" phase of TicTacToang, allowing players to create rooms,
- * search for opponents, and join friends via invite codes.
- * * Key Responsibilities:
- * 1. Define routes for room management (POST /create, GET /public-lobbies).
- * 2. Attach Authentication (requireAuth) so we know which player is hosting/joining.
- * 3. Attach Validation (DTOs) to prevent invalid room names or invite codes.
- * 4. Route traffic to the Multiplayer Controller.
- * * CRITICAL RULE: This router is for HTTP requests (REST). Once a match starts,
- * the real-time gameplay logic usually transitions to WebSockets, but the 
- * "Setup" always starts here.
- */
+import { Router } from "express";
+import { authenticate } from "../../../middlewares/auth.middleware.js";
+
+const router = Router();
+
+router.get("/health", (req, res) => {
+	res.status(200).json({ module: "multiplayer", status: "ok" });
+});
+
+router.post("/rooms", authenticate, (req, res) => {
+	res.status(501).json({
+		success: false,
+		message: "Create room service not implemented yet",
+	});
+});
+
+router.get("/rooms/public", authenticate, (req, res) => {
+	res.status(501).json({
+		success: false,
+		message: "Public room listing service not implemented yet",
+	});
+});
+
+export default router;

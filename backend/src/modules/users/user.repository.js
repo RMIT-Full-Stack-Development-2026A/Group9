@@ -6,6 +6,13 @@ export const findByIdWithPassword = (id) => User.findById(id);
 
 export const findByEmail = (email) => User.findOne({ email });
 
+export const findByUsername = (username) => User.findOne({ username });
+
+export const findByEmailOrUsername = (identifier) =>
+  User.findOne({ $or: [{ email: identifier }, { username: identifier }] });
+
+export const createUser = (userData) => User.create(userData);
+
 export const updateUser = (id, data) =>
   User.findByIdAndUpdate(id, data, { new: true }).select("-password");
 
@@ -15,7 +22,7 @@ export const saveUser = async (user) => {
   return userData;
 };
 
-// --- Cross-module operations (exposed via user.facade.js) ---
+// --- Cross-module operations (exposed via user.interface.js) ---
 
 export const findUserForAuth = (id) =>
   User.findById(id).select("role isActive");

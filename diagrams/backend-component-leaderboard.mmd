@@ -10,9 +10,10 @@ C4Component
         Component(repository, "Leaderboard Repository", "Data Access", "Rank upsert and sorted queries")
         Component(model, "Rank Model", "Mongoose Schema", "userId, wins, losses, draws, totalGames, winRate")
         Component(dto, "Leaderboard DTO", "Transfer Object", "toRankDTO - excludes sensitive user data")
+        Component(iface, "Leaderboard Interface", "Module Interface", "External API for other modules")
     }
 
-    Container(gameFacade, "Game Facade", "Module Interface", "Completed sessions for rank calculation")
+    Container(gameInterface, "Game Interface", "Module Interface", "Completed sessions for rank calculation")
     ContainerDb(db, "MongoDB", "Database")
 
     Rel(route, mw, "Applies auth middleware")
@@ -20,6 +21,7 @@ C4Component
     Rel(controller, service, "Calls business logic")
     Rel(controller, dto, "Shapes response data")
     Rel(service, repository, "Queries data")
-    Rel(service, gameFacade, "getCompletedSessionsForUser")
+    Rel(service, gameInterface, "getCompletedSessionsForUser")
     Rel(repository, model, "Uses schema")
     Rel(repository, db, "Reads/Writes")
+    Rel(iface, service, "Delegates to service")

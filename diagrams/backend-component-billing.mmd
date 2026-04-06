@@ -7,11 +7,13 @@ C4Component
         Component(route, "Billing Route", "Express Router", "GET /wallet, POST /deposit, /subscribe, GET /transactions")
         Component(controller, "Billing Controller", "Express Handler", "Handles billing requests and responses")
         Component(service, "Billing Service", "Business Logic", "Deposits, premium subscription, email notification")
-        Component(repository, "Billing Repository", "Data Access", "User wallet and transaction queries")
+        Component(repository, "Billing Repository", "Data Access", "Transaction queries")
         Component(model, "Transaction Model", "Mongoose Schema", "userId, type, amount, status, description")
         Component(dto, "Billing DTO", "Transfer Object", "toWalletDTO, toTransactionDTO")
+        Component(iface, "Billing Interface", "Module Interface", "External API for other modules")
     }
 
+    Container(userInterface, "User Interface", "Module Interface", "Wallet balance and premium status operations")
     ContainerDb(db, "MongoDB", "Database")
     System_Ext(smtp, "Email Service", "Nodemailer SMTP")
 
@@ -20,6 +22,8 @@ C4Component
     Rel(controller, service, "Calls business logic")
     Rel(controller, dto, "Shapes response data")
     Rel(service, repository, "Queries data")
+    Rel(service, userInterface, "getUserById, updateWalletBalance, setPremiumStatus")
     Rel(service, smtp, "Sends subscription email")
     Rel(repository, model, "Uses schema")
     Rel(repository, db, "Reads/Writes")
+    Rel(iface, service, "Delegates to service")

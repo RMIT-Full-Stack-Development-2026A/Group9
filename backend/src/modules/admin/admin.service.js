@@ -1,37 +1,44 @@
-import * as userFacade from "../users/user.facade.js";
-import * as gameFacade from "../game/game.facade.js";
+import * as userInterface from "../users/user.interface.js";
+import * as gameInterface from "../game/game.interface.js";
+import * as adminRepository from "./admin.repository.js";
 import { AppError } from "../../shared/errors/AppError.js";
-import { toPlayerListDTO } from "./admin.dto.js";
 
 /**
  * Get all players (Req 6.1.1)
- * Uses user facade interface (A.3.1) instead of direct model access.
+ * Uses user interface (A.3.1) instead of direct model access.
  */
 export const getAllPlayers = async () => {
-  const players = await userFacade.findAllPlayers();
-  return players.map(toPlayerListDTO);
+  return userInterface.findAllPlayers();
 };
 
 /**
  * Toggle player active status (Req 6.2.1)
- * Uses user facade interface (A.3.1) instead of direct model access.
+ * Uses user interface (A.3.1) instead of direct model access.
  */
-export const togglePlayerStatus = async (playerId, isActive) => {
-  const user = await userFacade.getUserById(playerId);
+export const togglePlayerStatus = async (playerId, isActive, adminId) => {
+  const user = await userInterface.getUserById(playerId);
   if (!user) throw new AppError("Player not found.", 404);
   if (user.role === "admin") throw new AppError("Cannot deactivate an admin.", 403);
 
-  const updated = await userFacade.setActiveStatus(playerId, isActive);
-  return toPlayerListDTO(updated);
+  const updated = await userInterface.setActiveStatus(playerId, isActive);
+
+  // Log admin action
+  await adminRepository.logAction({
+    adminId,
+    actionType: isActive ? "ACTIVATE_USER" : "DEACTIVATE_USER",
+    targetUserId: playerId,
+  });
+
+  return updated;
 };
 
 /**
  * Get all online game rooms (Req 6.3.1)
- * Uses game facade interface (A.3.1) instead of direct model access.
+ * Uses game interface (A.3.1) instead of direct model access.
  */
 export const getAllGameRooms = async (query = {}) => {
   const { search } = query;
-  let rooms = await gameFacade.getOnlineGameRooms();
+  let rooms = await gameInterface.getOnlineGameRooms();
 
   // Search by room number or player name (Req 6.3.2)
   if (search) {
@@ -59,12 +66,19 @@ export const getAllGameRooms = async (query = {}) => {
 
 /**
  * Close an active game room (Req 6.3.3)
- * Uses game facade interface (A.3.1) instead of direct model access.
+ * Uses game interface (A.3.1) instead of direct model access.
  */
-export const closeGameRoom = async (roomId) => {
-  const room = await gameFacade.getGameSessionById(roomId);
+export const closeGameRoom = async (roomId, adminId) => {
+  const room = await gameInterface.getGameSessionById(roomId);
   if (!room) throw new AppError("Game room not found.", 404);
   if (room.endTime) throw new AppError("Game room is already closed.", 400);
 
-  return gameFacade.closeGameSession(roomId);
+  // Log admin action
+  await adminRepository.logAction({
+    adminId,
+    actionType: "CLOSE_ROOM",
+    targetRoomId: roomId,
+  });
+
+  return gameInterface.closeGameSession(roomId);
 };

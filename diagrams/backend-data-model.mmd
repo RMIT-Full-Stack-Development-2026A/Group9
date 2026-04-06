@@ -1,0 +1,106 @@
+erDiagram
+    User {
+        ObjectId _id
+        String username
+        String email
+        String password
+        String country
+        String role
+        Boolean isActive
+        String avatar
+        Boolean isPremium
+        Number walletBalance
+        Number failedLoginAttempts
+        Date lastFailedLogin
+        Date createdAt
+    }
+
+    GameSession {
+        ObjectId _id
+        Number sessionNumber
+        String gameType
+        Number boardSize
+        String result
+        Date startTime
+        Date endTime
+        String botName
+        String localPlayer2Name
+    }
+
+    Move {
+        ObjectId _id
+        String playerId
+        String marker
+        String position
+        Number row
+        Number col
+        Number moveNumber
+        Date createdAt
+    }
+
+    GameRoom {
+        ObjectId _id
+        Number roomNumber
+        String status
+        Number boardSize
+        String player1Marker
+        String player2Marker
+        Date startTime
+        Date endTime
+    }
+
+    Transaction {
+        ObjectId _id
+        String type
+        Number amount
+        String status
+        String description
+        Date createdAt
+    }
+
+    Rank {
+        ObjectId _id
+        Number wins
+        Number losses
+        Number draws
+        Number totalGames
+        Number winRate
+        Date updatedAt
+    }
+
+    LoginAttempt {
+        ObjectId _id
+        Boolean success
+        Date attemptTime
+        String ipAddress
+    }
+
+    AuthToken {
+        ObjectId _id
+        String token
+        Date expiresAt
+        Boolean isRevoked
+        Date createdAt
+    }
+
+    AdminActionLog {
+        ObjectId _id
+        String actionType
+        Object metadata
+        Date createdAt
+    }
+
+    User ||--o{ GameSession : "plays in"
+    User ||--o{ Move : "makes (via playerId)"
+    User ||--o{ Transaction : "owns"
+    User ||--|| Rank : "has"
+    User ||--o{ LoginAttempt : "has"
+    User ||--o{ AuthToken : "has"
+    User ||--o{ AdminActionLog : "performs (adminId)"
+    User ||--o{ AdminActionLog : "target (targetUserId)"
+    User ||--o{ GameRoom : "creates (player1)"
+    User ||--o{ GameRoom : "joins (player2)"
+    GameSession ||--o{ Move : "contains"
+    GameSession ||--o| User : "winner"
+    GameRoom ||--o| GameSession : "links to"
+    AdminActionLog ||--o| GameRoom : "target (targetRoomId)"

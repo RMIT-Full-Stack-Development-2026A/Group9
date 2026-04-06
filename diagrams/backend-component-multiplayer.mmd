@@ -9,6 +9,8 @@ C4Component
         Component(service, "Multiplayer Service", "Business Logic", "Room creation, joining, status management")
         Component(repository, "Multiplayer Repository", "Data Access", "Room CRUD and status queries")
         Component(model, "GameRoom Model", "Mongoose Schema", "player1, player2, markers, boardSize, status")
+        Component(dto, "Multiplayer DTO", "Transfer Object", "toRoomDTO, toRoomListDTO")
+        Component(iface, "Multiplayer Interface", "Module Interface", "External API for other modules")
     }
 
     ContainerDb(db, "MongoDB", "Database")
@@ -16,6 +18,8 @@ C4Component
     Rel(route, mw, "Applies auth middleware")
     Rel(mw, controller, "Forwards authenticated requests")
     Rel(controller, service, "Calls business logic")
+    Rel(controller, dto, "Shapes response data")
     Rel(service, repository, "Queries data")
     Rel(repository, model, "Uses schema")
     Rel(repository, db, "Reads/Writes")
+    Rel(iface, service, "Delegates to service")

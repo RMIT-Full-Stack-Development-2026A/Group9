@@ -1,5 +1,5 @@
 import * as billingRepository from "./billing.repository.js";
-import * as userFacade from "../users/user.facade.js";
+import * as userInterface from "../users/user.interface.js";
 import { AppError } from "../../shared/errors/AppError.js";
 import nodemailer from "nodemailer";
 
@@ -13,11 +13,11 @@ export const deposit = async (userId, amount) => {
     throw new AppError("Deposit amount must be greater than 0.", 400);
   }
 
-  const user = await userFacade.getUserById(userId);
+  const user = await userInterface.getUserById(userId);
   if (!user) throw new AppError("User not found.", 404);
 
   const newBalance = user.walletBalance + amount;
-  await userFacade.updateWalletBalance(userId, newBalance);
+  await userInterface.updateWalletBalance(userId, newBalance);
 
   const transaction = await billingRepository.createTransaction({
     userId,
@@ -34,7 +34,7 @@ export const deposit = async (userId, amount) => {
  * Subscribe to premium using wallet (Req 5.1.1)
  */
 export const subscribe = async (userId) => {
-  const user = await userFacade.getUserById(userId);
+  const user = await userInterface.getUserById(userId);
   if (!user) throw new AppError("User not found.", 404);
 
   if (user.isPremium) {
@@ -49,8 +49,8 @@ export const subscribe = async (userId) => {
   }
 
   const newBalance = user.walletBalance - SUBSCRIPTION_FEE;
-  await userFacade.updateWalletBalance(userId, newBalance);
-  await userFacade.setPremiumStatus(userId, true);
+  await userInterface.updateWalletBalance(userId, newBalance);
+  await userInterface.setPremiumStatus(userId, true);
 
   const transaction = await billingRepository.createTransaction({
     userId,
@@ -79,7 +79,7 @@ export const getTransactions = async (userId) => {
  * Get wallet balance
  */
 export const getWallet = async (userId) => {
-  const user = await userFacade.getUserById(userId);
+  const user = await userInterface.getUserById(userId);
   if (!user) throw new AppError("User not found.", 404);
   return { balance: user.walletBalance, isPremium: user.isPremium };
 };

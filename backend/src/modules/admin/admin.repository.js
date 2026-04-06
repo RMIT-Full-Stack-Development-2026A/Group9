@@ -1,12 +1,15 @@
-import User from "../users/user.model.js";
+import AdminActionLog from "./adminActionLog.model.js";
 
-export const findAllPlayers = () =>
-  User.find({ role: "player" })
-    .select("username email country avatar isPremium isActive createdAt")
+export const logAction = (data) => AdminActionLog.create(data);
+
+export const getActionLogs = (filter = {}) =>
+  AdminActionLog.find(filter)
+    .populate("adminId", "username email")
+    .populate("targetUserId", "username email")
     .sort({ createdAt: -1 })
     .lean();
 
-export const findUserById = (id) => User.findById(id);
-
-export const updateUserStatus = (id, isActive) =>
-  User.findByIdAndUpdate(id, { isActive }, { new: true }).select("-password");
+export const getActionLogsByAdmin = (adminId) =>
+  AdminActionLog.find({ adminId })
+    .sort({ createdAt: -1 })
+    .lean();

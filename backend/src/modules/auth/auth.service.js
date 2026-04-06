@@ -1,6 +1,5 @@
 ﻿import jwt from "jsonwebtoken";
-import * as authRepository from "./auth.repository.js";
-import { toAuthDTO } from "../users/user.dto.js";
+import * as userInterface from "../users/user.interface.js";
 import { validateRegistration, validateEmail, validateUsername } from "../../shared/utils/validators.js";
 import * as loginAttemptService from "../../shared/security/loginAttemptService.js";
 import * as tokenBlacklistService from "../../shared/security/tokenBlacklistService.js";
@@ -17,7 +16,7 @@ export const register = async ({ username, email, password, confirmPassword, cou
   }
 
   // Unique email check (Req 1.1.2)
-  const existingEmail = await authRepository.findByEmail(email);
+  const existingEmail = await userInterface.findByEmail(email);
   if (existingEmail) {
     throw new AppError(
       "Email already registered. Please use a different email address or sign in to your existing account.",
@@ -27,7 +26,7 @@ export const register = async ({ username, email, password, confirmPassword, cou
   }
 
   // Unique username check
-  const existingUsername = await authRepository.findByUsername(username);
+  const existingUsername = await userInterface.findByUsername(username);
   if (existingUsername) {
     throw new AppError(
       "Username already taken. Please choose a different username (e.g., Player_01, Cool-Gamer).",
@@ -37,7 +36,7 @@ export const register = async ({ username, email, password, confirmPassword, cou
   }
 
   // Password is hashed automatically by the pre-save hook (Req 1.1.3)
-  const user = await authRepository.createUser({
+  const user = await userInterface.createUser({
     username,
     email,
     password,
@@ -50,7 +49,7 @@ export const register = async ({ username, email, password, confirmPassword, cou
     { expiresIn: "7d" }
   );
 
-  return { token, user: toAuthDTO(user) };
+  return { token, user };
 };
 
 export const login = async ({ identifier, password }) => {
@@ -73,7 +72,7 @@ export const login = async ({ identifier, password }) => {
     );
   }
 
-  const user = await authRepository.findByEmailOrUsername(identifier);
+  const user = await userInterface.findByEmailOrUsername(identifier);
   if (!user) {
     loginAttemptService.recordFailedAttempt(identifier);
     throw new AppError("Invalid credentials. Please check your username/email and password.", 401, "INVALID_CREDENTIALS");
@@ -104,7 +103,7 @@ export const login = async ({ identifier, password }) => {
     { expiresIn: "7d" }
   );
 
-  return { token, user: toAuthDTO(user) };
+  return { token, user };
 };
 
 export const logout = (token) => {

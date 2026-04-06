@@ -2,7 +2,7 @@ import * as gameService from "./game.service.js";
 import * as gameRepository from "./game.repository.js";
 
 /**
- * Game module facade — the only entry point for other modules.
+ * Game module interface — the only entry point for other modules.
  * Other modules must NOT import game services, repositories, or models directly.
  * (Architecture requirement A.3.1)
  */

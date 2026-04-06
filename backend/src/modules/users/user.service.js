@@ -1,5 +1,5 @@
 ﻿import * as userRepository from "./user.repository.js";
-import * as gameFacade from "../game/game.facade.js";
+import * as gameInterface from "../game/game.interface.js";
 
 export const getProfile = async (userId) => {
   const user = await userRepository.findById(userId);
@@ -41,5 +41,5 @@ export const updateAvatar = async (userId, avatarPath) => {
 };
 
 export const getGameHistory = async (userId, query) => {
-  return gameFacade.getGameHistoryForUser(userId, query);
+  return gameInterface.getGameHistoryForUser(userId, query);
 };

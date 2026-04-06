@@ -1,5 +1,5 @@
 import * as repo from "./leaderboard.repository.js";
-import * as gameFacade from "../game/game.facade.js";
+import * as gameInterface from "../game/game.interface.js";
 
 export const getLeaderboard = async (sortBy = "wins") => {
   const allowed = ["wins", "winRate", "totalGames"];
@@ -17,10 +17,10 @@ export const getPlayerRank = async (userId) => {
 /**
  * Recalculate rank stats for a user from their game sessions.
  * Called after a game ends.
- * Uses game facade interface (A.3.1) instead of direct model access.
+ * Uses game interface (A.3.1) instead of direct model access.
  */
 export const recalculateRank = async (userId) => {
-  const completed = await gameFacade.getCompletedSessionsForUser(userId);
+  const completed = await gameInterface.getCompletedSessionsForUser(userId);
 
   let wins = 0;
   let losses = 0;

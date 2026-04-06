@@ -1,9 +1,10 @@
 ﻿import * as authService from "./auth.service.js";
+import { toRegisterResponseDTO, toLoginResponseDTO } from "./auth.dto.js";
 
 export const register = async (req, res) => {
   try {
     const result = await authService.register(req.body);
-    res.status(201).json(result);
+    res.status(201).json(toRegisterResponseDTO(result.token, result.user));
   } catch (error) {
     const status = error.statusCode || 500;
     const response = { message: error.message };
@@ -22,7 +23,7 @@ export const login = async (req, res) => {
       identifier: identifier || email,
       password,
     });
-    res.json(result);
+    res.json(toLoginResponseDTO(result.token, result.user));
   } catch (error) {
     const status = error.statusCode || 500;
     res.status(status).json({ message: error.message, errorCode: error.errorCode });

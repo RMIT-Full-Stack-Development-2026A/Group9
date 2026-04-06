@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import * as userFacade from "../modules/users/user.facade.js";
+import * as userInterface from "../modules/users/user.interface.js";
 import { isTokenBlacklisted } from "../shared/security/tokenBlacklistService.js";
 
 export const authenticate = async (req, res, next) => {
@@ -19,7 +19,7 @@ export const authenticate = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.userId;
 
-    const user = await userFacade.getUserForAuth(decoded.userId);
+    const user = await userInterface.getUserForAuth(decoded.userId);
     if (!user) {
       return res.status(401).json({ message: "User no longer exists" });
     }

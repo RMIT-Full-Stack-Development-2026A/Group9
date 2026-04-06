@@ -1,28 +1,46 @@
-/**
- * ============================================================================
- * MOVE MODEL (The Match Replay Log)
- * ============================================================================
- * Purpose: While the GameSession model stores the CURRENT state of the board,
- * the Move model records every single individual action taken during a match.
- * Think of this as the "Transaction History" for a game of TicTacToang.
- * * Key Responsibilities:
- * 1. Record who made the move (Player ID).
- * 2. Record which square was clicked (0-8).
- * 3. Record exactly when the move happened (Timestamp).
- * 4. Link back to the parent GameSession ID.
- * * Use Case: This allows you to build a "Replay" feature where users can 
- * watch the game progress step-by-step, or to perform deep anti-cheat 
- * analysis by checking the speed of moves.
- */
+import mongoose from "mongoose";
 
-//stores individual moves in a game for replay functionality.
+const moveSchema = new mongoose.Schema(
+	{
+		gameId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "GameSession",
+			required: true,
+			index: true,
+		},
+		playerId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+		},
+		playerSymbol: {
+			type: String,
+			enum: ["X", "O"],
+			default: null,
+		},
+		position: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		index: {
+			type: Number,
+			required: false,
+			min: 0,
+			max: 8,
+		},
+		moveNumber: {
+			type: Number,
+			required: true,
+			min: 1,
+		},
+	},
+	{
+		timestamps: true,
+		collection: process.env.MONGO_MOVE_COLLECTION || "Moves",
+	}
+);
 
-// {
-//   gameId: { type: ObjectId, ref: "GameSession" },
-//   playerId: { type: ObjectId, ref: "User" },
+const Move = mongoose.models.Move || mongoose.model("Move", moveSchema);
 
-//   position: { type: String }, // e.g., "c2"
-//   moveNumber: { type: Number },
-
-//   createdAt: { type: Date }
-// }
+export default Move;

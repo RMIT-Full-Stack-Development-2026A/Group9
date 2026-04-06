@@ -1,33 +1,77 @@
-/**
- * ============================================================================
- * GAME SESSION MODEL (The TicTacToang Match Blueprint)
- * ============================================================================
- * Purpose: This file defines the schema for an active or completed game match.
- * It tracks the board state, which players are in the room, whose turn it is, 
- * and the final result.
- * * Key Responsibilities:
- * 1. Store the 3x3 grid as an array.
- * 2. Maintain a relationship with the User collection (Player X and Player O).
- * 3. Track the game lifecycle (waiting -> active -> finished).
- * * CRITICAL RULE: This model should be "Lean." We don't store the entire 
- * move history here (usually); we just store the current "Source of Truth" 
- * for the board so the frontend can render it.
- */
+import mongoose from "mongoose";
 
-//stores match history, including players, game settings, results, and timestamps.
+const gameSessionSchema = new mongoose.Schema(
+	{
+		players: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User",
+			},
+		],
+		winner: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			default: null,
+		},
+		result: {
+			type: String,
+			enum: ["win", "lose", "draw", "aborted"],
+			default: null,
+		},
+		startTime: {
+			type: Date,
+			default: Date.now,
+		},
+		endTime: {
+			type: Date,
+			default: null,
+		},
+		board: {
+			type: [String],
+			default: Array(9).fill(null),
+		},
+		boardSize: {
+			type: Number,
+			default: 3,
+			min: 3,
+			max: 3,
+		},
+		gameType: {
+			type: String,
+			enum: ["classic", "ai", "multiplayer"],
+			default: "classic",
+		},
+		status: {
+			type: String,
+			enum: ["waiting", "active", "finished", "draw"],
+			default: "waiting",
+		},
+		nextPlayer: {
+			type: String,
+			enum: ["X", "O"],
+			default: "X",
+		},
+		winnerSymbol: {
+			type: String,
+			enum: ["X", "O", null],
+			default: null,
+		},
+		winningLine: {
+			type: [Number],
+			default: [],
+		},
+		endedAt: {
+			type: Date,
+			default: null,
+		},
+	},
+	{
+		timestamps: true,
+		collection: process.env.MONGO_GAME_SESSION_COLLECTION || "GameSessions",
+	}
+);
 
-// {
-//   players: [{ type: ObjectId, ref: "User" }],
+const GameSession =
+	mongoose.models.GameSession || mongoose.model("GameSession", gameSessionSchema);
 
-//   gameType: { type: String, enum: ["single", "local", "online"] },
-//   opponentType: { type: String, enum: ["AI", "HUMAN"] },
-//   boardSize: { type: Number },
-
-//   winner: { type: ObjectId, ref: "User" },
-//   result: { type: String, enum: ["win", "lose", "draw", "aborted"] },
-
-//   startTime: { type: Date },
-//   endTime: { type: Date },
-
-//   moves: [{ type: ObjectId, ref: "Move" }]
-// }
+export default GameSession;

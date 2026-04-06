@@ -12,3 +12,36 @@
  * 3. Form Elements: Normalizing buttons and inputs for custom "Toang" UI.
  * 4. Media: Ensuring images and videos are responsive by default.
  */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+*::before,
+*::after {
+	box-sizing: inherit;
+}
+
+html,
+body,
+#root {
+	min-height: 100%;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}

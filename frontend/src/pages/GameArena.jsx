@@ -10,3 +10,7 @@
  * 2. Room Initialization: Extracting the 'gameId' from the URL.
  * 3. Error Boundary: Showing a "Game Not Found" state if the ID is invalid.
  */
+
+export default function GameArena() {
+	return <div>Game Arena</div>;
+}

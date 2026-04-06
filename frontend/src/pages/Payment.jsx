@@ -12,3 +12,7 @@
  * 3. Transaction Feedback: Handling 'Success', 'Canceled', or 'Failed' states.
  * 4. Security: Ensuring no sensitive credit card data touches our local state.
  */
+
+export default function Payment() {
+	return <div>Payment</div>;
+}

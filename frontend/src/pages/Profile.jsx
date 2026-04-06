@@ -12,3 +12,7 @@
  * 3. Settings Integration: Providing a portal to the ProfileEdit module.
  * 4. Match History: Listing recent games played (Win/Loss/Draw).
  */
+
+export default function Profile() {
+	return <div>Profile</div>;
+}

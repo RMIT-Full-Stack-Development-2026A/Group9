@@ -12,3 +12,7 @@
  * successful authentication.
  * 3. Guest Access: Providing a link for new users to reach the Registration page.
  */
+
+export default function Login() {
+	return <div>Login</div>;
+}

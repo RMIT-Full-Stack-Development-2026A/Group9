@@ -10,3 +10,7 @@
  * 2. Visual Hierarchy: Highlighting the Top 3 players (Gold/Silver/Bronze).
  * 3. Search: Allowing users to find where they stand relative to others.
  */
+
+export default function Leaderboard() {
+	return <div>Leaderboard</div>;
+}

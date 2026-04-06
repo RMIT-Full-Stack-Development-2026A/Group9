@@ -11,3 +11,7 @@
  * 2. Navigation: Providing clear paths to Login, Register, or the Game Arena.
  * 3. Marketing: Briefly explaining the "TicTacToang" twist (the leveling system).
  */
+
+export default function Home() {
+	return <div>Home</div>;
+}

@@ -13,3 +13,7 @@
  * * CRITICAL RULE: This page MUST be wrapped in an Authorization guard to 
  * prevent standard players from accessing sensitive tools.
  */
+
+export default function Admin() {
+	return <div>Admin</div>;
+}

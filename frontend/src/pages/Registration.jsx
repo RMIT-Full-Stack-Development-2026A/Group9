@@ -10,3 +10,7 @@
  * 2. Form Assembly: Rendering the modular registration logic.
  * 3. Flow Control: Redirecting to the Home or "Tutorial" page after signup.
  */
+
+export default function Registration() {
+	return <div>Registration</div>;
+}

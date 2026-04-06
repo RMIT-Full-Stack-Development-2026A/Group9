@@ -1,18 +1,53 @@
-/**
- * ============================================================================
- * ADMIN DTO (Data Transfer Object / The Inspector)
- * ============================================================================
- * Purpose: This file defines the exact "shape" and rules for incoming data. 
- * Before the Controller even looks at a request, a Validation Middleware uses 
- * these DTO schemas to inspect the data (req.body, req.query, or req.params).
- * If the data is missing, the wrong type, or malicious, the request is 
- * immediately rejected with a 400 Bad Request error.
- * * * Typical Libraries used here: Zod, Joi, or express-validator.
- * * * Key Responsibilities:
- * 1. Define required vs. optional fields.
- * 2. Enforce data types (e.g., 'page' must be a Number, not a String).
- * 3. Enforce constraints (e.g., 'reason' must be at least 10 characters long).
- * * * CRITICAL RULE: A DTO only checks the FORMAT of the data, not the TRUTH 
- * of the data. For example, the DTO checks if an email looks like an email, 
- * but the Service layer checks if that email actually exists in the database.
- */
+import {
+	assertRequiredFields,
+	isMongoId,
+	sanitizeString,
+} from "../../shared/utils/validators.js";
+
+export const createBanUserDTO = ({ userId, reason }) => ({
+	userId: sanitizeString(userId),
+	reason: sanitizeString(reason),
+});
+
+export const validateBanUserPayload = (payload = {}) => {
+	const value = createBanUserDTO(payload);
+	const errors = [];
+
+	const requiredCheck = assertRequiredFields(value, ["userId", "reason"]);
+	if (!requiredCheck.valid) {
+		errors.push(`Missing required fields: ${requiredCheck.missing.join(", ")}`);
+	}
+
+	if (value.userId && !isMongoId(value.userId)) {
+		errors.push("userId is not a valid Mongo ObjectId");
+	}
+
+	if (value.reason && value.reason.length < 5) {
+		errors.push("reason must be at least 5 characters long");
+	}
+
+	return {
+		valid: errors.length === 0,
+		errors,
+		value,
+	};
+};
+
+export const validatePaginationQuery = (query = {}) => {
+	const page = Number(query.page ?? 1);
+	const limit = Number(query.limit ?? 20);
+
+	const errors = [];
+	if (!Number.isInteger(page) || page <= 0) {
+		errors.push("page must be a positive integer");
+	}
+	if (!Number.isInteger(limit) || limit <= 0 || limit > 100) {
+		errors.push("limit must be an integer between 1 and 100");
+	}
+
+	return {
+		valid: errors.length === 0,
+		errors,
+		value: { page, limit },
+	};
+};

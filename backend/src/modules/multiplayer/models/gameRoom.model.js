@@ -16,19 +16,97 @@
  * actual gameplay logic lives.
  */
 
-//manages online multiplayer rooms and player matchmaking.
+import mongoose from "mongoose";
 
-// {
-//   roomNumber: { type: String },
+const gameRoomSchema = new mongoose.Schema(
+	{
+		roomNumber: {
+			type: String,
+			required: true,
+			unique: true,
+			trim: true,
+			uppercase: true,
+		},
+		roomCode: {
+			type: String,
+			required: false,
+			trim: true,
+			uppercase: true,
+		},
+		player1: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+			index: true,
+		},
+		player2: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			default: null,
+		},
+		hostUserId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: false,
+			index: true,
+		},
+		guestUserId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			default: null,
+		},
+		status: {
+			type: String,
+			enum: ["waiting", "playing", "finished", "cancelled"],
+			default: "waiting",
+			index: true,
+		},
+		visibility: {
+			type: String,
+			enum: ["public", "private"],
+			default: "public",
+		},
+		boardSize: {
+			type: Number,
+			default: 3,
+			min: 3,
+			max: 3,
+		},
+		hostSymbol: {
+			type: String,
+			enum: ["X", "O"],
+			default: "X",
+		},
+		sessionId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "GameSession",
+			default: null,
+		},
+		startTime: {
+			type: Date,
+			default: null,
+		},
+		endTime: {
+			type: Date,
+			default: null,
+		},
+		startedAt: {
+			type: Date,
+			default: null,
+		},
+		endedAt: {
+			type: Date,
+			default: null,
+		},
+	},
+	{
+		timestamps: true,
+		collection: process.env.MONGO_GAME_ROOM_COLLECTION || "GameRooms",
+	}
+);
 
-//   player1: { type: ObjectId, ref: "User" },
-//   player2: { type: ObjectId, ref: "User" },
+gameRoomSchema.index({ createdAt: -1 });
 
-//   status: { type: String, enum: ["waiting", "playing", "finished"] },
+const GameRoom = mongoose.models.GameRoom || mongoose.model("GameRoom", gameRoomSchema);
 
-//   selectedBoardSize: { type: Number },
-//   selectedMarkers: [{ type: String }],
-
-//   startTime: { type: Date },
-//   endTime: { type: Date }
-// }
+export default GameRoom;

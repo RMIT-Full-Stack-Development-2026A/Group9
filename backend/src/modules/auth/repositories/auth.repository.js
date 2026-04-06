@@ -12,3 +12,26 @@
  * shouldn't check if a password matches) and NEVER know about HTTP. It simply 
  * executes the queries the Service asks for.
  */
+
+import User from "../../user/models/user.model.js";
+
+export const findUserByEmail = async (email) => {
+	return User.findOne({ email }).lean();
+};
+
+export const findUserById = async (userId) => {
+	return User.findById(userId).lean();
+};
+
+export const createUser = async (payload) => {
+	const created = await User.create(payload);
+	return created.toObject();
+};
+
+export const updateLastLogin = async (userId) => {
+	return User.findByIdAndUpdate(
+		userId,
+		{ $set: { lastLoginAt: new Date() } },
+		{ new: true }
+	).lean();
+};

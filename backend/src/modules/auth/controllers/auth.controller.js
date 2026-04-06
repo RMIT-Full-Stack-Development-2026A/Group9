@@ -15,3 +15,32 @@
  * * CRITICAL RULE: A Controller should NEVER contain bcrypt hashing, JWT 
  * generation, or Mongoose queries. It strictly manages the HTTP flow.
  */
+
+import * as authService from "../services/auth.service.js";
+
+export const register = async (req, res, next) => {
+	try {
+		const result = await authService.register(req.body);
+		return res.status(201).json({ success: true, data: result });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const login = async (req, res, next) => {
+	try {
+		const result = await authService.login(req.body);
+		return res.status(200).json({ success: true, data: result });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const me = async (req, res, next) => {
+	try {
+		const profile = await authService.getMyProfile(req.user.id);
+		return res.status(200).json({ success: true, data: profile });
+	} catch (error) {
+		return next(error);
+	}
+};

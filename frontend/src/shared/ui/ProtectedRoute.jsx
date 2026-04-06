@@ -13,3 +13,26 @@
  * 3. Loading Resilience: Waits for the initial session check to finish.
  * 4. UX Preservation: Saves the intended URL to redirect the user back after login.
  */
+
+import { useContext } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { AuthContext } from "../../app/providers/AuthProvider.jsx";
+
+export default function ProtectedRoute({ children, roles = [], requirePremium = false }) {
+	const auth = useContext(AuthContext);
+	const location = useLocation();
+
+	if (!auth?.isAuthenticated || !auth?.user) {
+		return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+	}
+
+	if (requirePremium && !auth.user.isPremium) {
+		return <Navigate to="/payment" replace state={{ from: location.pathname }} />;
+	}
+
+	if (roles.length > 0 && !roles.includes(auth.user.role)) {
+		return <Navigate to="/" replace />;
+	}
+
+	return children;
+}

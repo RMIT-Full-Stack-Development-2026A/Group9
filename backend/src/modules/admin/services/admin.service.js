@@ -10,3 +10,8 @@
  * If something goes wrong, the Service simply 'throws' an error, and trusts 
  * the Controller to catch it and format the HTTP response.
  */
+
+// Implementation contract:
+// 1) Service methods orchestrate repository calls and policy checks.
+// 2) Throw AppError for expected failures; let global middleware format output.
+// 3) Keep method names action-oriented (listUsers, banUser, unbanUser, etc.).

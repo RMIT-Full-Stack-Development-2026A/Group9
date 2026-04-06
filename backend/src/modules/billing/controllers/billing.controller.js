@@ -14,3 +14,8 @@
  * (like Stripe/PayPal secrets), complex math for tax calculation, or database 
  * queries. It strictly manages the HTTP flow.
  */
+
+// Implementation contract:
+// 1) Keep handlers thin and delegate all payment logic to billing service.
+// 2) Never parse gateway signatures here; service performs verification.
+// 3) Keep response envelope consistent: { success, data | message }.

@@ -15,19 +15,23 @@
 
 import User from "../../user/models/user.model.js";
 
+// Read model-level identity by email. Service owns auth/business decisions.
 export const findUserByEmail = async (email) => {
 	return User.findOne({ email }).lean();
 };
 
+// Read minimal user profile by id for token/profile flows.
 export const findUserById = async (userId) => {
 	return User.findById(userId).lean();
 };
 
+// Persist new user document. Hashing/validation must be done in service.
 export const createUser = async (payload) => {
 	const created = await User.create(payload);
 	return created.toObject();
 };
 
+// Side-effect update used for security analytics and audit trail.
 export const updateLastLogin = async (userId) => {
 	return User.findByIdAndUpdate(
 		userId,

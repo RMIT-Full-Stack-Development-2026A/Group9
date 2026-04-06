@@ -14,3 +14,8 @@
  * * CRITICAL RULE: A Controller should NEVER contain complex business rules, 
  * math, or database queries. It strictly manages the HTTP input/output flow.
  */
+
+// Implementation contract:
+// 1) Export route handlers only (no DB calls directly in this layer).
+// 2) Validate input through DTO/middleware, then delegate to service.
+// 3) Always forward failures to next(error) for global error handling.

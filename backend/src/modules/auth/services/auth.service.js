@@ -28,6 +28,7 @@ import * as authRepository from "../repositories/auth.repository.js";
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 10);
 
+// JWT payload is the canonical identity contract used by auth middleware.
 const signAccessToken = (user) => {
 	return jwt.sign(
 		{
@@ -44,6 +45,7 @@ const signAccessToken = (user) => {
 };
 
 export const register = async (payload) => {
+	// Validate early so downstream layers only receive trusted input shape.
 	const { valid, errors } = validateRegisterPayload(payload);
 	if (!valid) {
 		throw new AppError("Invalid register payload", 400, errors);
@@ -78,6 +80,7 @@ export const register = async (payload) => {
 };
 
 export const login = async (payload) => {
+	// Use shared DTO rules for consistent auth validation errors.
 	const { valid, errors } = validateLoginPayload(payload);
 	if (!valid) {
 		throw new AppError("Invalid login payload", 400, errors);
@@ -111,6 +114,7 @@ export const login = async (payload) => {
 };
 
 export const getMyProfile = async (userId) => {
+	// Keep profile response minimal; add fields intentionally to avoid API drift.
 	const user = await authRepository.findUserById(userId);
 	if (!user) {
 		throw new AppError("User not found", 404);

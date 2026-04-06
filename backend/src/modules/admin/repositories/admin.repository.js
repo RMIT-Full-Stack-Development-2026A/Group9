@@ -14,3 +14,8 @@
  * is banned, then...") and NEVER know about HTTP. It is a "dumb" worker that 
  * executes database queries exactly as the Service instructs it to.
  */
+
+// Implementation contract:
+// 1) Export read/write functions only (no DTO validation and no policy checks).
+// 2) Return plain documents/rows; response shaping belongs to service/DTO layers.
+// 3) Keep naming convention: find*, list*, create*, update*, delete*.

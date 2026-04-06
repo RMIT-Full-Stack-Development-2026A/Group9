@@ -14,3 +14,8 @@
  * shouldn't calculate taxes or check if a user is already premium) and NEVER 
  * know about HTTP. It simply executes the queries the Service asks for.
  */
+
+// Implementation contract:
+// 1) Keep payment persistence idempotent via unique transaction references.
+// 2) Never compute business totals here; only store/retrieve raw financial data.
+// 3) Expose focused query functions with predictable names.

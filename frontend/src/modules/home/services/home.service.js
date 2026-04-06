@@ -12,3 +12,13 @@
  * 3. News Filtering: Sorting or formatting announcements.
  * 4. Rank Mapping: Translating numeric Elo/XP into "Toang" Rank tiers.
  */
+
+import { http } from "../../../shared/utils/http.helper.js";
+
+export const getHomeSnapshot = async () => {
+	return http("/users/me", { method: "GET" });
+};
+
+export const getHomeAnnouncements = async () => {
+	return http("/home/announcements", { method: "GET" });
+};

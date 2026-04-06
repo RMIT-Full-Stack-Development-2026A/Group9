@@ -1,4 +1,5 @@
 import * as billingRepository from "./billing.repository.js";
+import * as userFacade from "../users/user.facade.js";
 import { AppError } from "../../shared/errors/AppError.js";
 import nodemailer from "nodemailer";
 
@@ -12,11 +13,11 @@ export const deposit = async (userId, amount) => {
     throw new AppError("Deposit amount must be greater than 0.", 400);
   }
 
-  const user = await billingRepository.findUserById(userId);
+  const user = await userFacade.getUserById(userId);
   if (!user) throw new AppError("User not found.", 404);
 
   const newBalance = user.walletBalance + amount;
-  await billingRepository.updateUserWallet(userId, newBalance);
+  await userFacade.updateWalletBalance(userId, newBalance);
 
   const transaction = await billingRepository.createTransaction({
     userId,
@@ -33,7 +34,7 @@ export const deposit = async (userId, amount) => {
  * Subscribe to premium using wallet (Req 5.1.1)
  */
 export const subscribe = async (userId) => {
-  const user = await billingRepository.findUserById(userId);
+  const user = await userFacade.getUserById(userId);
   if (!user) throw new AppError("User not found.", 404);
 
   if (user.isPremium) {
@@ -48,8 +49,8 @@ export const subscribe = async (userId) => {
   }
 
   const newBalance = user.walletBalance - SUBSCRIPTION_FEE;
-  await billingRepository.updateUserWallet(userId, newBalance);
-  await billingRepository.setUserPremium(userId, true);
+  await userFacade.updateWalletBalance(userId, newBalance);
+  await userFacade.setPremiumStatus(userId, true);
 
   const transaction = await billingRepository.createTransaction({
     userId,
@@ -78,7 +79,7 @@ export const getTransactions = async (userId) => {
  * Get wallet balance
  */
 export const getWallet = async (userId) => {
-  const user = await billingRepository.findUserById(userId);
+  const user = await userFacade.getUserById(userId);
   if (!user) throw new AppError("User not found.", 404);
   return { balance: user.walletBalance, isPremium: user.isPremium };
 };

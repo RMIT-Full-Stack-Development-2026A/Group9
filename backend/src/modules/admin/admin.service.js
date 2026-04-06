@@ -1,25 +1,27 @@
-import * as adminRepository from "./admin.repository.js";
+import * as userFacade from "../users/user.facade.js";
 import * as gameFacade from "../game/game.facade.js";
 import { AppError } from "../../shared/errors/AppError.js";
 import { toPlayerListDTO } from "./admin.dto.js";
 
 /**
  * Get all players (Req 6.1.1)
+ * Uses user facade interface (A.3.1) instead of direct model access.
  */
 export const getAllPlayers = async () => {
-  const players = await adminRepository.findAllPlayers();
+  const players = await userFacade.findAllPlayers();
   return players.map(toPlayerListDTO);
 };
 
 /**
  * Toggle player active status (Req 6.2.1)
+ * Uses user facade interface (A.3.1) instead of direct model access.
  */
 export const togglePlayerStatus = async (playerId, isActive) => {
-  const user = await adminRepository.findUserById(playerId);
+  const user = await userFacade.getUserById(playerId);
   if (!user) throw new AppError("Player not found.", 404);
   if (user.role === "admin") throw new AppError("Cannot deactivate an admin.", 403);
 
-  const updated = await adminRepository.updateUserStatus(playerId, isActive);
+  const updated = await userFacade.setActiveStatus(playerId, isActive);
   return toPlayerListDTO(updated);
 };
 

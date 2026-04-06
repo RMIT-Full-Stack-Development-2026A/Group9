@@ -1,15 +1,49 @@
-/**
- * ============================================================================
- * GLOBAL VALIDATORS (The Shared Inspector)
- * ============================================================================
- * Purpose: While DTOs (Data Transfer Objects) validate the "Shape" of a 
- * request, this file contains reusable "Validation Rules" for the entire 
- * TicTacToang backend. It ensures that common patterns (like User IDs or 
- * Board Indices) are checked consistently across every module.
- * * Key Responsibilities:
- * 1. Reusability: Defining a "Single Source of Truth" for complex Regex patterns.
- * 2. Sanity Checks: Validating that a Move position is between 0-8.
- * 3. Identity Checks: Verifying that a string is a valid MongoDB ObjectId.
- * * CRITICAL RULE: These are "Pure Functions." They should take a value, 
- * return true/false (or throw an error), and never touch the database.
- */
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MONGO_ID_REGEX = /^[a-f\d]{24}$/i;
+const UPPERCASE_REGEX = /[A-Z]/;
+const LOWERCASE_REGEX = /[a-z]/;
+const NUMBER_REGEX = /\d/;
+
+export const isEmpty = (value) =>
+	value === undefined || value === null || String(value).trim() === "";
+
+export const isString = (value) => typeof value === "string";
+
+export const sanitizeString = (value) =>
+	isString(value) ? value.trim() : value;
+
+export const isEmail = (value) =>
+	isString(value) && EMAIL_REGEX.test(value.trim());
+
+export const isMongoId = (value) =>
+	isString(value) && MONGO_ID_REGEX.test(value.trim());
+
+export const isBoardIndex = (value, boardSize = 3) => {
+	const cellCount = boardSize * boardSize;
+	return Number.isInteger(value) && value >= 0 && value < cellCount;
+};
+
+export const isStrongPassword = (value) =>
+	isString(value) &&
+	value.length >= 8 &&
+	UPPERCASE_REGEX.test(value) &&
+	LOWERCASE_REGEX.test(value) &&
+	NUMBER_REGEX.test(value);
+
+export const pickDefined = (object = {}, allowedKeys = []) => {
+	return allowedKeys.reduce((accumulator, key) => {
+		if (object[key] !== undefined) {
+			accumulator[key] = object[key];
+		}
+		return accumulator;
+	}, {});
+};
+
+export const assertRequiredFields = (payload = {}, requiredFields = []) => {
+	const missing = requiredFields.filter((field) => isEmpty(payload[field]));
+
+	return {
+		valid: missing.length === 0,
+		missing,
+	};
+};

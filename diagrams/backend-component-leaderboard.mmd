@@ -15,8 +15,8 @@ C4Component
     Container(gameFacade, "Game Facade", "Module Interface", "Completed sessions for rank calculation")
     ContainerDb(db, "MongoDB", "Database")
 
-    Rel(mw, route, "Forwards requests")
-    Rel(route, controller, "Routes to handler")
+    Rel(route, mw, "Applies auth middleware")
+    Rel(mw, controller, "Forwards authenticated requests")
     Rel(controller, service, "Calls business logic")
     Rel(controller, dto, "Shapes response data")
     Rel(service, repository, "Queries data")

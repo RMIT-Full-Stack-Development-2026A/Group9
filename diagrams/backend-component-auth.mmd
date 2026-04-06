@@ -14,8 +14,8 @@ C4Component
     Container(userModel, "User Model", "Mongoose Schema", "From Users Module")
     ContainerDb(db, "MongoDB", "Database")
 
-    Rel(mw, route, "Forwards requests")
-    Rel(route, controller, "Routes to handler")
+    Rel(route, mw, "Applies auth middleware")
+    Rel(mw, controller, "Forwards authenticated requests")
     Rel(controller, service, "Calls business logic")
     Rel(service, repository, "Queries data")
     Rel(service, shared, "Uses security services")

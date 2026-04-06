@@ -17,8 +17,8 @@ C4Component
     ContainerDb(db, "MongoDB", "Database")
     System_Ext(cloudinary, "Cloudinary", "Image storage")
 
-    Rel(mw, route, "Forwards authenticated requests")
-    Rel(route, controller, "Routes to handler")
+    Rel(route, mw, "Applies auth middleware")
+    Rel(mw, controller, "Forwards authenticated requests")
     Rel(controller, service, "Calls business logic")
     Rel(controller, dto, "Shapes response data")
     Rel(service, repository, "Queries data")

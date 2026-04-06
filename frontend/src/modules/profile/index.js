@@ -13,3 +13,9 @@
  * 3. Service Export: Exposing profileService for validation and data formatting.
  * 4. Encapsulation: Shielding internal CSS and logic from the rest of the app.
  */
+
+export { default as ProfileCard } from "./components/ProfileCard/ProfileCard.jsx";
+
+export { default as useProfile } from "./hooks/useProfile.js";
+
+export * as profileService from "./services/profile.service.js";

@@ -12,3 +12,9 @@
  * 3. Service Export: Exposing homeService for rank and XP calculations.
  * 4. Encapsulation: Ensuring CSS modules and private helpers stay internal.
  */
+
+export { default as HomeContent } from "./components/HomeContent/HomeContent.jsx";
+
+export { default as useHome } from "./hooks/useHome.js";
+
+export * as homeService from "./services/home.service.js";

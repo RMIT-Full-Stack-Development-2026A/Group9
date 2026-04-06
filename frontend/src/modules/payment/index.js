@@ -1,4 +1,3 @@
-JavaScript
 /**
  * ============================================================================
  * PAYMENT MODULE ENTRY POINT (The Storefront Gateway)
@@ -13,3 +12,9 @@ JavaScript
  * 3. Service Export: Exposing paymentService for currency formatting and history.
  * 4. Security: Isolating sensitive payment processing logic from the core game.
  */
+
+export { default as PaymentForm } from "./components/PaymentForm/PaymentForm.jsx";
+
+export { default as usePayment } from "./hooks/usePayment.js";
+
+export * as paymentService from "./services/payment.service.js";

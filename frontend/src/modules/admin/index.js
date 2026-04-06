@@ -12,3 +12,9 @@
  * 3. Service Export: Exposing adminService for low-level moderation API calls.
  * 4. Access Control: Acts as the boundary for sensitive moderation logic.
  */
+
+export { default as AdminDashboard } from "./components/AdminDashboard/AdminDashboard.jsx";
+
+export { default as useAdmin } from "./hooks/useAdmin.js";
+
+export * as adminService from "./services/admin.service.js";

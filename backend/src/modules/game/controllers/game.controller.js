@@ -13,3 +13,31 @@
  * * CRITICAL RULE: A Controller should NEVER contain the logic for checking 
  * a "Win Condition" or "Draw." It strictly manages the communication flow.
  */
+
+import { validateMovePayload } from "../dto/game.dto.js";
+import * as gameFacade from "../facade/game.facade.js";
+
+export const createSession = async (req, res, next) => {
+	try {
+		const session = await gameFacade.createGame(req.body);
+		return res.status(201).json({ success: true, data: session });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const makeMove = async (req, res, next) => {
+	try {
+		const { session, move } = req.body || {};
+		const moveValidation = validateMovePayload(move || {}, session?.boardSize || 3);
+
+		if (!moveValidation.valid) {
+			return res.status(400).json({ success: false, errors: moveValidation.errors });
+		}
+
+		const nextSession = await gameFacade.makeMove(session, moveValidation.value);
+		return res.status(200).json({ success: true, data: nextSession });
+	} catch (error) {
+		return next(error);
+	}
+};

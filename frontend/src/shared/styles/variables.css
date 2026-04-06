@@ -8,3 +8,24 @@
  * shadows, and spacing to ensure a consistent experience across all 
  * modules (Game, Auth, Leaderboard, etc.).
  */
+
+:root {
+	--color-bg: #081326;
+	--color-surface: #11233d;
+	--color-surface-2: #19314f;
+	--color-text: #e7f4ff;
+	--color-muted: #9fb6ca;
+	--color-primary: #13c2ff;
+	--color-success: #18b67a;
+	--color-warning: #f2b530;
+	--color-danger: #f05454;
+	--radius-sm: 8px;
+	--radius-md: 12px;
+	--radius-lg: 18px;
+	--space-xs: 4px;
+	--space-sm: 8px;
+	--space-md: 16px;
+	--space-lg: 24px;
+	--space-xl: 32px;
+	--shadow-soft: 0 8px 24px rgba(3, 16, 36, 0.25);
+}

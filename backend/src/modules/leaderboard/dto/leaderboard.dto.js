@@ -16,6 +16,7 @@
 
 import { sanitizeString } from "../../shared/utils/validators.js";
 
+// Keep these allowlists as the single source of truth for query validation.
 const ALLOWED_SORT_FIELDS = ["rank", "rating", "wins", "losses", "winRate"];
 const ALLOWED_SORT_ORDERS = ["asc", "desc"];
 const ALLOWED_TIERS = [
@@ -47,6 +48,7 @@ const toInteger = (value, fallback) => {
 	return Number.isInteger(parsed) ? parsed : fallback;
 };
 
+// Input contract for leaderboard filters and pagination from req.query.
 export const createLeaderboardQueryDTO = (query = {}) => {
 	return {
 		season: sanitizeString(query.season || "global")?.toLowerCase(),
@@ -60,6 +62,7 @@ export const createLeaderboardQueryDTO = (query = {}) => {
 	};
 };
 
+// Validation contract used by routes/services before repository calls.
 export const validateLeaderboardQuery = (query = {}) => {
 	const value = createLeaderboardQueryDTO(query);
 	const errors = [];
@@ -94,6 +97,7 @@ export const validateLeaderboardQuery = (query = {}) => {
 	};
 };
 
+// Row mapper used by UI table: keeps backend fields decoupled from UI naming.
 export const createLeaderboardRowDTO = (rankDocument = {}, options = {}) => {
 	const wins = Number(rankDocument.wins || 0);
 	const losses = Number(rankDocument.losses || 0);
@@ -122,6 +126,7 @@ export const createLeaderboardRowDTO = (rankDocument = {}, options = {}) => {
 	};
 };
 
+// Summary mapper used by the top cards (rank/rating/win rate block).
 export const createLeaderboardSummaryDTO = ({
 	row,
 	previousWeekRank = null,
@@ -144,6 +149,7 @@ export const createLeaderboardSummaryDTO = ({
 	};
 };
 
+// Final response shape for leaderboard APIs. Keep this stable for frontend.
 export const createLeaderboardResponseDTO = ({
 	rows = [],
 	page = 1,

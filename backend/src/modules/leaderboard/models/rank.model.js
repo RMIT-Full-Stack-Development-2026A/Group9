@@ -97,10 +97,12 @@ const rankSchema = new mongoose.Schema(
 	}
 );
 
+// Derived UI value used by popup cards; no need to store this in DB.
 rankSchema.virtual("matchesPlayed").get(function getMatchesPlayed() {
 	return (this.wins || 0) + (this.losses || 0);
 });
 
+// Derived percentage shown in table and summary cards.
 rankSchema.virtual("winRate").get(function getWinRate() {
 	const total = (this.wins || 0) + (this.losses || 0);
 	if (total === 0) {
@@ -110,6 +112,7 @@ rankSchema.virtual("winRate").get(function getWinRate() {
 	return Number((((this.wins || 0) / total) * 100).toFixed(1));
 });
 
+// One rank per season, plus read-heavy indexes for ranking filters/sorts.
 rankSchema.index({ season: 1, rank: 1 }, { unique: true });
 rankSchema.index({ season: 1, rating: -1 });
 rankSchema.index({ season: 1, isPremium: 1, rank: 1 });

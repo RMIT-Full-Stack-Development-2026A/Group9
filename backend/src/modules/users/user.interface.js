@@ -1,34 +1,31 @@
-import * as userRepository from "./user.repository.js";
-import { toAuthDTO } from "./user.dto.js";
+import * as userService from "./user.service.js";
 
 /**
  * User module interface — the only entry point for other modules.
- * Other modules must NOT import user services, repositories, or models directly.
+ * Other modules must NOT import user services, repositories, models, or DTOs directly.
  * (Architecture requirement A.3.1)
  */
 
-export const getUserById = (id) => userRepository.findById(id);
+export const getUserById = (id) => userService.getUserById(id);
 
-export const getUserForAuth = (id) => userRepository.findUserForAuth(id);
+export const getUserForAuth = (id) => userService.getUserForAuth(id);
 
-export const findAllPlayers = () => userRepository.findAllPlayers();
+export const findAllPlayers = () => userService.findAllPlayers();
 
-export const findByEmail = (email) => userRepository.findByEmail(email);
+export const findByEmail = (email) => userService.findByEmail(email);
 
-export const findByUsername = (username) => userRepository.findByUsername(username);
+export const findByUsername = (username) => userService.findByUsername(username);
 
 export const findByEmailOrUsername = (identifier) =>
-  userRepository.findByEmailOrUsername(identifier);
+  userService.findByEmailOrUsername(identifier);
 
-export const createUser = (userData) => userRepository.createUser(userData);
+export const createUser = (userData) => userService.createUser(userData);
 
 export const setActiveStatus = (id, isActive) =>
-  userRepository.setActiveStatus(id, isActive);
+  userService.setActiveStatus(id, isActive);
 
 export const setPremiumStatus = (id, isPremium) =>
-  userRepository.setPremiumStatus(id, isPremium);
+  userService.setPremiumStatus(id, isPremium);
 
 export const updateWalletBalance = (id, balance) =>
-  userRepository.updateWalletBalance(id, balance);
-
-export { toAuthDTO };
+  userService.updateWalletBalance(id, balance);

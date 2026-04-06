@@ -1,9 +1,8 @@
 import * as gameService from "./game.service.js";
-import * as gameRepository from "./game.repository.js";
 
 /**
  * Game module interface — the only entry point for other modules.
- * Other modules must NOT import game services, repositories, or models directly.
+ * Other modules must NOT import game services, repositories, models, or DTOs directly.
  * (Architecture requirement A.3.1)
  */
 
@@ -16,10 +15,7 @@ export const getGameHistoryForUser = (userId, query) => {
  * Used by the leaderboard module to recalculate rank stats.
  */
 export const getCompletedSessionsForUser = (userId) => {
-  return gameRepository.findSessionsByFilter(
-    { players: userId, result: { $in: ["win", "draw"] } },
-    { startTime: -1 }
-  );
+  return gameService.getCompletedSessionsForUser(userId);
 };
 
 /**
@@ -27,7 +23,7 @@ export const getCompletedSessionsForUser = (userId) => {
  * Used by the admin module to list/manage game rooms.
  */
 export const getOnlineGameRooms = (filter = {}) => {
-  return gameRepository.findAllRooms(filter);
+  return gameService.getOnlineGameRooms(filter);
 };
 
 /**
@@ -35,7 +31,7 @@ export const getOnlineGameRooms = (filter = {}) => {
  * Used by the admin module to inspect or close a room.
  */
 export const getGameSessionById = (id) => {
-  return gameRepository.findSessionById(id);
+  return gameService.getGameSessionById(id);
 };
 
 /**
@@ -43,8 +39,5 @@ export const getGameSessionById = (id) => {
  * Used by the admin module to forcefully end an active room.
  */
 export const closeGameSession = (id) => {
-  return gameRepository.updateSession(id, {
-    result: "aborted",
-    endTime: new Date(),
-  });
+  return gameService.closeGameSession(id);
 };

@@ -12,3 +12,9 @@
  * 3. Service Export: Providing leaderboardService for tier and XP logic.
  * 4. Architecture: Maintaining a clean separation between UI and business logic.
  */
+
+export { default as LeaderboardTable } from "./components/LeaderboardTable/LeaderboardTable.jsx";
+
+export { default as useLeaderboard } from "./hooks/useLeaderboard.js";
+
+export * as leaderboardService from "./services/leaderboard.service.js";

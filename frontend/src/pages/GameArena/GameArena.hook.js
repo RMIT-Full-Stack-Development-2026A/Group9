@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import * as gameService from "./GameArena.service.js";
+import { connectSocket, disconnectSocket } from "../../services/socket.service.js";
 
 const WIN_LENGTH = 5;
 
@@ -15,7 +16,7 @@ const BOARD_STYLES = [
 
 const AVAILABLE_MARKERS = ["X", "O", "△", "□", "◇", "★"];
 
-export const useGameArena = () => {
+export const useGameArena = (user) => {
   // Setup state
   const [gamePhase, setGamePhase] = useState("setup"); // setup | playing | ended
   const [gameMode, setGameMode] = useState("local"); // local | single | online
@@ -40,7 +41,25 @@ export const useGameArena = () => {
   const [lastMove, setLastMove] = useState(null);
   const [aiThinking, setAiThinking] = useState(false);
 
+  // Online state
+  const [roomId, setRoomId] = useState(null);
+  const [roomData, setRoomData] = useState(null);
+  const [myPlayerNumber, setMyPlayerNumber] = useState(null);
+  const [waitingForOpponent, setWaitingForOpponent] = useState(false);
+  const [opponentLeft, setOpponentLeft] = useState(false);
+
   const moveCountRef = useRef(0);
+  const boardRef = useRef([]);
+  const socketRef = useRef(null);
+  const myPlayerNumberRef = useRef(null);
+  const roomIdRef = useRef(null);
+  const gamePhaseRef = useRef("setup");
+
+  // Keep refs in sync
+  useEffect(() => { boardRef.current = board; }, [board]);
+  useEffect(() => { myPlayerNumberRef.current = myPlayerNumber; }, [myPlayerNumber]);
+  useEffect(() => { roomIdRef.current = roomId; }, [roomId]);
+  useEffect(() => { gamePhaseRef.current = gamePhase; }, [gamePhase]);
 
   const createEmptyBoard = useCallback((size) => {
     return Array.from({ length: size }, () => Array(size).fill(null));
@@ -99,11 +118,170 @@ export const useGameArena = () => {
     }
   }, [boardSize, firstPlayer, gameMode, difficulty, player2Name, createEmptyBoard]);
 
+  // Start the online game (called when both players are ready)
+  const startOnlineGame = useCallback((room) => {
+    const newBoard = createEmptyBoard(room.boardSize);
+    setBoard(newBoard);
+    boardRef.current = newBoard;
+    setCurrentPlayer(1);
+    setWinner(null);
+    setWinningCells(null);
+    setIsDraw(false);
+    setIsAborted(false);
+    setMoveCount(0);
+    moveCountRef.current = 0;
+    setShowWinAnimation(false);
+    setLastMove(null);
+    setWaitingForOpponent(false);
+    setGamePhase("playing");
+    gamePhaseRef.current = "playing";
+
+    gameService.createSession({
+      gameType: "online",
+      boardSize: room.boardSize,
+    }).then(({ data }) => setSessionId(data._id)).catch(() => {});
+  }, [createEmptyBoard]);
+
+  // Initialize online game from room ID
+  const initOnlineGame = useCallback(async (roomIdParam) => {
+    if (!user?._id) return;
+
+    const s = connectSocket(user._id, user.username);
+    socketRef.current = s;
+
+    setRoomId(roomIdParam);
+    roomIdRef.current = roomIdParam;
+    setGameMode("online");
+
+    try {
+      const { data: room } = await gameService.getRoom(roomIdParam);
+      setRoomData(room);
+
+      const isPlayer1 = room.player1?._id === user._id;
+      const playerNum = isPlayer1 ? 1 : 2;
+      setMyPlayerNumber(playerNum);
+      myPlayerNumberRef.current = playerNum;
+
+      setBoardSize(room.boardSize);
+      setPlayer1Marker(room.player1Marker || "X");
+      setPlayer2Marker(room.player2Marker || (room.player1Marker === "X" ? "O" : "X"));
+
+      s.emit("game:join", { roomId: roomIdParam, userId: user._id, username: user.username });
+
+      if (room.status === "waiting") {
+        setWaitingForOpponent(true);
+      } else {
+        startOnlineGame(room);
+      }
+    } catch (err) {
+      console.error("Failed to init online game:", err);
+    }
+  }, [user, startOnlineGame]);
+
+  // Socket event listeners for online mode
+  useEffect(() => {
+    const socket = socketRef.current;
+    if (!socket || gameMode !== "online" || !roomId) return;
+
+    const handlePlayerJoined = async () => {
+      setWaitingForOpponent(false);
+      try {
+        const { data: room } = await gameService.getRoom(roomIdRef.current);
+        setRoomData(room);
+        setPlayer2Marker(room.player2Marker || "O");
+        if (gamePhaseRef.current !== "playing") {
+          startOnlineGame(room);
+        }
+      } catch {
+        /* fallback */
+      }
+    };
+
+    const handleMoveMade = ({ row, col, marker, moveNumber }) => {
+      const currentBoard = boardRef.current;
+      const newBoard = currentBoard.map((r) => [...r]);
+      newBoard[row][col] = marker;
+      setBoard(newBoard);
+      boardRef.current = newBoard;
+
+      moveCountRef.current = moveNumber;
+      setMoveCount(moveNumber);
+      setLastMove({ row, col });
+
+      const winResult = checkWin(newBoard, row, col, marker);
+      if (winResult) {
+        const opponentNum = myPlayerNumberRef.current === 1 ? 2 : 1;
+        setWinner(opponentNum);
+        setWinningCells(winResult);
+        setShowWinAnimation(true);
+        setGamePhase("ended");
+        gamePhaseRef.current = "ended";
+      } else if (isBoardFull(newBoard)) {
+        setIsDraw(true);
+        setGamePhase("ended");
+        gamePhaseRef.current = "ended";
+      } else {
+        setCurrentPlayer(myPlayerNumberRef.current);
+      }
+    };
+
+    const handleEnded = ({ result, winningCells: wc }) => {
+      if (gamePhaseRef.current === "ended") return;
+      if (result === "draw") {
+        setIsDraw(true);
+      }
+      setGamePhase("ended");
+      gamePhaseRef.current = "ended";
+    };
+
+    const handleAborted = () => {
+      if (gamePhaseRef.current === "ended") return;
+      setIsAborted(true);
+      setGamePhase("ended");
+      gamePhaseRef.current = "ended";
+    };
+
+    const handlePlayerLeft = () => {
+      setOpponentLeft(true);
+      if (gamePhaseRef.current === "playing") {
+        setIsAborted(true);
+        setGamePhase("ended");
+        gamePhaseRef.current = "ended";
+      }
+    };
+
+    socket.on("game:playerJoined", handlePlayerJoined);
+    socket.on("game:moveMade", handleMoveMade);
+    socket.on("game:ended", handleEnded);
+    socket.on("game:aborted", handleAborted);
+    socket.on("game:playerLeft", handlePlayerLeft);
+
+    return () => {
+      socket.off("game:playerJoined", handlePlayerJoined);
+      socket.off("game:moveMade", handleMoveMade);
+      socket.off("game:ended", handleEnded);
+      socket.off("game:aborted", handleAborted);
+      socket.off("game:playerLeft", handlePlayerLeft);
+    };
+  }, [roomId, gameMode, checkWin, isBoardFull, startOnlineGame]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (socketRef.current && roomIdRef.current) {
+        socketRef.current.emit("game:leave", { roomId: roomIdRef.current });
+      }
+      disconnectSocket();
+      socketRef.current = null;
+    };
+  }, []);
+
   // Make a move
   const makeMove = useCallback(async (row, col) => {
     if (gamePhase !== "playing" || winner || isDraw || isAborted) return;
     if (board[row][col] !== null) return;
     if (gameMode === "single" && currentPlayer === 2 && !aiThinking) return; // AI's turn, wait
+    if (gameMode === "online" && currentPlayer !== myPlayerNumber) return;
 
     const marker = currentPlayer === 1 ? player1Marker : player2Marker;
     const newBoard = board.map((r) => [...r]);
@@ -114,6 +292,11 @@ export const useGameArena = () => {
     const newMoveCount = moveCountRef.current;
     setMoveCount(newMoveCount);
     setLastMove({ row, col });
+
+    // Online mode: emit move
+    if (gameMode === "online" && socketRef.current && roomId) {
+      socketRef.current.emit("game:move", { roomId, row, col, marker, moveNumber: newMoveCount });
+    }
 
     // Record move
     if (sessionId) {
@@ -135,6 +318,10 @@ export const useGameArena = () => {
       setWinningCells(winResult);
       setShowWinAnimation(true);
 
+      if (gameMode === "online" && socketRef.current && roomId) {
+        socketRef.current.emit("game:end", { roomId, winnerId: currentPlayer, result: "win", winningCells: winResult });
+      }
+
       if (sessionId) {
         gameService.endSession(sessionId, {
           winnerId: currentPlayer === 1 ? "player1" : null,
@@ -142,22 +329,27 @@ export const useGameArena = () => {
         }).catch(() => {});
       }
       setGamePhase("ended");
+      gamePhaseRef.current = "ended";
       return;
     }
 
     // Check draw
     if (isBoardFull(newBoard)) {
       setIsDraw(true);
+      if (gameMode === "online" && socketRef.current && roomId) {
+        socketRef.current.emit("game:end", { roomId, result: "draw" });
+      }
       if (sessionId) {
         gameService.endSession(sessionId, { result: "draw" }).catch(() => {});
       }
       setGamePhase("ended");
+      gamePhaseRef.current = "ended";
       return;
     }
 
     // Switch player
     setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
-  }, [board, currentPlayer, gamePhase, winner, isDraw, isAborted, player1Marker, player2Marker, sessionId, boardSize, gameMode, aiThinking, checkWin, isBoardFull]);
+  }, [board, currentPlayer, gamePhase, winner, isDraw, isAborted, player1Marker, player2Marker, sessionId, boardSize, gameMode, aiThinking, checkWin, isBoardFull, myPlayerNumber, roomId]);
 
   // AI move
   useEffect(() => {
@@ -245,13 +437,22 @@ export const useGameArena = () => {
   const abortGame = useCallback(() => {
     setIsAborted(true);
     setGamePhase("ended");
+    gamePhaseRef.current = "ended";
+    if (gameMode === "online" && socketRef.current && roomId) {
+      socketRef.current.emit("game:abort", { roomId });
+    }
     if (sessionId) {
       gameService.endSession(sessionId, { result: "aborted" }).catch(() => {});
     }
-  }, [sessionId]);
+  }, [sessionId, gameMode, roomId]);
 
   // Reset to setup
   const resetGame = useCallback(() => {
+    if (gameMode === "online" && socketRef.current && roomId) {
+      socketRef.current.emit("game:leave", { roomId });
+      disconnectSocket();
+      socketRef.current = null;
+    }
     setGamePhase("setup");
     setBoard([]);
     setWinner(null);
@@ -263,7 +464,12 @@ export const useGameArena = () => {
     setShowWinAnimation(false);
     setSessionId(null);
     setAiThinking(false);
-  }, []);
+    setRoomId(null);
+    setRoomData(null);
+    setMyPlayerNumber(null);
+    setWaitingForOpponent(false);
+    setOpponentLeft(false);
+  }, [gameMode, roomId]);
 
   return {
     // Setup
@@ -289,6 +495,14 @@ export const useGameArena = () => {
     showWinAnimation,
     aiThinking,
     lastMove,
+    // Online
+    roomId,
+    roomData,
+    myPlayerNumber,
+    waitingForOpponent,
+    opponentLeft,
+    socket: socketRef.current,
+    initOnlineGame,
     // Actions
     startGame,
     makeMove,

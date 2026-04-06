@@ -25,9 +25,11 @@ export const joinRoom = async (roomId, userId, marker) => {
   if (room.status !== "waiting") throw new AppError("Room is not available.", 400);
   if (room.player1._id.toString() === userId) throw new AppError("Cannot join your own room.", 400);
 
+  const selectedMarker = marker || (room.player1Marker === "X" ? "O" : "X");
+
   return multiplayerRepository.updateRoom(roomId, {
     player2: userId,
-    player2Marker: marker,
+    player2Marker: selectedMarker,
     status: "playing",
   });
 };

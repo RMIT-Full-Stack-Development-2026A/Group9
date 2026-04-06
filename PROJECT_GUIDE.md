@@ -4,11 +4,18 @@
 
 This project is a full-stack TicTacToang application with a Node.js/Express backend, a React/Vite frontend, and MongoDB for persistence.
 
-At the current stage, the implemented user-facing flow focuses on:
+At the current stage, the implemented user-facing flow includes:
 
-- authentication
-- profile management
-- avatar upload with Cloudinary
+- authentication and registration
+- profile management with avatar upload (Cloudinary)
+- single-player game vs AI (3 difficulty levels)
+- local two-player mode
+- online multiplayer with real-time moves via WebSocket (Socket.IO)
+- in-game chat for online matches
+- online lobby (create/join rooms)
+- wallet, deposit, premium subscription
+- leaderboard with rankings
+- admin dashboard (player management, game room management)
 - game history viewing, searching, filtering, and sorting
 
 ## Tech Stack
@@ -22,6 +29,8 @@ At the current stage, the implemented user-facing flow focuses on:
 - bcrypt for password hashing
 - multer for file uploads
 - Cloudinary for avatar storage
+- Socket.IO for real-time WebSocket communication
+- nodemailer for email notifications
 
 ### Frontend
 
@@ -29,6 +38,7 @@ At the current stage, the implemented user-facing flow focuses on:
 - Vite
 - React Router
 - Axios
+- socket.io-client for real-time communication
 
 ## Project Structure
 
@@ -41,14 +51,28 @@ At the current stage, the implemented user-facing flow focuses on:
 - `backend/src/middleware/upload.middleware.js`: avatar upload handling and Cloudinary integration
 - `backend/src/modules/auth/*`: register and login logic
 - `backend/src/modules/users/*`: profile and game history logic
-- `backend/src/modules/game/*`: game-related models
+- `backend/src/modules/game/*`: game engine, AI, session and move management
+- `backend/src/modules/multiplayer/*`: online game room management (create, join, list, close)
+- `backend/src/modules/billing/*`: wallet, deposits, subscriptions, transactions
+- `backend/src/modules/leaderboard/*`: player rankings
+- `backend/src/realtime/socketServer.js`: Socket.IO server initialization
+- `backend/src/realtime/socketHandlers/gameSocket.js`: real-time game move events
+- `backend/src/realtime/socketHandlers/chatSocket.js`: real-time in-game chat events
 
 ### Frontend
 
 - `frontend/src/App.jsx`: app routes and top-level user session state
 - `frontend/src/components/Navbar/*`: top navigation
+- `frontend/src/services/socket.service.js`: Socket.IO client connection management
 - `frontend/src/pages/Login/*`: login flow
+- `frontend/src/pages/Registration/*`: registration flow
+- `frontend/src/pages/Home/*`: home page with game mode selection
+- `frontend/src/pages/GameArena/*`: game board, setup, AI play, online play, and in-game chat
+- `frontend/src/pages/Lobby/*`: online lobby for creating and joining game rooms
 - `frontend/src/pages/Profile/*`: profile management and game history UI
+- `frontend/src/pages/Leaderboard/*`: leaderboard with rankings
+- `frontend/src/pages/Payment/*`: wallet, deposit, premium subscription
+- `frontend/src/pages/Admin/*`: admin dashboard for player and room management
 - `frontend/src/utils/http.helper.js`: Axios instance with auth token handling
 
 ## How The Project Works
@@ -106,6 +130,44 @@ When editing the profile:
 6. For local and online sessions, the opponent shown is the other player.
 7. The frontend renders the sessions as cards in the History tab.
 
+## 5. Online Multiplayer Flow
+
+### Creating a Room
+
+1. The user navigates to the Online Lobby (`/lobby`).
+2. They select a board size and marker, then click "Create Room".
+3. The frontend calls `POST /api/multiplayer/rooms` with the configuration.
+4. The backend creates a room with status "waiting" and an auto-incremented room number.
+5. The user is redirected to `/game?mode=online&roomId=<id>`.
+6. The game arena connects a Socket.IO client and emits `game:join`.
+7. The "Waiting for Opponent" screen is shown.
+
+### Joining a Room
+
+1. Another user visits the Lobby and sees available waiting rooms.
+2. They click "Join" on a room.
+3. The frontend calls `POST /api/multiplayer/rooms/:id/join`.
+4. The backend sets the room status to "playing" and assigns the second player.
+5. The user is redirected to the game arena.
+6. Socket.IO emits `game:join`, which triggers `game:playerJoined` for the room creator.
+7. Both players see the game board and the match begins.
+
+### Real-Time Gameplay
+
+1. Player 1 always goes first.
+2. When a player clicks a cell, the move is applied locally and emitted via `game:move`.
+3. The opponent receives `game:moveMade` and the board updates in real-time.
+4. Win/draw is detected locally by both clients.
+5. The winner emits `game:end` to notify both players.
+6. Either player can abort the game, which emits `game:abort`.
+
+### In-Game Chat
+
+1. During an online match, a ChatBox is displayed alongside the board.
+2. Players can send messages via `chat:message`.
+3. The server broadcasts `chat:newMessage` to both players in the room.
+4. Typing indicators are supported via `chat:typing` and `chat:stopTyping`.
+
 ## Implemented Features
 
 ### Backend Features
@@ -156,6 +218,11 @@ When editing the profile:
 - Leaderboard page with sort controls and personal stats
 - Payment page: wallet balance, deposit, premium subscription, transaction history
 - Admin dashboard: player management (block/unblock), game room management (search/close)
+- Online Lobby page: create rooms, browse waiting rooms, join rooms
+- Real-time online multiplayer via Socket.IO
+- In-game chat for online matches with ChatBox component
+- Board + chat side-by-side layout for online mode
+- Responsive design for mobile and desktop
 
 ## Current API Endpoints
 
@@ -206,6 +273,27 @@ When editing the profile:
 - `GET /api/multiplayer/rooms`
 - `POST /api/multiplayer/rooms/:id/join`
 - `GET /api/multiplayer/rooms/:id`
+
+### WebSocket Events (Socket.IO)
+
+#### Game Events
+
+| Client Emits | Server Broadcasts | Description |
+|---|---|---|
+| `game:join` `{ roomId, userId, username }` | `game:playerJoined` `{ userId, username }` | Join a game room |
+| `game:selectMarker` `{ roomId, marker }` | `game:markerSelected` `{ userId, marker }` | Select a marker |
+| `game:move` `{ roomId, row, col, marker, moveNumber }` | `game:moveMade` `{ userId, row, col, marker, moveNumber }` | Make a move |
+| `game:end` `{ roomId, winnerId, result, winningCells }` | `game:ended` `{ winnerId, result, winningCells }` | End the game |
+| `game:abort` `{ roomId }` | `game:aborted` `{ userId, username }` | Abort the game |
+| `game:leave` `{ roomId }` | `game:playerLeft` `{ userId, username }` | Leave the room |
+
+#### Chat Events
+
+| Client Emits | Server Broadcasts | Description |
+|---|---|---|
+| `chat:message` `{ roomId, message }` | `chat:newMessage` `{ userId, username, message, timestamp }` | Send a chat message |
+| `chat:typing` `{ roomId }` | `chat:userTyping` `{ username }` | Typing indicator |
+| `chat:stopTyping` `{ roomId }` | `chat:userStoppedTyping` `{ username }` | Stop typing indicator |
 
 ## Environment Setup
 
@@ -322,16 +410,24 @@ If the current password is incorrect, the form now shows an error instead of log
 
 ## Notes About Current Scope
 
-Some folders exist for future modules, but not all are fully connected in the current frontend flow yet.
+All major features are fully implemented end-to-end:
 
-Examples:
-
-- billing module exists but wallet UI is still a placeholder
-- multiplayer/game modules contain models and structure for future expansion
-- the homepage and arena route are not yet fully implemented in the current UI
+- Authentication (login, register, logout, brute-force protection, token blacklisting)
+- Profile management (edit, avatar upload, game history)
+- Game arena (local, vs AI, online multiplayer)
+- Online lobby and real-time multiplayer with chat
+- Billing (wallet, deposit, premium subscription)
+- Leaderboard with rankings
+- Admin dashboard (player management, game room management)
 
 ## Summary
 
-The current implementation delivers a working authentication and profile-management flow backed by MongoDB, with Cloudinary avatar uploads and searchable game history. The main complete end-to-end user journey today is:
+The application delivers a complete TicTacToang experience with three play modes (local, vs AI, online multiplayer), real-time WebSocket communication, in-game chat, wallet/subscription billing, leaderboards, and admin management. The main user journeys are:
 
-`Login -> View Profile -> Edit Profile -> Upload Avatar -> View/Search/Filter Game History`
+`Register -> Login -> Choose Mode -> Play Game -> View Stats/Leaderboard`
+
+`Login -> Online Lobby -> Create/Join Room -> Real-Time Match with Chat -> Back to Lobby`
+
+`Login -> Profile -> Edit Profile / Upload Avatar / View Game History`
+
+`Admin Login -> Admin Dashboard -> Manage Players / Game Rooms`

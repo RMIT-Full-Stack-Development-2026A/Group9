@@ -1,21 +1,41 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useGameArena } from "./GameArena.hook.js";
+import { useChatBox } from "./components/ChatBox/ChatBox.hook.js";
 import Board from "./components/Board/Board.jsx";
+import ChatBox from "./components/ChatBox/ChatBox.jsx";
 import Button from "../../components/Button/Button.jsx";
 import "./GameArena.css";
 
 const GameArena = ({ user }) => {
   const [searchParams] = useSearchParams();
-  const game = useGameArena();
+  const navigate = useNavigate();
+  const game = useGameArena(user);
+  const chat = useChatBox(game.socket, game.roomId);
 
   // Pre-select mode from URL params (from Home page links)
   const urlMode = searchParams.get("mode");
-  if (urlMode && game.gamePhase === "setup" && game.gameMode !== urlMode) {
-    game.setGameMode(urlMode);
-  }
+  const urlRoomId = searchParams.get("roomId");
 
-  const getPlayer1Label = () => user?.username || "Player 1";
+  // Initialize online game when roomId is in URL
+  useEffect(() => {
+    if (urlMode === "online" && urlRoomId && game.gamePhase === "setup" && !game.roomId) {
+      game.initOnlineGame(urlRoomId);
+    } else if (urlMode && urlMode !== "online" && game.gamePhase === "setup" && game.gameMode !== urlMode) {
+      game.setGameMode(urlMode);
+    }
+  }, [urlMode, urlRoomId]);
+
+  const getPlayer1Label = () => {
+    if (game.gameMode === "online" && game.roomData) {
+      return game.roomData.player1?.username || "Player 1";
+    }
+    return user?.username || "Player 1";
+  };
   const getPlayer2Label = () => {
+    if (game.gameMode === "online" && game.roomData) {
+      return game.roomData.player2?.username || "Opponent";
+    }
     if (game.gameMode === "single") {
       const names = { easy: "Jeremy (Easy)", medium: "Bot (Medium)", hard: "Titan (Hard)" };
       return names[game.difficulty] || "AI";
@@ -31,6 +51,7 @@ const GameArena = ({ user }) => {
   };
 
   const getResultMessage = () => {
+    if (game.opponentLeft) return "Opponent Left";
     if (game.isAborted) return "Game Aborted";
     if (game.isDraw) return "It's a Draw!";
     if (game.winner) {
@@ -39,6 +60,28 @@ const GameArena = ({ user }) => {
     }
     return "";
   };
+
+  // ---- WAITING FOR OPPONENT (online) ----
+  if (game.waitingForOpponent) {
+    return (
+      <div className="game-page">
+        <div className="setup-panel">
+          <h2 className="setup-title">Waiting for Opponent</h2>
+          <div className="waiting-info">
+            <div className="waiting-spinner" />
+            <p>Room #{game.roomData?.roomNumber || "..."}</p>
+            <p className="waiting-details">
+              Board: {game.boardSize}x{game.boardSize} · Marker: {game.player1Marker}
+            </p>
+            <p className="waiting-hint">Share the room link or wait for someone to join from the lobby.</p>
+          </div>
+          <Button variant="ghost" onClick={() => { game.resetGame(); navigate("/lobby"); }}>
+            Back to Lobby
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // ---- SETUP PHASE ----
   if (game.gamePhase === "setup") {
@@ -222,15 +265,28 @@ const GameArena = ({ user }) => {
           </div>
         </div>
 
-        {/* Board */}
-        <Board
-          board={game.board}
-          boardStyle={game.boardStyle}
-          winningCells={game.winningCells}
-          onCellClick={game.makeMove}
-          lastMove={game.lastMove}
-          disabled={game.gamePhase === "ended" || game.aiThinking}
-        />
+        {/* Board + Chat Layout */}
+        <div className={`game-board-area ${game.gameMode === "online" ? "with-chat" : ""}`}>
+          <Board
+            board={game.board}
+            boardStyle={game.boardStyle}
+            winningCells={game.winningCells}
+            onCellClick={game.makeMove}
+            lastMove={game.lastMove}
+            disabled={game.gamePhase === "ended" || game.aiThinking || (game.gameMode === "online" && game.currentPlayer !== game.myPlayerNumber)}
+          />
+
+          {/* ChatBox (online only) */}
+          {game.gameMode === "online" && (
+            <ChatBox
+              messages={chat.messages}
+              input={chat.input}
+              setInput={chat.setInput}
+              onSend={chat.sendMessage}
+              currentUser={user?._id}
+            />
+          )}
+        </div>
 
         {/* Move Counter */}
         <p className="move-counter">Moves: {game.moveCount}</p>
@@ -240,11 +296,14 @@ const GameArena = ({ user }) => {
           {game.gamePhase === "playing" && (
             <Button variant="danger" onClick={game.abortGame}>Abort Game</Button>
           )}
-          {game.gamePhase === "ended" && (
+          {game.gamePhase === "ended" && game.gameMode !== "online" && (
             <>
               <Button variant="primary" onClick={game.startGame}>Play Again</Button>
               <Button variant="ghost" onClick={game.resetGame}>Back to Setup</Button>
             </>
+          )}
+          {game.gamePhase === "ended" && game.gameMode === "online" && (
+            <Button variant="ghost" onClick={() => { game.resetGame(); navigate("/lobby"); }}>Back to Lobby</Button>
           )}
         </div>
       </div>

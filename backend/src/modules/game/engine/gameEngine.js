@@ -1,4 +1,4 @@
-import { WIN_LENGTH } from "../../shared/constants/gameTypes.js";
+import { WIN_LENGTH } from "../../../shared/constants/gameTypes.js";
 
 /**
  * Core game engine for Tic-Tac-Toe on NxN boards with 5-in-a-row win condition.

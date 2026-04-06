@@ -1,0 +1,175 @@
+.lobby-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 36px 20px 60px;
+}
+
+.lobby-title {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* ---- Create Room ---- */
+.lobby-create {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.lobby-create h3 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  color: var(--text-h);
+}
+
+.lobby-create-options {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.lobby-field label {
+  display: block;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.lobby-options {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lobby-opt {
+  padding: 8px 18px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.lobby-opt:hover {
+  border-color: var(--cyan);
+  color: var(--text-h);
+}
+
+.lobby-opt.active {
+  border-color: var(--cyan);
+  background: var(--cyan-bg);
+  color: var(--cyan);
+}
+
+.lobby-opt.marker {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+/* ---- Error ---- */
+.lobby-error {
+  color: var(--red);
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* ---- Room List ---- */
+.lobby-rooms h3 {
+  font-size: 1.1rem;
+  color: var(--text-h);
+}
+
+.lobby-rooms-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.lobby-refresh {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.lobby-refresh:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.lobby-loading,
+.lobby-empty {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px;
+  font-size: 14px;
+}
+
+.lobby-room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lobby-room-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  transition: border-color 0.2s;
+}
+
+.lobby-room-card:hover {
+  border-color: var(--cyan);
+}
+
+.lobby-room-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lobby-room-number {
+  font-weight: 600;
+  color: var(--text-h);
+  font-size: 15px;
+}
+
+.lobby-room-host {
+  color: var(--cyan);
+  font-size: 13px;
+}
+
+.lobby-room-details {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .lobby-create-options {
+    flex-direction: column;
+    gap: 16px;
+  }
+}

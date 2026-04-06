@@ -26,6 +26,12 @@ const Navbar = ({ user, onLogout }) => {
           Play
         </Link>
         <Link
+          to="/lobby"
+          className={location.pathname === "/lobby" ? "active" : ""}
+        >
+          Online
+        </Link>
+        <Link
           to="/leaderboard"
           className={location.pathname === "/leaderboard" ? "active" : ""}
         >

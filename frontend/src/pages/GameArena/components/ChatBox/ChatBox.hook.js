@@ -1,8 +1,20 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export const useChatBox = (socket, roomId) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+
+  // Listen for incoming chat messages
+  useEffect(() => {
+    if (!socket || !roomId) return;
+
+    const handleMessage = (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    };
+
+    socket.on("chat:newMessage", handleMessage);
+    return () => socket.off("chat:newMessage", handleMessage);
+  }, [socket, roomId]);
 
   const sendMessage = useCallback(() => {
     if (!input.trim() || !socket || !roomId) return;
@@ -10,9 +22,5 @@ export const useChatBox = (socket, roomId) => {
     setInput("");
   }, [input, socket, roomId]);
 
-  const addMessage = useCallback((msg) => {
-    setMessages((prev) => [...prev, msg]);
-  }, []);
-
-  return { messages, input, setInput, sendMessage, addMessage };
+  return { messages, input, setInput, sendMessage };
 };

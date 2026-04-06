@@ -8,6 +8,7 @@ import Registration from "./pages/Registration/Registration.jsx";
 import Home from "./pages/Home/Home.jsx";
 import GameArena from "./pages/GameArena/GameArena.jsx";
 import Leaderboard from "./pages/Leaderboard/Leaderboard.jsx";
+import Lobby from "./pages/Lobby/Lobby.jsx";
 import Payment from "./pages/Payment/Payment.jsx";
 import Admin from "./pages/Admin/Admin.jsx";
 import { logout } from "./pages/Login/Login.service.js";
@@ -49,6 +50,14 @@ function App() {
           <Route path="/login" element={<Login onUserUpdate={setUser} />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route
+            path="/lobby"
+            element={
+              <ProtectedRoute allowedRoles={["player", "admin"]}>
+                <Lobby user={user} />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/game"
             element={

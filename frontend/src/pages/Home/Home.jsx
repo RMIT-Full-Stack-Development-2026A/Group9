@@ -28,6 +28,12 @@ const Home = ({ user }) => {
           <p>Challenge the computer at Easy, Medium, or Hard</p>
         </Link>
 
+        <Link to="/lobby" className="mode-card">
+          <span className="mode-icon">🌐</span>
+          <h3>Online</h3>
+          <p>Play against other players in real-time</p>
+        </Link>
+
         <Link to="/leaderboard" className="mode-card">
           <span className="mode-icon">🏆</span>
           <h3>Leaderboard</h3>

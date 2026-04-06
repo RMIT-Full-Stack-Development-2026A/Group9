@@ -14,3 +14,8 @@
  * shouldn't know how to check for a "win") and NEVER know about HTTP. It 
  * simply executes the database commands the Service asks for.
  */
+
+// Implementation contract:
+// 1) Persist sessions/moves atomically where needed (transactions when required).
+// 2) Keep method names explicit: createSession, appendMove, setSessionResult, etc.
+// 3) No board-rule logic here; this layer is read/write only.

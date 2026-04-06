@@ -12,6 +12,7 @@ import {
 import { DEFAULT_BOARD_SIZE, GAME_STATUS, PLAYER_SYMBOLS } from "../types/game.types.js";
 
 export const createGame = (payload = {}) => {
+	// DTO validation here guarantees service logic receives normalized values.
 	const { valid, errors } = validateCreateGamePayload(payload);
 	if (!valid) {
 		throw new AppError("Invalid create game payload", 400, errors);
@@ -33,6 +34,7 @@ export const createGame = (payload = {}) => {
 };
 
 export const makeMove = (session, payload = {}) => {
+	// Service owns turn/state rules; engine handles board math only.
 	if (!session) {
 		throw new AppError("Game session is required", 400);
 	}

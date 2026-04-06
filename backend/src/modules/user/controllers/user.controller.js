@@ -13,3 +13,8 @@
  * directly. It extracts the User ID from the JWT (Request) and hands 
  * it to the Service.
  */
+
+// Implementation contract:
+// 1) Keep all handlers auth-aware and pass req.user.id into service methods.
+// 2) Use user DTO contracts for search/update payload normalization.
+// 3) Keep output shape consistent for profile pages and admin views.

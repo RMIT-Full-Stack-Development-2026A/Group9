@@ -12,3 +12,8 @@
  * * CRITICAL RULE: A Controller should NEVER perform the sorting or math 
  * itself. It asks the Service for the data and simply serves it to the user.
  */
+
+// Implementation contract:
+// 1) Parse query via leaderboard DTO and pass normalized values to service.
+// 2) Enforce premium-only access through middleware, not inline conditionals.
+// 3) Return DTO-shaped response objects for stable frontend integration.

@@ -14,3 +14,8 @@
  * numbers (like 'limit') and IDs, performs database aggregations, and 
  * returns the sorted results.
  */
+
+// Implementation contract:
+// 1) Accept validated query DTO values and call leaderboard repository.
+// 2) Use leaderboard DTO mappers to produce summary + table + pagination output.
+// 3) Preserve premium-only behavior by assuming middleware already enforced it.

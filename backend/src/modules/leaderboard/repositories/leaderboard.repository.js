@@ -14,3 +14,8 @@
  * calculating a win-rate percentage). It should return the raw numbers and 
  * data objects so the Service layer can handle the math.
  */
+
+// Implementation contract:
+// 1) Return sorted rank records with pagination primitives (rows + total count).
+// 2) Support premium filter and season filter at query level.
+// 3) Keep aggregation output stable; DTO layer maps it to API shape.

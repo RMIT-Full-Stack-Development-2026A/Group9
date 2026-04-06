@@ -13,3 +13,8 @@
  * * CRITICAL RULE: This service handles the "Lobby" state. Once the game 
  * starts and moves are being made, the logic should hand off to the GameService.
  */
+
+// Implementation contract:
+// 1) Keep room matchmaking rules centralized in this service.
+// 2) Perform conflict-safe joins (avoid two players claiming one slot).
+// 3) Return room/session handoff payload for socket initialization.

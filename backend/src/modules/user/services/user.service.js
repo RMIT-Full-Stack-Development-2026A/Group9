@@ -13,3 +13,8 @@
  * * CRITICAL RULE: The Service layer never touches the 'req' or 'res' objects. 
  * It receives clean data from the Controller and returns Objects or Errors.
  */
+
+// Implementation contract:
+// 1) Keep profile/stat rules in this layer, not repository/controller.
+// 2) Use DTO-normalized inputs and return sanitized user output objects.
+// 3) Coordinate cross-module updates (e.g., leaderboard/profile snapshots) here.

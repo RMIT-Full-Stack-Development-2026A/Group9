@@ -15,3 +15,8 @@
  * It should only return data; it shouldn't handle the logic of "joining" 
  * or "starting" the game (that belongs in the Service).
  */
+
+// Implementation contract:
+// 1) Focus on room discovery and lock-safe room assignment queries.
+// 2) Keep room status transitions in explicit update helpers.
+// 3) Return plain room documents; orchestration belongs to service layer.

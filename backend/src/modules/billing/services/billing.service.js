@@ -15,3 +15,8 @@
  * responses. It receives pure data, performs financial operations, and 
  * either returns the result or throws a clear AppError if something fails.
  */
+
+// Implementation contract:
+// 1) Keep gateway integration here; repositories only persist transaction state.
+// 2) Make payment flows idempotent and auditable.
+// 3) Return normalized transaction objects for DTO/response mapping layers.

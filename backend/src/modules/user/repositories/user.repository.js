@@ -13,3 +13,8 @@
  * "Is this username offensive?"). It only executes the query and returns 
  * the raw database document.
  */
+
+// Implementation contract:
+// 1) Provide atomic stat/profile updates to avoid race conditions.
+// 2) Keep query signatures narrow and explicit (findById, findByEmail, etc.).
+// 3) No response mapping; DTO/service layers own output formatting.

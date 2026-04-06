@@ -1,4 +1,3 @@
-JavaScript
 /**
  * ============================================================================
  * MULTIPLAYER CONTROLLER (The Lobby Manager)
@@ -15,3 +14,8 @@ JavaScript
  * directly. It should use the Multiplayer Service to prepare the database 
  * state so that when the Socket connects, the room is ready.
  */
+
+// Implementation contract:
+// 1) Handle HTTP lobby lifecycle only (create/join/list).
+// 2) Delegate matchmaking and room transitions to multiplayer service.
+// 3) Do not emit socket events directly from this layer.

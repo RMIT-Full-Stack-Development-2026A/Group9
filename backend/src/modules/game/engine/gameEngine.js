@@ -9,6 +9,7 @@ export const createEmptyBoard = (boardSize = DEFAULT_BOARD_SIZE) => {
 	return Array.from({ length: boardSize * boardSize }, () => null);
 };
 
+// Generates all winning line index combinations for the current board size.
 const buildWinningLines = (boardSize) => {
 	const lines = [];
 
@@ -36,6 +37,7 @@ const buildWinningLines = (boardSize) => {
 };
 
 export const evaluateBoard = (board, boardSize = DEFAULT_BOARD_SIZE) => {
+	// Single source of truth for win/draw detection used by services and sockets.
 	const winningLines = buildWinningLines(boardSize);
 
 	for (const line of winningLines) {

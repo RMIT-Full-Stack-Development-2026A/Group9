@@ -26,32 +26,15 @@ const gameRoomSchema = new mongoose.Schema(
 			unique: true,
 			index: true,
 		},
-		roomCode: {
-			type: String,
-			required: false,
-			trim: true,
-			uppercase: true,
-		},
 		player1: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
+			ref: "UserAccount",
 			required: true,
 			index: true,
 		},
 		player2: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-			default: null,
-		},
-		hostUserId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-			required: false,
-			index: true,
-		},
-		guestUserId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
+			ref: "UserAccount",
 			default: null,
 		},
 		status: {
@@ -60,21 +43,11 @@ const gameRoomSchema = new mongoose.Schema(
 			default: "waiting",
 			index: true,
 		},
-		visibility: {
-			type: String,
-			enum: ["public", "private"],
-			default: "public",
-		},
 		boardSize: {
 			type: Number,
 			default: 3,
 			min: 3,
 			max: 3,
-		},
-		hostSymbol: {
-			type: String,
-			enum: ["X", "O"],
-			default: "X",
 		},
 		player1Marker: {
 			type: String,
@@ -96,14 +69,6 @@ const gameRoomSchema = new mongoose.Schema(
 			default: null,
 		},
 		endTime: {
-			type: Date,
-			default: null,
-		},
-		startedAt: {
-			type: Date,
-			default: null,
-		},
-		endedAt: {
 			type: Date,
 			default: null,
 		},

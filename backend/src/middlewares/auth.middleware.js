@@ -16,14 +16,13 @@
  *   id: string,
  *   role: "player" | "admin" | string,
  *   email: string | undefined,
- *   isPremium: boolean,
- *   premiumUntil?: Date
+	*   premiumUntil?: Date
  * }
  */
 
 import jwt from "jsonwebtoken";
 import AppError from "../modules/shared/errors/AppError.js";
-import User from "../modules/user/models/user.model.js";
+import UserProfile from "../modules/user/models/userProfile.model.js";
 import AuthSession from "../modules/auth/models/authSession.model.js";
 import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";
 
@@ -62,7 +61,6 @@ export const authenticate = async (req, res, next) => {
 			id: payload.sub || payload.id || payload.userId,
 			role: payload.role || "player",
 			email: payload.email,
-			isPremium: Boolean(payload.isPremium),
 		};
 
 		if (!req.user.id) {
@@ -94,12 +92,12 @@ export const requirePremium = async (req, res, next) => {
 		return next(new AppError("Authentication required", 401));
 	}
 
-	const user = await User.findById(req.user.id).select("premiumUntil").lean();
-	if (!isPremiumActive(user?.premiumUntil)) {
+	const profile = await UserProfile.findById(req.user.id).select("premiumUntil").lean();
+	const hasPremium = isPremiumActive(profile?.premiumUntil);
+	if (!hasPremium) {
 		return next(new AppError("Premium membership is required to access leaderboard", 403));
 	}
 
-	req.user.isPremium = true;
-	req.user.premiumUntil = user.premiumUntil;
+	req.user.premiumUntil = profile?.premiumUntil || null;
 	return next();
 };

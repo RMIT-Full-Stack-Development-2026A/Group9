@@ -51,12 +51,34 @@ const GameArena = ({ user }) => {
   };
 
   const getResultMessage = () => {
-    if (game.opponentLeft) return "Opponent Left";
+    if (game.opponentLeft) return "Opponent Left — You Win!";
     if (game.isAborted) return "Game Aborted";
     if (game.isDraw) return "It's a Draw!";
     if (game.winner) {
+      if (game.gameMode === "online") {
+        return game.winner === game.myPlayerNumber ? "You Win!" : "You Lose!";
+      }
+      if (game.gameMode === "single") {
+        return game.winner === 1 ? "You Win!" : `${getPlayer2Label()} Wins!`;
+      }
+      // Local: two human players at same keyboard — say who won
       const name = game.winner === 1 ? getPlayer1Label() : getPlayer2Label();
       return `${name} Wins!`;
+    }
+    return "";
+  };
+
+  const getResultClass = () => {
+    if (game.isDraw) return "result-draw";
+    if (game.isAborted || game.opponentLeft) return "result-abort";
+    if (game.winner) {
+      if (game.gameMode === "online") {
+        return game.winner === game.myPlayerNumber ? "result-win" : "result-lose";
+      }
+      if (game.gameMode === "single") {
+        return game.winner === 1 ? "result-win" : "result-lose";
+      }
+      return "result-win";
     }
     return "";
   };
@@ -251,7 +273,7 @@ const GameArena = ({ user }) => {
               <span className="turn-indicator">{getCurrentTurnLabel()}</span>
             )}
             {game.gamePhase === "ended" && (
-              <span className={`result-text ${game.winner ? "result-win" : game.isDraw ? "result-draw" : "result-abort"}`}>
+              <span className={`result-text ${getResultClass()}`}>
                 {getResultMessage()}
               </span>
             )}
@@ -308,12 +330,27 @@ const GameArena = ({ user }) => {
         </div>
       </div>
 
-      {/* Win Animation Overlay */}
+      {/* Win Animation Overlay — contains action buttons so the overlay never traps the user */}
       {game.showWinAnimation && (
-        <div className="win-overlay">
-          <div className="win-content">
-            <span className="win-marker">{game.winner === 1 ? game.player1Marker : game.player2Marker}</span>
-            <h2>{getResultMessage()}</h2>
+        <div className="win-overlay" onClick={game.dismissWinAnimation}>
+          <div className="win-content" onClick={(e) => e.stopPropagation()}>
+            <span className={`win-marker ${getResultClass()}`}>
+              {game.winner === 1 ? game.player1Marker : game.player2Marker}
+            </span>
+            <h2 className={getResultClass()}>{getResultMessage()}</h2>
+            <div className="win-actions">
+              {game.gameMode !== "online" && (
+                <>
+                  <Button variant="primary" onClick={game.startGame}>Play Again</Button>
+                  <Button variant="ghost" onClick={game.resetGame}>Back to Setup</Button>
+                </>
+              )}
+              {game.gameMode === "online" && (
+                <Button variant="ghost" onClick={() => { game.resetGame(); navigate("/lobby"); }}>
+                  Back to Lobby
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       )}

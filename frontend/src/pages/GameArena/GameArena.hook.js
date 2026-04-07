@@ -518,5 +518,6 @@ export const useGameArena = (user) => {
     makeMove,
     abortGame,
     resetGame,
+    dismissWinAnimation: () => setShowWinAnimation(false),
   };
 };

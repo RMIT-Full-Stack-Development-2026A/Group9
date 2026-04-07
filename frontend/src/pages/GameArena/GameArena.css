@@ -166,7 +166,6 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 640px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -220,7 +219,8 @@
 
 .result-win { color: var(--green); }
 .result-draw { color: var(--orange); }
-.result-abort { color: var(--red); }
+.result-abort { color: var(--text-muted); }
+.result-lose { color: var(--red); }
 
 .move-counter {
   font-size: 13px;
@@ -252,14 +252,29 @@
 .win-marker {
   font-size: 5rem;
   display: block;
-  margin-bottom: 12px;
-  color: var(--green);
-  text-shadow: 0 0 40px rgba(34, 197, 94, 0.4);
+  margin-bottom: 16px;
+  text-shadow: 0 0 40px currentColor;
 }
+
+.win-marker.result-win { color: var(--green); }
+.win-marker.result-lose { color: var(--red); }
+.win-marker.result-draw { color: var(--orange); }
 
 .win-content h2 {
   font-size: 2rem;
   color: var(--text-h);
+  margin-bottom: 8px;
+}
+
+.win-content h2.result-win { color: var(--green); }
+.win-content h2.result-lose { color: var(--red); }
+.win-content h2.result-draw { color: var(--orange); }
+
+.win-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 28px;
 }
 
 @keyframes fadeIn {

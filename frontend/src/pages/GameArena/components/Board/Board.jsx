@@ -3,6 +3,10 @@ import "./Board.css";
 const Board = ({ board, boardStyle, winningCells, onCellClick, lastMove, disabled }) => {
   const size = board.length;
 
+  // Fixed cell size: at most 44px, but shrinks on narrow viewports.
+  // 120px = approx. padding + row-label column so the board fits without overflow.
+  const cellSize = `min(44px, calc((min(100vw, 1100px) - 120px) / ${size}))`;
+
   const isWinningCell = (row, col) => {
     if (!winningCells) return false;
     return winningCells.some(([r, c]) => r === row && c === col);
@@ -17,9 +21,12 @@ const Board = ({ board, boardStyle, winningCells, onCellClick, lastMove, disable
   const rowLabel = (r) => String(size - r);
 
   return (
-    <div className="board-wrapper">
+    <div className="board-wrapper" style={{ "--cell-size": cellSize }}>
       {/* Column labels */}
-      <div className="board-col-labels" style={{ gridTemplateColumns: `32px repeat(${size}, 1fr)` }}>
+      <div
+        className="board-col-labels"
+        style={{ gridTemplateColumns: `28px repeat(${size}, var(--cell-size))` }}
+      >
         <span />
         {Array.from({ length: size }, (_, c) => (
           <span key={c} className="board-label">{colLabel(c)}</span>
@@ -27,7 +34,7 @@ const Board = ({ board, boardStyle, winningCells, onCellClick, lastMove, disable
       </div>
 
       <div className="board-with-rows">
-        {/* Row labels + Board */}
+        {/* Row labels */}
         <div className="board-row-labels">
           {Array.from({ length: size }, (_, r) => (
             <span key={r} className="board-label">{rowLabel(r)}</span>
@@ -37,8 +44,8 @@ const Board = ({ board, boardStyle, winningCells, onCellClick, lastMove, disable
         <div
           className={`board board-style-${boardStyle}`}
           style={{
-            gridTemplateColumns: `repeat(${size}, 1fr)`,
-            gridTemplateRows: `repeat(${size}, 1fr)`,
+            gridTemplateColumns: `repeat(${size}, var(--cell-size))`,
+            gridTemplateRows: `repeat(${size}, var(--cell-size))`,
           }}
         >
           {board.map((row, r) =>

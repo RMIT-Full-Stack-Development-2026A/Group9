@@ -18,6 +18,14 @@ import { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../app/providers/AuthProvider.jsx";
 
+const isPremiumActive = (premiumUntil) => {
+	if (!premiumUntil) {
+		return false;
+	}
+
+	return new Date(premiumUntil).getTime() > Date.now();
+};
+
 export default function ProtectedRoute({ children, roles = [], requirePremium = false }) {
 	const auth = useContext(AuthContext);
 	const location = useLocation();
@@ -26,7 +34,7 @@ export default function ProtectedRoute({ children, roles = [], requirePremium = 
 		return <Navigate to="/login" replace state={{ from: location.pathname }} />;
 	}
 
-	if (requirePremium && !auth.user.isPremium) {
+	if (requirePremium && !isPremiumActive(auth.user.premiumUntil)) {
 		return <Navigate to="/payment" replace state={{ from: location.pathname }} />;
 	}
 

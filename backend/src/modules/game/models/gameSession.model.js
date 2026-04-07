@@ -9,17 +9,17 @@ const gameSessionSchema = new mongoose.Schema(
 		players: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
-				ref: "User",
+				ref: "UserAccount",
 			},
 		],
 		winner: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
+			ref: "UserAccount",
 			default: null,
 		},
 		result: {
 			type: String,
-			enum: ["win", "lose", "draw", "aborted"],
+			enum: ["player1_win", "player2_win", "draw", "aborted"],
 			default: null,
 		},
 		startTime: {
@@ -54,29 +54,6 @@ const gameSessionSchema = new mongoose.Schema(
 			type: String,
 			default: "",
 			trim: true,
-		},
-		status: {
-			type: String,
-			enum: ["waiting", "active", "finished", "draw"],
-			default: "waiting",
-		},
-		nextPlayer: {
-			type: String,
-			enum: ["X", "O"],
-			default: "X",
-		},
-		winnerSymbol: {
-			type: String,
-			enum: ["X", "O", null],
-			default: null,
-		},
-		winningLine: {
-			type: [Number],
-			default: [],
-		},
-		endedAt: {
-			type: Date,
-			default: null,
 		},
 	},
 	{

@@ -14,74 +14,53 @@
  * executes the queries the Service asks for.
  */
 
-import User from "../../user/models/user.model.js";
+import UserAccount from "../../user/models/user.model.js";
+import UserProfile from "../../user/models/userProfile.model.js";
 import AuthSession from "../models/authSession.model.js";
-import LoginAttempt from "../models/loginAttempt.model.js";
+
+const mergeAccountAndProfile = (account, profile) => {
+	if (!account) {
+		return null;
+	}
+
+	return {
+		...account,
+		premiumUntil: profile?.premiumUntil || null,
+		avatar: profile?.avatar || "",
+		country: profile?.country || "",
+		walletBalance: Number(profile?.walletBalance || 0),
+	};
+};
 
 // Read model-level identity by email. Service owns auth/business decisions.
 export const findUserByEmail = async (email) => {
-	return User.findOne({ email }).select("+password").lean();
+	const account = await UserAccount.findOne({ email }).select("+password").lean();
+	if (!account) {
+		return null;
+	}
+
+	const profile = await UserProfile.findById(account._id).lean();
+	return mergeAccountAndProfile(account, profile);
 };
 
 // Read minimal user profile by id for token/profile flows.
 export const findUserById = async (userId) => {
-	return User.findById(userId).lean();
+	const account = await UserAccount.findById(userId).lean();
+	if (!account) {
+		return null;
+	}
+
+	const profile = await UserProfile.findById(userId).lean();
+	return mergeAccountAndProfile(account, profile);
 };
 
 // Persist new user document. Hashing/validation must be done in service.
 export const createUser = async (payload) => {
-	const created = await User.create(payload);
-	return created.toObject();
-};
+	const createdAccount = await UserAccount.create(payload);
+	await UserProfile.create({ _id: createdAccount._id });
 
-// Side-effect update used for security analytics and audit trail.
-export const updateLastLogin = async (userId) => {
-	return User.findByIdAndUpdate(
-		userId,
-		{ $set: { lastLoginAt: new Date() } },
-		{ new: true }
-	).lean();
-};
-
-// Track failed login counters for brute-force monitoring and lockout policies.
-export const incrementFailedLoginAttempts = async (userId) => {
-	if (!userId) {
-		return null;
-	}
-
-	return User.findByIdAndUpdate(
-		userId,
-		{
-			$inc: { failedLoginAttempts: 1 },
-			$set: { lastFailedLogin: new Date() },
-		},
-		{ new: true }
-	).lean();
-};
-
-// Reset failed login counters after a successful authentication.
-export const resetFailedLoginAttempts = async (userId) => {
-	if (!userId) {
-		return null;
-	}
-
-	return User.findByIdAndUpdate(
-		userId,
-		{ $set: { failedLoginAttempts: 0, lastFailedLogin: null } },
-		{ new: true }
-	).lean();
-};
-
-// Persist each login outcome for security audit and analytics.
-export const createLoginAttempt = async ({ userId = null, success, ipAddress }) => {
-	const created = await LoginAttempt.create({
-		userId,
-		success,
-		attemptTime: new Date(),
-		ipAddress: ipAddress || "",
-	});
-
-	return created.toObject();
+	const account = createdAccount.toObject();
+	return mergeAccountAndProfile(account, null);
 };
 
 // Persist issued auth token digest and device metadata in Auth bounded context.

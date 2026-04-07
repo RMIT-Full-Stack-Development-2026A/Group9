@@ -14,7 +14,7 @@ const adminActionLogSchema = new mongoose.Schema(
   {
     adminId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "UserAccount",
       required: true,
       index: true,
     },
@@ -26,7 +26,7 @@ const adminActionLogSchema = new mongoose.Schema(
     },
     targetUserId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "UserAccount",
       default: null,
       index: true,
     },

@@ -2,46 +2,36 @@ import mongoose from "mongoose";
 
 const moveSchema = new mongoose.Schema(
 	{
-		gameId: {
+		sessionId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "GameSession",
 			required: true,
 			index: true,
 		},
 		playerId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
+			type: String,
+			enum: ["player1", "player2", "ai"],
 			required: true,
+			index: true,
 		},
 		marker: {
 			type: String,
 			enum: ["X", "O"],
-			default: null,
-		},
-		playerSymbol: {
-			type: String,
-			enum: ["X", "O"],
-			default: null,
+			required: true,
 		},
 		position: {
 			type: String,
 			required: true,
 			trim: true,
 		},
-		index: {
-			type: Number,
-			required: false,
-			min: 0,
-			max: 8,
-		},
 		row: {
 			type: Number,
-			required: false,
+			required: true,
 			min: 0,
 		},
 		col: {
 			type: Number,
-			required: false,
+			required: true,
 			min: 0,
 		},
 		moveNumber: {
@@ -51,7 +41,7 @@ const moveSchema = new mongoose.Schema(
 		},
 	},
 	{
-		timestamps: true,
+		timestamps: { createdAt: true, updatedAt: false },
 		collection: process.env.MONGO_MOVE_COLLECTION || "Moves",
 	}
 );

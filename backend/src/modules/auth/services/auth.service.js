@@ -30,14 +30,6 @@ import * as authRepository from "../repositories/auth.repository.js";
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 10);
 
-const isPremiumActive = (premiumUntil) => {
-	if (!premiumUntil) {
-		return false;
-	}
-
-	return new Date(premiumUntil).getTime() > Date.now();
-};
-
 // JWT payload is the canonical identity contract used by auth middleware.
 const signAccessToken = (user) => {
 	return jwt.sign(
@@ -45,7 +37,6 @@ const signAccessToken = (user) => {
 			sub: user._id?.toString(),
 			email: user.email,
 			role: user.role,
-			isPremium: isPremiumActive(user.premiumUntil),
 		},
 		process.env.JWT_SECRET || "dev_jwt_secret",
 		{
@@ -112,7 +103,7 @@ export const register = async (payload, sessionContext = {}) => {
 			username: createdUser.username,
 			email: createdUser.email,
 			role: createdUser.role,
-			isPremium: isPremiumActive(createdUser.premiumUntil),
+			premiumUntil: createdUser.premiumUntil,
 		},
 	});
 };
@@ -128,31 +119,18 @@ export const login = async (payload, sessionContext = {}) => {
 	const user = await authRepository.findUserByEmail(dto.email);
 
 	if (!user) {
-		await authRepository.createLoginAttempt({
-			success: false,
-			ipAddress: sessionContext.ipAddress,
-		});
 		throw new AppError("Invalid email or password", 401);
+	}
+
+	if (user.isActive === false) {
+		throw new AppError("Account is inactive", 403);
 	}
 
 	const isPasswordValid = await bcrypt.compare(dto.password, user.password);
 	if (!isPasswordValid) {
-		await authRepository.incrementFailedLoginAttempts(user._id);
-		await authRepository.createLoginAttempt({
-			userId: user._id,
-			success: false,
-			ipAddress: sessionContext.ipAddress,
-		});
 		throw new AppError("Invalid email or password", 401);
 	}
 
-	await authRepository.resetFailedLoginAttempts(user._id);
-	await authRepository.updateLastLogin(user._id);
-	await authRepository.createLoginAttempt({
-		userId: user._id,
-		success: true,
-		ipAddress: sessionContext.ipAddress,
-	});
 	const accessToken = signAccessToken(user);
 	const token = hashSessionToken(accessToken);
 	await authRepository.createAuthSession({
@@ -170,7 +148,7 @@ export const login = async (payload, sessionContext = {}) => {
 			username: user.username,
 			email: user.email,
 			role: user.role,
-			isPremium: isPremiumActive(user.premiumUntil),
+			premiumUntil: user.premiumUntil,
 		},
 	});
 };
@@ -187,9 +165,10 @@ export const getMyProfile = async (userId) => {
 		username: user.username,
 		email: user.email,
 		role: user.role,
-		isPremium: isPremiumActive(user.premiumUntil),
 		premiumUntil: user.premiumUntil,
 		avatar: user.avatar,
+		country: user.country,
+		walletBalance: user.walletBalance,
 	};
 };
 

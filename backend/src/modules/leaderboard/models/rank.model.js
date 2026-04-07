@@ -20,27 +20,8 @@ const rankSchema = new mongoose.Schema(
 	{
 		userId: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
+			ref: "UserAccount",
 			required: true,
-			index: true,
-		},
-		season: {
-			type: String,
-			default: "global",
-			trim: true,
-			index: true,
-		},
-		rank: {
-			type: Number,
-			required: true,
-			min: 1,
-			index: true,
-		},
-		rating: {
-			type: Number,
-			required: true,
-			min: 0,
-			default: 1000,
 			index: true,
 		},
 		wins: {
@@ -74,62 +55,14 @@ const rankSchema = new mongoose.Schema(
 			max: 100,
 			default: 0,
 		},
-		tier: {
-			type: String,
-			enum: [
-				"Bronze",
-				"Silver",
-				"Gold",
-				"Platinum",
-				"Diamond",
-				"Expert",
-				"Master",
-				"Grandmaster",
-			],
-			default: "Bronze",
-			index: true,
-		},
-		isPremium: {
-			type: Boolean,
-			default: false,
-			index: true,
-		},
-		rankChangeWeek: {
-			type: Number,
-			default: 0,
-		},
-		badgeCode: {
-			type: String,
-			default: "",
-			trim: true,
-		},
-		lastMatchAt: {
-			type: Date,
-			default: null,
-		},
 	},
 	{
-		timestamps: true,
+		timestamps: { createdAt: false, updatedAt: true },
 		collection: process.env.MONGO_RANK_COLLECTION || "Ranks",
-		toJSON: { virtuals: true },
-		toObject: { virtuals: true },
+		toJSON: { virtuals: false },
+		toObject: { virtuals: false },
 	}
 );
-
-// Derived UI value used by popup cards; no need to store this in DB.
-rankSchema.virtual("matchesPlayed").get(function getMatchesPlayed() {
-	return (this.wins || 0) + (this.losses || 0) + (this.draws || 0);
-});
-
-// Derived percentage shown in table and summary cards.
-rankSchema.virtual("computedWinRate").get(function getComputedWinRate() {
-	const total = (this.wins || 0) + (this.losses || 0) + (this.draws || 0);
-	if (total === 0) {
-		return 0;
-	}
-
-	return Number((((this.wins || 0) / total) * 100).toFixed(1));
-});
 
 rankSchema.pre("validate", function syncDerivedLeaderboardFields(next) {
 	this.totalGames = (this.wins || 0) + (this.losses || 0) + (this.draws || 0);
@@ -138,10 +71,7 @@ rankSchema.pre("validate", function syncDerivedLeaderboardFields(next) {
 });
 
 // One rank per season, plus read-heavy indexes for ranking filters/sorts.
-rankSchema.index({ season: 1, rank: 1 }, { unique: true });
-rankSchema.index({ season: 1, rating: -1 });
-rankSchema.index({ season: 1, isPremium: 1, rank: 1 });
-rankSchema.index({ userId: 1, season: 1 }, { unique: true });
+rankSchema.index({ userId: 1 }, { unique: true });
 
 const Rank = mongoose.models.Rank || mongoose.model("Rank", rankSchema);
 

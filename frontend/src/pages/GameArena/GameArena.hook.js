@@ -323,8 +323,18 @@ export const useGameArena = (user) => {
       }
 
       if (sessionId) {
+        // Resolve the winning user's real MongoDB _id.
+        // - Player 1 is always the authenticated user.
+        // - Player 2 in online mode is a real user whose ID comes from roomData.
+        // - Player 2 in single/local mode has no user account (AI or guest).
+        let winnerId;
+        if (currentPlayer === 1) {
+          winnerId = user?._id;
+        } else if (gameMode === "online") {
+          winnerId = roomData?.player2?._id;
+        }
         gameService.endSession(sessionId, {
-          winnerId: currentPlayer === 1 ? "player1" : null,
+          winnerId,
           result: "win",
         }).catch(() => {});
       }

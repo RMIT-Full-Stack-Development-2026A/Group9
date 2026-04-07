@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const gameSessionSchema = new mongoose.Schema({
   sessionNumber: { type: Number, unique: true },
-  players: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  players: [{ type: mongoose.Schema.Types.ObjectId, ref: "UserAccount" }],
   botName: { type: String, default: null },
   localPlayer2Name: { type: String, default: null },
 
@@ -15,7 +15,7 @@ const gameSessionSchema = new mongoose.Schema({
 
   winner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "UserAccount",
     default: null,
   },
   result: {

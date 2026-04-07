@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const gameRoomSchema = new mongoose.Schema({
   roomNumber: { type: Number, unique: true },
-  player1: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  player2: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+  player1: { type: mongoose.Schema.Types.ObjectId, ref: "UserAccount", required: true },
+  player2: { type: mongoose.Schema.Types.ObjectId, ref: "UserAccount", default: null },
   status: { type: String, enum: ["waiting", "playing", "finished"], default: "waiting" },
   sessionId: { type: mongoose.Schema.Types.ObjectId, ref: "GameSession", default: null },
   boardSize: { type: Number, default: 10 },

@@ -1,43 +1,105 @@
-﻿import User from "./user.model.js";
+﻿import mongoose from "mongoose";
+import UserAccount from "./userAccount.model.js";
+import UserProfile from "./userProfile.model.js";
 
-export const findById = (id) => User.findById(id).select("-password");
+// --- Internal helper ---
+// Merges a lean UserAccount doc with a lean UserProfile doc into one plain object.
+// The shared _id from UserAccount is kept as the canonical user _id.
+const merge = (account, profile) => {
+  const { __v: _av, ...acc } = account;
+  const { _id: _pid, __v: _pv, ...prf } = profile || {};
+  return { ...acc, ...prf };
+};
 
-export const findByIdWithPassword = (id) => User.findById(id);
+// --- Standard user operations ---
 
-export const findByEmail = (email) => User.findOne({ email });
+export const findById = async (id) => {
+  const [account, profile] = await Promise.all([
+    UserAccount.findById(id).select("-password").lean(),
+    UserProfile.findById(id).lean(),
+  ]);
+  if (!account) return null;
+  return merge(account, profile);
+};
 
-export const findByUsername = (username) => User.findOne({ username });
+export const findByIdWithPassword = (id) => UserAccount.findById(id);
+
+export const findByEmail = (email) => UserAccount.findOne({ email });
+
+export const findByUsername = (username) => UserAccount.findOne({ username });
 
 export const findByEmailOrUsername = (identifier) =>
-  User.findOne({ $or: [{ email: identifier }, { username: identifier }] });
+  UserAccount.findOne({ $or: [{ email: identifier }, { username: identifier }] });
 
-export const createUser = (userData) => User.create(userData);
-
-export const updateUser = (id, data) =>
-  User.findByIdAndUpdate(id, data, { new: true }).select("-password");
-
-export const saveUser = async (user) => {
-  await user.save();
-  const { password, ...userData } = user.toObject();
-  return userData;
+export const createUser = async (userData) => {
+  const { country, avatar, isPremium, walletBalance, ...accountData } = userData;
+  const accountId = new mongoose.Types.ObjectId();
+  await Promise.all([
+    UserAccount.create({ _id: accountId, ...accountData }),
+    UserProfile.create({ _id: accountId, country: country || "", avatar: avatar || "" }),
+  ]);
+  return findById(accountId);
 };
+
+export const updateUser = async (id, data) => {
+  const { country, avatar, isPremium, walletBalance, ...accountFields } = data;
+  const profileFields = Object.fromEntries(
+    Object.entries({ country, avatar, isPremium, walletBalance }).filter(([, v]) => v !== undefined)
+  );
+  const promises = [];
+  if (Object.keys(accountFields).length > 0) {
+    promises.push(UserAccount.findByIdAndUpdate(id, accountFields, { new: true }));
+  }
+  if (Object.keys(profileFields).length > 0) {
+    promises.push(UserProfile.findByIdAndUpdate(id, profileFields, { new: true }));
+  }
+  await Promise.all(promises);
+  return findById(id);
+};
+
+// Called by user.service.js updateProfile after mutating the account document in-place.
+export const saveUser = async (account) => {
+  await account.save();
+  return findById(account._id);
+};
+
+export const updateProfileFields = (id, fields) =>
+  UserProfile.findByIdAndUpdate(id, fields, { new: true, upsert: true });
 
 // --- Cross-module operations (exposed via user.interface.js) ---
 
+// Auth middleware: needs role + isActive only — no profile query needed.
 export const findUserForAuth = (id) =>
-  User.findById(id).select("role isActive");
+  UserAccount.findById(id).select("role isActive");
 
-export const findAllPlayers = () =>
-  User.find({ role: "player" })
-    .select("username email country avatar isPremium isActive createdAt")
-    .sort({ createdAt: -1 })
+export const findAllPlayers = async () => {
+  const accounts = await UserAccount.find({ role: "player" })
+    .select("username email isActive role createdAt")
     .lean();
+  const ids = accounts.map((a) => a._id);
+  const profiles = await UserProfile.find({ _id: { $in: ids } })
+    .select("country avatar isPremium walletBalance")
+    .lean();
+  const profileMap = Object.fromEntries(profiles.map((p) => [p._id.toString(), p]));
+  return accounts.map((a) => merge(a, profileMap[a._id.toString()]));
+};
+
+// Batch fetch for use by other modules (e.g. leaderboard enrichment).
+export const findByIds = async (ids) => {
+  const [accounts, profiles] = await Promise.all([
+    UserAccount.find({ _id: { $in: ids } }).select("username").lean(),
+    UserProfile.find({ _id: { $in: ids } }).select("country avatar isPremium").lean(),
+  ]);
+  const profileMap = Object.fromEntries(profiles.map((p) => [p._id.toString(), p]));
+  return accounts.map((a) => merge(a, profileMap[a._id.toString()]));
+};
 
 export const setActiveStatus = (id, isActive) =>
-  User.findByIdAndUpdate(id, { isActive }, { new: true }).select("-password");
+  UserAccount.findByIdAndUpdate(id, { isActive }, { new: true });
 
 export const updateWalletBalance = (id, balance) =>
-  User.findByIdAndUpdate(id, { walletBalance: balance }, { new: true });
+  UserProfile.findByIdAndUpdate(id, { walletBalance: balance }, { new: true, upsert: true });
 
 export const setPremiumStatus = (id, isPremium) =>
-  User.findByIdAndUpdate(id, { isPremium }, { new: true });
+  UserProfile.findByIdAndUpdate(id, { isPremium }, { new: true, upsert: true });
+

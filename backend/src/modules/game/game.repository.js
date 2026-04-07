@@ -3,7 +3,7 @@ import Move from "./move.model.js";
 
 export const findSessionsByFilter = (filter, sort) => {
   return GameSession.find(filter)
-    .populate("players", "username avatar")
+    .populate("players", "username")
     .populate("winner", "username")
     .sort(sort)
     .lean();
@@ -13,7 +13,7 @@ export const createSession = (data) => GameSession.create(data);
 
 export const findSessionById = (id) =>
   GameSession.findById(id)
-    .populate("players", "username avatar")
+    .populate("players", "username")
     .populate("winner", "username");
 
 export const updateSession = (id, data) =>

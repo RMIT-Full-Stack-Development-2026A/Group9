@@ -29,3 +29,5 @@ export const setPremiumStatus = (id, isPremium) =>
 
 export const updateWalletBalance = (id, balance) =>
   userService.updateWalletBalance(id, balance);
+
+export const getUsersByIds = (ids) => userService.getUsersByIds(ids);

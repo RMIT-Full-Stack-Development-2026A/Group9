@@ -3,7 +3,7 @@
  * AUTH SESSION MODEL
  * ============================================================================
  * Purpose: Tracks issued auth sessions/tokens in Auth bounded context.
- * This allows token lifecycle control independent from User model.
+ * This allows token lifecycle control independent from UserAccount/Profile data.
  */
 
 import mongoose from "mongoose";
@@ -12,7 +12,7 @@ const authSessionSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "UserAccount",
       required: true,
       index: true,
     },

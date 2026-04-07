@@ -9,7 +9,8 @@
  * * Key Responsibilities:
  * 1. Extract data from the request (req.body for credentials).
  * 2. Pass that clean data to the AuthService.
- * 3. Receive the generated token and user data from the Service.
+ * 3. Receive the generated token and composed user data from the Service
+ *    (UserAccount identity + UserProfile entitlement fields).
  * 4. Send the appropriate HTTP response (200 OK, 201 Created) back to React.
  * 5. Catch any errors (like "Invalid Password") and pass them to next().
  * * CRITICAL RULE: A Controller should NEVER contain bcrypt hashing, JWT 

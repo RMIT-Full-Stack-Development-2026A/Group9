@@ -17,9 +17,10 @@ const userProfileSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
-    isPremium: {
-      type: Boolean,
-      default: false,
+    premiumUntil: {
+      type: Date,
+      default: null,
+      index: true,
     },
     walletBalance: {
       type: Number,

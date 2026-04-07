@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * ROOT APPLICATION COMPONENT (The "Toang" Engine)
+ * APP SHELL FILE PURPOSE
  * ============================================================================
  * Location: src/App.jsx
  * * 🎯 CORE PRINCIPLE:

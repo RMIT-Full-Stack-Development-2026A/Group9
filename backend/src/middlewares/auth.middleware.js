@@ -1,6 +1,39 @@
+/**
+ * ============================================================================
+ * AUTH MIDDLEWARE CONTRACT (Team Integration Boundary)
+ * ============================================================================
+ * Purpose: Provide a single, stable authentication/authorization contract for
+ * all modules. Teammates should consume these exports as-is instead of writing
+ * module-specific auth checks.
+ *
+ * Exported middlewares:
+ * 1) authenticate   -> validates JWT + active AuthSession, sets req.user.
+ * 2) authorizeRoles -> role-based access control for protected routes.
+ * 3) requirePremium -> premium entitlement check based on premiumUntil.
+ *
+ * req.user contract set by authenticate:
+ * {
+ *   id: string,
+ *   role: "player" | "admin" | string,
+ *   email: string | undefined,
+ *   isPremium: boolean,
+ *   premiumUntil?: Date
+ * }
+ */
+
 import jwt from "jsonwebtoken";
 import AppError from "../modules/shared/errors/AppError.js";
 import User from "../modules/user/models/user.model.js";
+import AuthSession from "../modules/auth/models/authSession.model.js";
+import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";
+
+const isPremiumActive = (premiumUntil) => {
+	if (!premiumUntil) {
+		return false;
+	}
+
+	return new Date(premiumUntil).getTime() > Date.now();
+};
 
 const getBearerToken = (authorizationHeader = "") => {
 	if (!authorizationHeader.startsWith("Bearer ")) {
@@ -10,7 +43,7 @@ const getBearerToken = (authorizationHeader = "") => {
 	return authorizationHeader.slice(7).trim();
 };
 
-export const authenticate = (req, res, next) => {
+export const authenticate = async (req, res, next) => {
 	const token = getBearerToken(req.headers.authorization || "");
 
 	if (!token) {
@@ -19,12 +52,17 @@ export const authenticate = (req, res, next) => {
 
 	try {
 		const payload = jwt.verify(token, process.env.JWT_SECRET || "dev_jwt_secret");
+		const tokenHash = hashSessionToken(token);
+		const session = await AuthSession.findOne({ token: tokenHash, isRevoked: false }).lean();
+		if (!session || new Date(session.expiresAt).getTime() <= Date.now()) {
+			return next(new AppError("Authentication session has expired", 401));
+		}
 
 		req.user = {
 			id: payload.sub || payload.id || payload.userId,
 			role: payload.role || "player",
 			email: payload.email,
-			isPremium: payload.isPremium,
+			isPremium: Boolean(payload.isPremium),
 		};
 
 		if (!req.user.id) {
@@ -56,15 +94,12 @@ export const requirePremium = async (req, res, next) => {
 		return next(new AppError("Authentication required", 401));
 	}
 
-	if (req.user.isPremium === true) {
-		return next();
-	}
-
-	const user = await User.findById(req.user.id).select("isPremium").lean();
-	if (!user?.isPremium) {
+	const user = await User.findById(req.user.id).select("premiumUntil").lean();
+	if (!isPremiumActive(user?.premiumUntil)) {
 		return next(new AppError("Premium membership is required to access leaderboard", 403));
 	}
 
 	req.user.isPremium = true;
+	req.user.premiumUntil = user.premiumUntil;
 	return next();
 };

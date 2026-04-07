@@ -13,18 +13,5 @@
  * 4. Receipt Generation: Formatting transaction data for the UI.
  */
 
-import { http } from "../../../shared/utils/http.helper.js";
 
-export const createPremiumCheckout = async (payload = {}) => {
-	return http("/billing/checkout/premium", {
-		method: "POST",
-		body: JSON.stringify(payload),
-	});
-};
-
-export const submitWebhookEvent = async (payload) => {
-	return http("/billing/webhook", {
-		method: "POST",
-		body: JSON.stringify(payload),
-	});
-};
+export {};

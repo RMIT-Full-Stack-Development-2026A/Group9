@@ -21,11 +21,10 @@ import mongoose from "mongoose";
 const gameRoomSchema = new mongoose.Schema(
 	{
 		roomNumber: {
-			type: String,
+			type: Number,
 			required: true,
 			unique: true,
-			trim: true,
-			uppercase: true,
+			index: true,
 		},
 		roomCode: {
 			type: String,
@@ -76,6 +75,16 @@ const gameRoomSchema = new mongoose.Schema(
 			type: String,
 			enum: ["X", "O"],
 			default: "X",
+		},
+		player1Marker: {
+			type: String,
+			enum: ["X", "O"],
+			default: "X",
+		},
+		player2Marker: {
+			type: String,
+			enum: ["X", "O", null],
+			default: "O",
 		},
 		sessionId: {
 			type: mongoose.Schema.Types.ObjectId,

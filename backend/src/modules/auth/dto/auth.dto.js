@@ -1,3 +1,16 @@
+/**
+ * ============================================================================
+ * AUTH DTO CONTRACT
+ * ============================================================================
+ * Purpose: Defines request/response DTOs and payload validation used only by
+ * the Auth module (register, login, auth response shape).
+ *
+ * Team boundary:
+ * - Keep this file auth-only.
+ * - Do not add Admin feature DTOs here; place Admin contracts in
+ *   modules/admin/dto/admin.dto.js.
+ */
+
 import {
 	assertRequiredFields,
 	isEmail,

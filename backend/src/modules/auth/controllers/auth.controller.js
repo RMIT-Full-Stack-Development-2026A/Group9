@@ -18,9 +18,22 @@
 
 import * as authService from "../services/auth.service.js";
 
+const getBearerToken = (authorizationHeader = "") => {
+	if (!authorizationHeader.startsWith("Bearer ")) {
+		return null;
+	}
+
+	return authorizationHeader.slice(7).trim();
+};
+
+const extractSessionContext = (req) => ({
+	userAgent: req.headers["user-agent"],
+	ipAddress: req.ip,
+});
+
 export const register = async (req, res, next) => {
 	try {
-		const result = await authService.register(req.body);
+		const result = await authService.register(req.body, extractSessionContext(req));
 		return res.status(201).json({ success: true, data: result });
 	} catch (error) {
 		return next(error);
@@ -29,7 +42,7 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
 	try {
-		const result = await authService.login(req.body);
+		const result = await authService.login(req.body, extractSessionContext(req));
 		return res.status(200).json({ success: true, data: result });
 	} catch (error) {
 		return next(error);
@@ -40,6 +53,16 @@ export const me = async (req, res, next) => {
 	try {
 		const profile = await authService.getMyProfile(req.user.id);
 		return res.status(200).json({ success: true, data: profile });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const logout = async (req, res, next) => {
+	try {
+		const token = getBearerToken(req.headers.authorization || "");
+		const result = await authService.logout(token);
+		return res.status(200).json({ success: true, data: result });
 	} catch (error) {
 		return next(error);
 	}

@@ -13,12 +13,4 @@
  * 4. Data Cleaning: Handling edge cases like players with 0 games or hidden profiles.
  */
 
-import { http } from "../../../shared/utils/http.helper.js";
-
-export const getGlobalLeaderboard = async (query = "") => {
-	return http(`/leaderboard/global${query ? `?${query}` : ""}`, { method: "GET" });
-};
-
-export const getMyLeaderboardSummary = async () => {
-	return http("/leaderboard/me", { method: "GET" });
-};
+export {};

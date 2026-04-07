@@ -1,3 +1,13 @@
+/**
+ * ============================================================================
+ * SHARED VALIDATORS FILE PURPOSE
+ * ============================================================================
+ * Purpose: Common input validation and sanitization helpers used by multiple
+ * module DTOs. Keep these helpers framework-agnostic and side-effect free.
+ *
+ * Note: This is a core shared foundation file and should not be emptied.
+ */
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MONGO_ID_REGEX = /^[a-f\d]{24}$/i;
 const UPPERCASE_REGEX = /[A-Z]/;

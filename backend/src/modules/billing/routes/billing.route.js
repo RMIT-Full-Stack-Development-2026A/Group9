@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { authenticate } from "../../../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -7,7 +6,7 @@ router.get("/health", (req, res) => {
 	res.status(200).json({ module: "billing", status: "ok" });
 });
 
-router.post("/checkout/premium", authenticate, (req, res) => {
+router.post("/checkout/premium", (req, res) => {
 	res.status(501).json({
 		success: false,
 		message: "Checkout service not implemented yet",

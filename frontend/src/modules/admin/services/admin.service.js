@@ -14,14 +14,3 @@
  */
 
 import { http } from "../../../shared/utils/http.helper.js";
-
-export const listUsers = async (query = "") => {
-	return http(`/admin/users${query ? `?${query}` : ""}`, { method: "GET" });
-};
-
-export const banUser = async (payload) => {
-	return http("/admin/users/ban", {
-		method: "POST",
-		body: JSON.stringify(payload),
-	});
-};

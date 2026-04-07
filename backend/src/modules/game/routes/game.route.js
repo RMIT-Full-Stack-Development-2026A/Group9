@@ -1,6 +1,4 @@
 import { Router } from "express";
-import { authenticate } from "../../../middlewares/auth.middleware.js";
-import { createSession, makeMove } from "../controllers/game.controller.js";
 
 const router = Router();
 
@@ -9,8 +7,18 @@ router.get("/health", (req, res) => {
 	res.status(200).json({ module: "game", status: "ok" });
 });
 
-// Game endpoints require authenticated players.
-router.post("/sessions", authenticate, createSession);
-router.post("/sessions/move", authenticate, makeMove);
+router.post("/sessions", (req, res) => {
+	res.status(501).json({
+		success: false,
+		message: "Game session creation service not implemented yet",
+	});
+});
+
+router.post("/sessions/move", (req, res) => {
+	res.status(501).json({
+		success: false,
+		message: "Game move service not implemented yet",
+	});
+});
 
 export default router;

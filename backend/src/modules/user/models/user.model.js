@@ -19,18 +19,29 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
 	{
+		// Identity
 		username: { type: String, required: true, trim: true },
 		email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-		password: { type: String, required: true },
-		isPremium: { type: Boolean, default: false },
-		country: { type: String, default: "" },
+		password: { type: String, required: true, select: false },
+
+		// Access control
 		role: { type: String, enum: ["player", "admin"], default: "player" },
 		isActive: { type: Boolean, default: true },
-		avatar: { type: String, default: "" },
+
+		// Account status
 		premiumUntil: { type: Date, default: null },
+
+		// Profile
+		country: { type: String, default: "" },
+		avatar: { type: String, default: "" },
+
+		// Security
 		walletBalance: { type: Number, default: 0 },
 		failedLoginAttempts: { type: Number, default: 0 },
 		lastFailedLogin: { type: Date, default: null },
+
+		// Activity
+		lastLoginAt: { type: Date, default: null },
 	},
 	{
 		timestamps: true,

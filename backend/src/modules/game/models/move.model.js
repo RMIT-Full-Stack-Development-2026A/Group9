@@ -13,6 +13,11 @@ const moveSchema = new mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
+		marker: {
+			type: String,
+			enum: ["X", "O"],
+			default: null,
+		},
 		playerSymbol: {
 			type: String,
 			enum: ["X", "O"],
@@ -28,6 +33,16 @@ const moveSchema = new mongoose.Schema(
 			required: false,
 			min: 0,
 			max: 8,
+		},
+		row: {
+			type: Number,
+			required: false,
+			min: 0,
+		},
+		col: {
+			type: Number,
+			required: false,
+			min: 0,
 		},
 		moveNumber: {
 			type: Number,

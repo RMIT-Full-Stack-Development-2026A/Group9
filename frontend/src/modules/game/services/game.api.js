@@ -12,12 +12,4 @@
  * 4. Game Validation: Fetching static game config or rules.
  */
 
-import { http } from "../../../shared/utils/http.helper.js";
-
-export const getGameHealth = async () => {
-	return http("/game/health", { method: "GET" });
-};
-
-export const getOpenRooms = async () => {
-	return http("/multiplayer/rooms/public", { method: "GET" });
-};
+export {};

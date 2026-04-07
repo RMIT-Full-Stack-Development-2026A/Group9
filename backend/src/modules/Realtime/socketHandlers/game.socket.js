@@ -1,3 +1,12 @@
+/**
+ * ============================================================================
+ * GAME SOCKET HANDLER PURPOSE
+ * ============================================================================
+ * Purpose: Registers realtime game events for room join/move/leave flows.
+ * Current logic is a lightweight starter and can be replaced by the Game or
+ * Multiplayer feature assignee.
+ */
+
 export default function registerGameSocketHandlers(io, socket) {
 	socket.on("game:join", ({ roomId } = {}) => {
 		if (!roomId) {

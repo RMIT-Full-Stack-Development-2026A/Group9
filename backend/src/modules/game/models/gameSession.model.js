@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const gameSessionSchema = new mongoose.Schema(
 	{
+		sessionNumber: {
+			type: Number,
+			index: true,
+		},
 		players: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
@@ -40,6 +44,16 @@ const gameSessionSchema = new mongoose.Schema(
 			type: String,
 			enum: ["classic", "ai", "multiplayer"],
 			default: "classic",
+		},
+		botName: {
+			type: String,
+			default: "",
+			trim: true,
+		},
+		localPlayer2Name: {
+			type: String,
+			default: "",
+			trim: true,
 		},
 		status: {
 			type: String,

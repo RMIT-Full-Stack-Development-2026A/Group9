@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { authenticate, requirePremium } from "../../../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -7,9 +6,6 @@ const router = Router();
 router.get("/health", (req, res) => {
 	res.status(200).json({ module: "leaderboard", status: "ok" });
 });
-
-// All ranking endpoints are premium-only by product rule.
-router.use(authenticate, requirePremium);
 
 // TODO: replace stub with controller/service using leaderboard DTO + repository.
 router.get("/global", (req, res) => {

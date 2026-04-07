@@ -1,3 +1,12 @@
+/**
+ * ============================================================================
+ * SOCKET SERVER FILE PURPOSE
+ * ============================================================================
+ * Purpose: Boots Socket.IO and wires module handlers when clients connect.
+ * Keep this file as infrastructure glue only; feature-specific events belong
+ * in socketHandlers/*.js files.
+ */
+
 import { Server } from "socket.io";
 import registerGameSocketHandlers from "./socketHandlers/game.socket.js";
 import registerChatSocketHandlers from "./socketHandlers/chat.socket.js";

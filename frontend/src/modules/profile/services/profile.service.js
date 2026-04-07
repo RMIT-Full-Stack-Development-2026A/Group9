@@ -13,20 +13,4 @@
  * 4. Image Handling: Optimizing or choosing default avatars based on rank.
  */
 
-import { http } from "../../../shared/utils/http.helper.js";
-
-export const getMyProfile = async () => {
-	return http("/users/me", { method: "GET" });
-};
-
-export const updateMyProfile = async (payload) => {
-	return http("/users/me", {
-		method: "PATCH",
-		body: JSON.stringify(payload),
-	});
-};
-
-export const searchProfiles = async (params = "") => {
-	const query = params ? `?${params}` : "";
-	return http(`/users/search${query}`, { method: "GET" });
-};
+export {};

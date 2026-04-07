@@ -55,6 +55,25 @@ const rankSchema = new mongoose.Schema(
 			min: 0,
 			default: 0,
 		},
+		draws: {
+			type: Number,
+			required: true,
+			min: 0,
+			default: 0,
+		},
+		totalGames: {
+			type: Number,
+			required: true,
+			min: 0,
+			default: 0,
+		},
+		winRate: {
+			type: Number,
+			required: true,
+			min: 0,
+			max: 100,
+			default: 0,
+		},
 		tier: {
 			type: String,
 			enum: [
@@ -99,17 +118,23 @@ const rankSchema = new mongoose.Schema(
 
 // Derived UI value used by popup cards; no need to store this in DB.
 rankSchema.virtual("matchesPlayed").get(function getMatchesPlayed() {
-	return (this.wins || 0) + (this.losses || 0);
+	return (this.wins || 0) + (this.losses || 0) + (this.draws || 0);
 });
 
 // Derived percentage shown in table and summary cards.
-rankSchema.virtual("winRate").get(function getWinRate() {
-	const total = (this.wins || 0) + (this.losses || 0);
+rankSchema.virtual("computedWinRate").get(function getComputedWinRate() {
+	const total = (this.wins || 0) + (this.losses || 0) + (this.draws || 0);
 	if (total === 0) {
 		return 0;
 	}
 
 	return Number((((this.wins || 0) / total) * 100).toFixed(1));
+});
+
+rankSchema.pre("validate", function syncDerivedLeaderboardFields(next) {
+	this.totalGames = (this.wins || 0) + (this.losses || 0) + (this.draws || 0);
+	this.winRate = this.totalGames > 0 ? Number(((this.wins / this.totalGames) * 100).toFixed(1)) : 0;
+	next();
 });
 
 // One rank per season, plus read-heavy indexes for ranking filters/sorts.

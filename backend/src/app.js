@@ -1,3 +1,16 @@
+/**
+ * ============================================================================
+ * APP BOOTSTRAP FILE PURPOSE
+ * ============================================================================
+ * Purpose: Creates and configures the Express application instance.
+ * This is shared infrastructure, not feature business-logic code.
+ *
+ * Responsibilities:
+ * 1) Register global middlewares.
+ * 2) Mount module routes via module registry.
+ * 3) Provide centralized not-found and error handling.
+ */
+
 import express from "express";
 import cors from "cors";
 import registerModules from "./modules/index.js";

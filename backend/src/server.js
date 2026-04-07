@@ -1,3 +1,12 @@
+/**
+ * ============================================================================
+ * SERVER RUNTIME FILE PURPOSE
+ * ============================================================================
+ * Purpose: Entry point that boots environment config, database connection,
+ * HTTP server, and realtime socket server.
+ * This is integration infrastructure and should stay stable for all modules.
+ */
+
 import dotenv from "dotenv";
 dotenv.config();
 import { createServer } from "node:http";

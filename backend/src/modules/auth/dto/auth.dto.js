@@ -5,6 +5,10 @@
  * Purpose: Defines request/response DTOs and payload validation used only by
  * the Auth module (register, login, auth response shape).
  *
+ * Split-model note:
+ * - Identity fields come from UserAccount (id/username/email/role).
+ * - Premium entitlement is represented by premiumUntil from UserProfile.
+ *
  * Team boundary:
  * - Keep this file auth-only.
  * - Do not add Admin feature DTOs here; place Admin contracts in
@@ -76,10 +80,11 @@ export const validateLoginPayload = (payload = {}) => {
 export const createAuthResponseDTO = ({ accessToken, user }) => ({
 	accessToken,
 	user: {
+		// Keep login/register response minimal and identity-focused.
 		id: user.id || user._id,
 		username: user.username,
 		email: user.email,
 		role: user.role,
-		isPremium: Boolean(user.isPremium),
+		premiumUntil: user.premiumUntil || null,
 	},
 });

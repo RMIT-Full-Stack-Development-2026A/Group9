@@ -1,0 +1,28 @@
+/**
+ * ============================================================================
+ * GLOBAL STYLES (The TicTacToang DNA)
+ * ============================================================================
+ * Location: src/styles/global.css
+ * Purpose: This file defines the core visual identity of the application.
+ * It establishes the "Cyber-Neon" theme, typography, and CSS variables
+ * that maintain consistency across all modules.
+ */
+
+@import "./reset.css";
+@import "./variables.css";
+
+body {
+	background: radial-gradient(circle at 20% 0%, #12325a 0%, var(--color-bg) 42%);
+	color: var(--color-text);
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	line-height: 1.5;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+#root {
+	min-height: 100vh;
+}

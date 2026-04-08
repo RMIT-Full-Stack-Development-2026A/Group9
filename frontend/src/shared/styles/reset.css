@@ -1,0 +1,47 @@
+/**
+ * ============================================================================
+ * CSS RESET (The Foundation)
+ * ============================================================================
+ * Location: src/styles/reset.css
+ * Purpose: This file eliminates inconsistent default styling across different 
+ * browsers (Chrome, Safari, Firefox). It provides a "Clean Slate" so our 
+ * TicTacToang "Cyber-Neon" theme looks identical on every device.
+ * * Key Responsibilities:
+ * 1. Box Model: Ensuring padding and borders don't break layout widths.
+ * 2. Typography: Removing default margins and setting a fluid baseline.
+ * 3. Form Elements: Normalizing buttons and inputs for custom "Toang" UI.
+ * 4. Media: Ensuring images and videos are responsive by default.
+ */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+*::before,
+*::after {
+	box-sizing: inherit;
+}
+
+html,
+body,
+#root {
+	min-height: 100%;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}

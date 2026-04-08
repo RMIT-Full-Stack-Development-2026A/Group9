@@ -1,0 +1,9 @@
+/**
+ * ============================================================================
+ * GAME STATUS STYLES (The Match HUD)
+ * ============================================================================
+ * Location: src/modules/game/components/GameStatus.module.css
+ * Purpose: This provides the "Heads-Up Display" (HUD) for the match. It 
+ * uses a flexbox layout to sandwich the game messages between the two 
+ * player profile cards.
+ */

@@ -1,0 +1,8 @@
+/**
+ * ============================================================================
+ * GAME BOARD STYLES (The Grid Layout)
+ * ============================================================================
+ * Location: src/modules/game/components/GameBoard.module.css
+ * Purpose: This handles the 10x10(or 15x15) grid layout and the "Toang" visual style. 
+ * It uses CSS Grid for a perfectly responsive Tic-Tac-Toe board.
+ */

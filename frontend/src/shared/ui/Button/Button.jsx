@@ -14,6 +14,7 @@
  * 3. Loading State: Built-in spinner that disables the button to prevent double-clicks.
  * 4. Sizing Logic: sm, md, lg to fit different layouts (e.g., small 'Edit' vs large 'Play').
  */
+import "./Button.css";
 
 export default function Button({
 	color,
@@ -33,7 +34,7 @@ export default function Button({
 			type={type}
 			onClick={onClick}
 			disabled={disabled}
-			className={className}
+			className={`ttButton ${className}`.trim()}
 			style={{ backgroundColor: color, color: textColor, ...style }}
 			{...props}
 		>

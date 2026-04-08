@@ -14,6 +14,10 @@
  * 4. Accessibility: Automated ID generation for labels and ARIA support.
  */
 
+import "./Input.css";
+
+const joinClasses = (...classNames) => classNames.filter(Boolean).join(" ");
+
 export default function Input({
 	id,
 	name,
@@ -35,12 +39,18 @@ export default function Input({
 	...props
 }) {
 	const hasError = Boolean(error);
+	const errorId = id || name ? `${id || name}-error` : undefined;
 
 	return (
-		<div className={containerClassName}>
+		<div className={joinClasses("ttInputFieldGroup", containerClassName)}>
 			{label ? (
 				<label
-					className={`${labelClassName}${hasError ? ` ${labelErrorClassName}` : ""}`}
+					className={joinClasses(
+						"ttInputLabel",
+						labelClassName,
+						hasError && "ttInputLabelError",
+						hasError && labelErrorClassName
+					)}
 					htmlFor={id}
 				>
 					{label}
@@ -56,12 +66,19 @@ export default function Input({
 				placeholder={placeholder}
 				autoComplete={autoComplete}
 				required={required}
-				className={`${inputClassName}${hasError ? ` ${inputErrorClassName}` : ""}`}
+				aria-invalid={hasError}
+				aria-describedby={hasError && errorMessage ? errorId : undefined}
+				className={joinClasses(
+					"ttInputControl",
+					inputClassName,
+					hasError && "ttInputControlError",
+					hasError && inputErrorClassName
+				)}
 				{...props}
 			/>
 
 			{hasError && errorMessage ? (
-				<p className={errorClassName}>
+				<p id={errorId} className={joinClasses("ttInputError", errorClassName)}>
 					<i className="bi bi-exclamation-circle"></i>
 					<span>{errorMessage}</span>
 				</p>
@@ -69,3 +86,4 @@ export default function Input({
 		</div>
 	);
 }
+

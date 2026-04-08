@@ -14,7 +14,7 @@
 import express from "express";
 import cors from "cors";
 import registerModules from "./modules/index.js";
-import AppError from "./modules/shared/errors/AppError.js";
+import AppError from "./shared/errors/AppError.js";
 
 const app = express();
 

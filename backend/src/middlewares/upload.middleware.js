@@ -7,7 +7,7 @@
  * and temporarily stores the file in RAM so we can forward it to Cloudinary.
  */
 import multer from "multer";
-import AppError from "../modules/shared/errors/AppError.js";
+import AppError from "../shared/errors/AppError.js";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 const IMAGE_MIME_TYPES = new Set([

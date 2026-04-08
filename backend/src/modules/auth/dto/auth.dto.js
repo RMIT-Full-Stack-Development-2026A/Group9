@@ -20,7 +20,7 @@ import {
 	isEmail,
 	isStrongPassword,
 	sanitizeString,
-} from "../../shared/utils/validators.js";
+} from "../../../shared/utils/validators.js";
 
 export const createRegisterDTO = ({ username, email, password }) => ({
 	username: sanitizeString(username),

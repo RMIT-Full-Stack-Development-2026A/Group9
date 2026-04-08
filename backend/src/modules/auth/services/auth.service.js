@@ -17,7 +17,7 @@
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import AppError from "../../shared/errors/AppError.js";
+import AppError from "../../../shared/errors/AppError.js";
 import {
 	createAuthResponseDTO,
 	createLoginDTO,

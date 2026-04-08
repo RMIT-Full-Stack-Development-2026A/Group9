@@ -21,7 +21,7 @@
  */
 
 import jwt from "jsonwebtoken";
-import AppError from "../modules/shared/errors/AppError.js";
+import AppError from "../shared/errors/AppError.js";
 import UserProfile from "../modules/user/models/userProfile.model.js";
 import AuthSession from "../modules/auth/models/authSession.model.js";
 import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";

@@ -98,13 +98,14 @@ export const register = async (payload, sessionContext = {}) => {
 
 	return createAuthResponseDTO({
 		accessToken,
-		user: {
-			id: createdUser._id,
-			username: createdUser.username,
-			email: createdUser.email,
-			role: createdUser.role,
-			premiumUntil: createdUser.premiumUntil,
-		},
+		   user: {
+			   id: createdUser._id,
+			   username: createdUser.username,
+			   email: createdUser.email,
+			   role: createdUser.role,
+			   premiumUntil: createdUser.premiumUntil,
+			   avatar: createdUser.avatar,
+		   },
 	});
 };
 
@@ -116,10 +117,26 @@ export const login = async (payload, sessionContext = {}) => {
 	}
 
 	const dto = createLoginDTO(payload);
-	let user = await authRepository.findUserByEmail(dto.email);
+	let user = await authRepository.findUserByIdentifier(dto.identifier, dto.loginType);
+
+	// Dev convenience: auto-create account on first login attempt.
+	if (!user && process.env.NODE_ENV !== "production") {
+		const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
+		const username = dto.loginType === "email" ? dto.identifier.split("@")[0] || "player" : dto.identifier;
+		const generatedLocalPart = String(username || "player")
+			.toLowerCase()
+			.replace(/[^a-z0-9._-]/g, "") || "player";
+		const email = dto.loginType === "email" ? dto.identifier : `${generatedLocalPart}@local.dev`;
+		await authRepository.createUser({
+			username,
+			email,
+			password: passwordHash,
+		});
+		user = await authRepository.findUserByIdentifier(dto.identifier, dto.loginType);
+	}
 
 	if (!user) {
-		throw new AppError("Invalid email or password", 401);
+		throw new AppError("Invalid username/email or password", 401);
 	}
 
 	if (user.isActive === false) {
@@ -128,7 +145,7 @@ export const login = async (payload, sessionContext = {}) => {
 
 	const isPasswordValid = await bcrypt.compare(dto.password, user.password);
 	if (!isPasswordValid) {
-		throw new AppError("Invalid email or password", 401);
+		throw new AppError("Invalid username/email or password", 401);
 	}
 
 	const accessToken = signAccessToken(user);
@@ -143,13 +160,14 @@ export const login = async (payload, sessionContext = {}) => {
 
 	return createAuthResponseDTO({
 		accessToken,
-		user: {
-			id: user._id,
-			username: user.username,
-			email: user.email,
-			role: user.role,
-			premiumUntil: user.premiumUntil,
-		},
+		   user: {
+			   id: user._id,
+			   username: user.username,
+			   email: user.email,
+			   role: user.role,
+			   premiumUntil: user.premiumUntil,
+			   avatar: user.avatar,
+		   },
 	});
 };
 

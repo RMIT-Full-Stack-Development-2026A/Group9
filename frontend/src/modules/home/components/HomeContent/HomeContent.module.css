@@ -7,3 +7,179 @@
  * glassmorphism, glowing accents, and a grid layout to make the landing 
  * experience feel like a modern gaming client.
  */
+.container {
+    min-height: calc(100vh - 64px);
+    padding: var(--space-xl) var(--space-md);
+    background: radial-gradient(circle at 20% 0%, #12325a 0%, var(--color-bg) 42%);
+}
+
+.title {
+    color: var(--color-text);
+    text-align: center;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--color-muted);
+    text-align: center;
+}
+
+.welcomeLine {
+    margin: 20px auto 8px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--color-primary);
+    text-align: center;
+    width: fit-content;
+}
+
+.welcomeLine--normal {
+    color: var(--color-primary);
+}
+
+.welcomeLine--premium {
+    color: var(--color-warning);
+}
+
+.welcomeLine--guest {
+    color: var(--color-primary);
+}
+
+.welcomeLine .welcomeLineStar {
+    font-size: 14px;
+    color: var(--color-warning);
+    margin: 0 10px;
+    vertical-align: middle;
+}
+
+.heroTitleA{
+    color: var(--color-primary);
+}
+.heroTitleB{
+    color: #ec4899;
+}
+
+.heroTitleC{
+    font-size: clamp(2rem, 3vw, 2.375rem);
+}
+
+.btn1{
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-surface-2);
+
+    
+    width: 325.33px;
+    height: 239.64px;
+    border-radius: 16px;
+    text-align: left;
+    
+    padding-top: 25px;
+    padding-left: 20px;
+    display: grid;
+    gap: 10px;
+
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+
+}
+
+.btn1:hover,
+.btn1:focus-visible {
+    transform: translateY(-2px);
+    background: var(--color-surface-2);
+    border-color: var(--color-primary);
+}
+
+.modeRow{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    
+}
+
+.row1{
+    padding: 20px 10px;
+    gap: 24px;
+}
+
+.row2{
+    padding: 20px 10px;
+    gap: 16px;
+}
+
+.Model_icon{
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background-color: var(--color-bg);
+    display: grid;
+    place-items: center;
+
+}
+
+.Model_name{
+    font-size: larger;
+    padding-top: 10px;
+    padding-left: 5px;
+}
+
+.Model_desc{
+    font-size: 14px;
+    color: var(--color-muted);
+    padding-bottom: 30px;
+}
+
+.actionBtn--cyan   { background-color: var(--color-primary); }
+.actionBtn--purple { background-color: #8b5cf6; }
+.actionBtn--orange { background-color: var(--color-warning); }
+.actionBtn--red    { background-color: var(--color-danger); }
+
+.btn{
+    width: 172px;
+    height: 46px;
+    border-radius: 14px;
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.btn.actionBtn--cyan:hover, 
+.btn.actionBtn--cyan:focus-visible{
+    transform: translateY(-2px);
+    background-color: rgba(2, 255, 255, 0.788);
+}
+
+.btn.actionBtn--purple:hover,
+.btn.actionBtn--purple:focus-visible{
+    transform: translateY(-2px);
+    background-color: rgb(114, 94, 243);
+}
+
+.btn.actionBtn--orange:hover,
+.btn.actionBtn--orange:focus-visible{
+    transform: translateY(-2px);
+    background-color: darkorange;
+}
+
+.btn.actionBtn--red:hover,
+.btn.actionBtn--red:focus-visible{
+    transform: translateY(-2px);
+    background-color: #dc2626;
+}
+
+.bi{
+    font-size: 20px;
+    color: #FFFFFF;
+}
+
+
+
+
+
+
+

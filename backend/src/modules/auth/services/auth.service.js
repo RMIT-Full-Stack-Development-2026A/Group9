@@ -116,25 +116,6 @@ export const login = async (payload, sessionContext = {}) => {
 		throw new AppError("Invalid login payload", 400, errors);
 	}
 
-	const dto = createLoginDTO(payload);
-	let user = await authRepository.findUserByIdentifier(dto.identifier, dto.loginType);
-
-	// Dev convenience: auto-create account on first login attempt.
-	if (!user && process.env.NODE_ENV !== "production") {
-		const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
-		const username = dto.loginType === "email" ? dto.identifier.split("@")[0] || "player" : dto.identifier;
-		const generatedLocalPart = String(username || "player")
-			.toLowerCase()
-			.replace(/[^a-z0-9._-]/g, "") || "player";
-		const email = dto.loginType === "email" ? dto.identifier : `${generatedLocalPart}@local.dev`;
-		await authRepository.createUser({
-			username,
-			email,
-			password: passwordHash,
-		});
-		user = await authRepository.findUserByIdentifier(dto.identifier, dto.loginType);
-	}
-
 	if (!user) {
 		throw new AppError("Invalid username/email or password", 401);
 	}

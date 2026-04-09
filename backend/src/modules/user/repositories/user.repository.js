@@ -1,20 +1,28 @@
-/**
- * ============================================================================
- * USER REPOSITORY (The Identity Data Vault)
- * ============================================================================
- * Purpose: This file is the only place in the "User" module that speaks 
- * directly to the MongoDB database. It performs the actual CRUD (Create, Read, 
- * Update, Delete) operations on the User collection for TicTacToang.
- * * Key Responsibilities:
- * 1. Data Retrieval: Finding users by ID, Email, or Username.
- * 2. Data Persistence: Saving new users and updating existing profile stats.
- * 3. Atomic Updates: Incrementing wins/losses/XP safely without race conditions.
- * * CRITICAL RULE: This file should NEVER contain business logic (e.g., 
- * "Is this username offensive?"). It only executes the query and returns 
- * the raw database document.
- */
+import UserAccount from "../models/user.model.js";
+import UserProfile from "../models/userProfile.model.js";
 
-// Implementation contract:
-// 1) Provide atomic stat/profile updates to avoid race conditions.
-// 2) Keep query signatures narrow and explicit (findById, findByEmail, etc.).
-// 3) No response mapping; DTO/service layers own output formatting.
+// ── Read ──────────────────────────────────────────────────────────────
+export const findAccountById = (id) =>
+	UserAccount.findById(id).select("-password").lean();
+
+export const findAccountByIdWithPassword = (id) =>
+	UserAccount.findById(id).select("+password").lean();
+
+export const findProfileById = (id) =>
+	UserProfile.findById(id).lean();
+
+export const findAccountByEmail = (email) =>
+	UserAccount.findOne({ email: email.toLowerCase() }).lean();
+
+export const findAccountByUsername = (username) =>
+	UserAccount.findOne({ username }).lean();
+
+// ── Write ─────────────────────────────────────────────────────────────
+export const updateAccount = (id, fields) =>
+	UserAccount.findByIdAndUpdate(id, { $set: fields }, { new: true, runValidators: true })
+		.select("-password")
+		.lean();
+
+export const updateProfile = (id, fields) =>
+	UserProfile.findByIdAndUpdate(id, { $set: fields }, { new: true, runValidators: true })
+		.lean();

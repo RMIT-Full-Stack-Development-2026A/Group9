@@ -177,7 +177,12 @@
     color: #FFFFFF;
 }
 
-
+@media (max-width: 600px) {
+    .btn1 {
+        width: 100%;
+        min-width: 0;
+    }
+}
 
 
 

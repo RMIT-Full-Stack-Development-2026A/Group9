@@ -116,6 +116,9 @@ export const login = async (payload, sessionContext = {}) => {
 		throw new AppError("Invalid login payload", 400, errors);
 	}
 
+	const dto = createLoginDTO(payload);
+	const user = await authRepository.findUserByIdentifier(dto.identifier, dto.loginType);
+
 	if (!user) {
 		throw new AppError("Invalid username/email or password", 401);
 	}

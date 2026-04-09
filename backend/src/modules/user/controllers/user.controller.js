@@ -1,20 +1,28 @@
-/**
- * ============================================================================
- * USER CONTROLLER (The Profile & Account Receptionist)
- * ============================================================================
- * Purpose: This file manages HTTP requests related to user accounts, 
- * profiles, and authentication state in TicTacToang. It acts as the 
- * bridge between the Client (Frontend) and the User Service.
- * * Key Responsibilities:
- * 1. Profile Retrieval: GET requests for a user's own data or public profiles.
- * 2. Account Updates: PATCH requests to change usernames or settings.
- * 3. Stats Integration: Displaying a summary of wins/losses/XP.
- * * CRITICAL RULE: The Controller should never talk to the Database 
- * directly. It extracts the User ID from the JWT (Request) and hands 
- * it to the Service.
- */
+import * as userService from "../services/user.service.js";
 
-// Implementation contract:
-// 1) Keep all handlers auth-aware and pass req.user.id into service methods.
-// 2) Use user DTO contracts for search/update payload normalization.
-// 3) Keep output shape consistent for profile pages and admin views.
+export async function getMyProfile(req, res, next) {
+	try {
+		const profile = await userService.getProfile(req.user.id);
+		res.status(200).json({ success: true, data: profile });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function updateMyProfile(req, res, next) {
+	try {
+		const updated = await userService.updateProfile(req.user.id, req.body);
+		res.status(200).json({ success: true, data: updated });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function uploadMyAvatar(req, res, next) {
+	try {
+		const result = await userService.uploadAvatar(req.user.id, req.file?.buffer);
+		res.status(200).json({ success: true, data: result });
+	} catch (err) {
+		next(err);
+	}
+}

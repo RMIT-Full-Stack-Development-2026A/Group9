@@ -28,10 +28,17 @@ export const createRegisterDTO = ({ username, email, password }) => ({
 	password,
 });
 
-export const createLoginDTO = ({ email, password }) => ({
-	email: sanitizeString(email)?.toLowerCase(),
-	password,
-});
+export const createLoginDTO = (payload = {}) => {
+	const rawIdentifier =
+		sanitizeString(payload.identifier || payload.email || payload.username || "") || "";
+	const loginType = rawIdentifier.includes("@") ? "email" : "username";
+
+	return {
+		identifier: loginType === "email" ? rawIdentifier.toLowerCase() : rawIdentifier,
+		password: payload.password,
+		loginType,
+	};
+};
 
 export const validateRegisterPayload = (payload = {}) => {
 	const value = createRegisterDTO(payload);
@@ -61,12 +68,12 @@ export const validateLoginPayload = (payload = {}) => {
 	const value = createLoginDTO(payload);
 	const errors = [];
 
-	const requiredCheck = assertRequiredFields(value, ["email", "password"]);
+	const requiredCheck = assertRequiredFields(value, ["identifier", "password"]);
 	if (!requiredCheck.valid) {
 		errors.push(`Missing required fields: ${requiredCheck.missing.join(", ")}`);
 	}
 
-	if (value.email && !isEmail(value.email)) {
+	if (value.loginType === "email" && value.identifier && !isEmail(value.identifier)) {
 		errors.push("Email format is invalid");
 	}
 
@@ -78,13 +85,14 @@ export const validateLoginPayload = (payload = {}) => {
 };
 
 export const createAuthResponseDTO = ({ accessToken, user }) => ({
-	accessToken,
-	user: {
-		// Keep login/register response minimal and identity-focused.
-		id: user.id || user._id,
-		username: user.username,
-		email: user.email,
-		role: user.role,
-		premiumUntil: user.premiumUntil || null,
-	},
+	   accessToken,
+	   user: {
+		   // Keep login/register response minimal and identity-focused.
+		   id: user.id || user._id,
+		   username: user.username,
+		   email: user.email,
+		   role: user.role,
+		   premiumUntil: user.premiumUntil || null,
+		   avatar: user.avatar || "",
+	   },
 });

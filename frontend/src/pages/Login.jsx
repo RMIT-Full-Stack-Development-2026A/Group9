@@ -1,0 +1,18 @@
+/**
+ * ============================================================================
+ * LOGIN PAGE (The Entry Point)
+ * ============================================================================
+ * Location: src/pages/Login.jsx
+ * Purpose: This page serves as the dedicated entry point for returning users.
+ * It follows the "Thin Page" pattern, acting only as a layout container for 
+ * the modular LoginForm.
+ * * Key Responsibilities:
+ * 1. Visual Layout: Providing a focused, distraction-free UI for credentials.
+ * 2. Navigation Logic: Redirecting users to the Home or Game Arena after 
+ * successful authentication.
+ * 3. Guest Access: Providing a link for new users to reach the Registration page.
+ */
+
+export default function Login() {
+	return <div>Login</div>;
+}

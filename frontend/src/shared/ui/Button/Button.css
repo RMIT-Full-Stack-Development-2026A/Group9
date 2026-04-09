@@ -1,0 +1,45 @@
+/**
+ * ============================================================================
+ * BUTTON STYLES (The Design System Library)
+ * ============================================================================
+ If it's just styling → use Button variant ✅
+ If it's complex UI → create new component ⚠️
+ */
+
+.ttButton {
+	border: 0;
+	border-radius: var(--radius-md);
+	padding: 0.65rem 1rem;
+	font-size: 0.95rem;
+	font-weight: 600;
+	line-height: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.45rem;
+	cursor: pointer;
+	transition: transform 0.15s ease, filter 0.2s ease, opacity 0.2s ease;
+	box-shadow: var(--shadow-soft);
+}
+
+.ttButton:hover {
+	transform: translateY(-1px);
+	filter: brightness(1.05);
+}
+
+.ttButton:active {
+	transform: translateY(0);
+	filter: brightness(0.98);
+}
+
+.ttButton:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+}
+
+.ttButton:disabled {
+	opacity: 0.65;
+	cursor: not-allowed;
+	transform: none;
+	filter: none;
+}

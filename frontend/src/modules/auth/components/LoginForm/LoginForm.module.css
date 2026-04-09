@@ -1,0 +1,8 @@
+/**
+ * ============================================================================
+ * LOGIN FORM STYLES (Scoped)
+ * ============================================================================
+ * Purpose: This file uses CSS Modules to ensure that "auth-form" styles 
+ * in the Login module don't accidentally leak into the Registration module 
+ * or other parts of TicTacToang.
+ */

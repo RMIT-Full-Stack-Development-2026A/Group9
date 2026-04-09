@@ -12,6 +12,8 @@
  * 3. Marketing: Briefly explaining the "TicTacToang" twist (the leveling system).
  */
 
+import HomeContent from "../modules/home/components/HomeContent/HomeContent.jsx";
+
 export default function Home() {
-	return <div>Home</div>;
+	return <HomeContent />;
 }

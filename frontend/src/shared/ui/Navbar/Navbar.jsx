@@ -14,29 +14,109 @@
  * 4. Brand Identity: Houses the iconic TicTacToang logo and "Cyber-Neon" styling.
  */
 
+import "./Navbar.css";
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../../app/providers/AuthProvider.jsx";
+import { NavLink, useNavigate } from "react-router-dom";
+
+const NAV_LINKS = [
+	{ label: "Home", to: "/" },
+	{ label: "Lobby", to: "/lobby" },
+	{ label: "Profile", to: "/profile" },
+];
+
+const normalizeNavUser = (user) => {
+	if (!user || typeof user !== "object") {
+		return null;
+	}
+
+	if (user.account && typeof user.account === "object") {
+		const account = user.account;
+		const profile = user.profile && typeof user.profile === "object" ? user.profile : {};
+
+		return {
+			...account,
+			avatar: profile.avatar || account.avatar || "",
+		};
+	}
+
+	return user;
+};
 
 export default function Navbar() {
-	const auth = useContext(AuthContext);
+	const { user, logout } = useContext(AuthContext) || {};
+	const currentUser = normalizeNavUser(user);
+	const navigate = useNavigate();
+	const isAuthenticated = Boolean(currentUser);
+	const displayName = currentUser?.username || currentUser?.name || currentUser?.email || "Player";
+	const avatarSrc = currentUser?.avatar || "";
+	const fallbackInitial = displayName.charAt(0).toUpperCase();
+
+	const openHome = () => {
+		navigate("/");
+	};
+
+	const openLogin = () => {
+		navigate("/login");
+	};
+
+	const openRegister = () => {
+		navigate("/register");
+	};
+
+	const handleLogout = async () => {
+		await logout();
+		openHome();
+	};
 
 	return (
-		<nav className="navbarBase" aria-label="Primary">
-			<NavLink to="/" className="navbarBrand">
-				TicTacToang
-			</NavLink>
+		<header className="topNavbar" role="banner">
+			<div className="brandBlock">
+				<span className="brandIconFrame">
+					<img className="brandIconImage" src="/logo.png" alt="TicTacToang logo" />
+				</span>
+				<span className="brandText">
+					<span className="brandTextLight">TicTac</span>
+					<span className="brandTextAccent">Toang</span>
+				</span>
+			</div>
 
-			<div className="navbarLinks">
-				<NavLink to="/">Home</NavLink>
-				<NavLink to="/game">Play</NavLink>
-				<NavLink to="/leaderboard">Rankings</NavLink>
-				{auth?.isAuthenticated ? (
-					<NavLink to="/profile">Profile</NavLink>
+			<nav className="mainNav" aria-label="Main navigation">
+				{NAV_LINKS.map((item) => (
+					<NavLink
+						key={item.label}
+						className={({ isActive }) => `mainNavLink${isActive ? " mainNavLink--active" : ""}`}
+						to={item.to}
+					>
+						{item.label}
+					</NavLink>
+				))}
+			</nav>
+
+			<div className="authActions">
+				{isAuthenticated ? (
+					<>
+						<div className="userPill" title={displayName}>
+							<span className="userPillAvatar" aria-hidden="true">
+								{avatarSrc ? (
+									<img className="userPillAvatarImage" src={avatarSrc} alt={`${displayName} avatar`} />
+								) : (
+									<span className="userPillAvatarFallback">{fallbackInitial}</span>
+								)}
+							</span>
+							<span className="userPillName">{displayName}</span>
+						</div>
+						<button className="logoutIconBtn" type="button" onClick={handleLogout} aria-label="Logout">
+							<i className="bi bi-box-arrow-right"></i>
+						</button>
+					</>
 				) : (
-					<NavLink to="/login">Login</NavLink>
+					<>
+						<button className="authBtn authBtn--ghost" type="button" onClick={openLogin}>Sign In</button>
+						<button className="authBtn authBtn--solid" type="button" onClick={openRegister}>Register</button>
+					</>
 				)}
 			</div>
-		</nav>
+		</header>
 	);
 }

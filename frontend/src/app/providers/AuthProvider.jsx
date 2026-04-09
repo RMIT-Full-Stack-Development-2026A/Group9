@@ -43,12 +43,21 @@ export function AuthProvider({ children }) {
 		localStorage.removeItem(AUTH_USER_KEY);
 	};
 
+	const updateUser = (newData) => {
+		setUser((prev) => {
+			const merged = { ...prev, ...newData };
+			localStorage.setItem(AUTH_USER_KEY, JSON.stringify(merged));
+			return merged;
+		});
+	};
+
 	const value = useMemo(
 		() => ({
 			user,
 			isAuthenticated: Boolean(user),
 			login,
 			logout,
+			updateUser,
 		}),
 		[user]
 	);

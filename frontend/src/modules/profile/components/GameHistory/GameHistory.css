@@ -1,0 +1,130 @@
+.game-history {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-md);
+}
+
+/* ── Table wrapper ──────────────────────────────────────────────────── */
+.gh-table-wrap {
+	overflow-x: auto;
+	border-radius: var(--radius-md);
+	border: 1px solid rgba(19, 194, 255, 0.12);
+}
+
+.gh-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.88rem;
+}
+
+.gh-table thead {
+	background: var(--color-surface-2);
+}
+
+.gh-table th {
+	padding: 12px 16px;
+	text-align: left;
+	font-weight: 700;
+	font-size: 0.78rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--color-muted);
+	white-space: nowrap;
+}
+
+.gh-table td {
+	padding: 10px 16px;
+	border-top: 1px solid rgba(19, 194, 255, 0.06);
+	color: var(--color-text);
+	white-space: nowrap;
+}
+
+.gh-table tbody tr {
+	background: var(--color-surface);
+	transition: background 0.15s;
+}
+
+.gh-table tbody tr:hover {
+	background: var(--color-surface-2);
+}
+
+.gh-cell--num {
+	color: var(--color-muted);
+	font-weight: 600;
+}
+
+.gh-cell--player {
+	color: var(--color-primary);
+	font-weight: 600;
+}
+
+/* ── Type chip ──────────────────────────────────────────────────────── */
+.gh-type {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 20px;
+	font-size: 0.76rem;
+	font-weight: 600;
+	background: rgba(19, 194, 255, 0.1);
+	color: var(--color-primary);
+}
+
+/* ── Result badges ──────────────────────────────────────────────────── */
+.gh-badge {
+	display: inline-block;
+	padding: 3px 12px;
+	border-radius: 20px;
+	font-size: 0.74rem;
+	font-weight: 700;
+	letter-spacing: 0.4px;
+}
+
+.gh-badge--win {
+	background: rgba(24, 182, 122, 0.15);
+	color: var(--color-success);
+}
+
+.gh-badge--lose {
+	background: rgba(240, 84, 84, 0.15);
+	color: var(--color-danger);
+}
+
+.gh-badge--draw {
+	background: rgba(242, 181, 48, 0.15);
+	color: var(--color-warning);
+}
+
+.gh-badge--aborted {
+	background: rgba(159, 182, 202, 0.15);
+	color: var(--color-muted);
+}
+
+/* ── Loading / Empty ────────────────────────────────────────────────── */
+.gh-loading,
+.gh-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: var(--space-xl);
+	color: var(--color-muted);
+	gap: var(--space-sm);
+}
+
+.gh-empty i {
+	font-size: 2.5rem;
+	opacity: 0.4;
+}
+
+.gh-spinner {
+	width: 32px;
+	height: 32px;
+	border: 3px solid rgba(19, 194, 255, 0.15);
+	border-top-color: var(--color-primary);
+	border-radius: 50%;
+	animation: gh-spin 0.8s linear infinite;
+}
+
+@keyframes gh-spin {
+	to { transform: rotate(360deg); }
+}

@@ -1,0 +1,74 @@
+.ghf {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-sm);
+	padding: var(--space-md);
+	background: var(--color-surface);
+	border-radius: var(--radius-md);
+	border: 1px solid rgba(19, 194, 255, 0.12);
+	align-items: flex-end;
+}
+
+.ghf__group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 120px;
+}
+
+.ghf__group--search {
+	flex: 1;
+	min-width: 200px;
+}
+
+.ghf__label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--color-muted);
+}
+
+.ghf__label i {
+	font-size: 0.7rem;
+}
+
+.ghf__input {
+	background: var(--color-surface-2);
+	border: 1px solid rgba(19, 194, 255, 0.12);
+	border-radius: var(--radius-sm);
+	padding: 8px 12px;
+	color: var(--color-text);
+	font-size: 0.85rem;
+	outline: none;
+	transition: border-color 0.2s;
+}
+
+.ghf__input:focus {
+	border-color: var(--color-primary);
+}
+
+.ghf__input option {
+	background: var(--color-surface-2);
+	color: var(--color-text);
+}
+
+.ghf__sort-btn {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(19, 194, 255, 0.1);
+	border: 1px solid rgba(19, 194, 255, 0.2);
+	border-radius: var(--radius-sm);
+	padding: 8px 14px;
+	color: var(--color-primary);
+	font-size: 0.82rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.15s;
+	white-space: nowrap;
+}
+
+.ghf__sort-btn:hover {
+	background: rgba(19, 194, 255, 0.18);
+}

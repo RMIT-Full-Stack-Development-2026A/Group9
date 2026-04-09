@@ -1,0 +1,111 @@
+.profile-card {
+	display: flex;
+	align-items: center;
+	gap: var(--space-lg);
+	padding: var(--space-lg) var(--space-xl);
+	background: var(--color-surface);
+	border-radius: var(--radius-lg);
+	border: 1px solid rgba(19, 194, 255, 0.12);
+}
+
+/* ── Avatar ────────────────────────────────────────────────────────── */
+.profile-card__avatar-wrap {
+	position: relative;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	cursor: pointer;
+	flex-shrink: 0;
+	overflow: hidden;
+	border: 3px solid var(--color-primary);
+	transition: box-shadow 0.25s;
+}
+
+.profile-card__avatar-wrap:hover {
+	box-shadow: 0 0 16px rgba(19, 194, 255, 0.4);
+}
+
+.profile-card__avatar-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.profile-card__avatar-placeholder {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(135deg, #f2a530, #f06530);
+	color: #fff;
+	font-size: 2rem;
+	font-weight: 700;
+}
+
+.profile-card__avatar-overlay {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.5);
+	opacity: 0;
+	transition: opacity 0.25s;
+	color: #fff;
+	font-size: 1.4rem;
+}
+
+.profile-card__avatar-wrap:hover .profile-card__avatar-overlay {
+	opacity: 1;
+}
+
+/* ── Info ──────────────────────────────────────────────────────────── */
+.profile-card__info {
+	flex: 1;
+	min-width: 0;
+}
+
+.profile-card__name-row {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+	flex-wrap: wrap;
+}
+
+.profile-card__username {
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: var(--color-text);
+	margin: 0;
+}
+
+.profile-card__badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: linear-gradient(135deg, #f2a530, #ff6b35);
+	color: #fff;
+	font-size: 0.72rem;
+	font-weight: 700;
+	padding: 3px 10px;
+	border-radius: 20px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.profile-card__email {
+	margin: 2px 0;
+	color: var(--color-primary);
+	font-size: 0.9rem;
+}
+
+.profile-card__country {
+	margin: 2px 0;
+	color: var(--color-muted);
+	font-size: 0.85rem;
+}
+
+.profile-card__country i {
+	color: var(--color-success);
+}

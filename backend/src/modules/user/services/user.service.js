@@ -14,18 +14,7 @@ export async function getProfile(userId) {
 
 	if (!account) throw new AppError("User not found", 404);
 
-	return {
-		_id: account._id,
-		username: account.username,
-		email: account.email,
-		role: account.role,
-		isActive: account.isActive,
-		createdAt: account.createdAt,
-		country: profile?.country || "",
-		avatar: profile?.avatar || "",
-		premiumUntil: profile?.premiumUntil || null,
-		walletBalance: profile?.walletBalance || 0,
-	};
+	return { account, profile };
 }
 
 /**

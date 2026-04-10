@@ -2,7 +2,6 @@ import { Router } from "express";
 import { authenticate } from "../../../middlewares/auth.middleware.js";
 import { uploadAvatar } from "../../../middlewares/upload.middleware.js";
 import * as userCtrl from "../controllers/user.controller.js";
-import { getMyHistory } from "../../game/controllers/gameSession.controller.js";
 
 const router = Router();
 
@@ -16,6 +15,6 @@ router.patch("/me", authenticate, userCtrl.updateMyProfile);
 router.post("/me/avatar", authenticate, uploadAvatar, userCtrl.uploadMyAvatar);
 
 // ── Game History ──────────────────────────────────────────────────────
-router.get("/me/history", authenticate, getMyHistory);
+router.get("/me/history", authenticate, userCtrl.getMyHistory);
 
 export default router;

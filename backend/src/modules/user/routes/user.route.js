@@ -15,6 +15,6 @@ router.patch("/me", authenticate, userCtrl.updateMyProfile);
 router.post("/me/avatar", authenticate, uploadAvatar, userCtrl.uploadMyAvatar);
 
 // ── Game History ──────────────────────────────────────────────────────
-router.get("/me/history", authenticate, userCtrl.getMyHistory);
+router.get("/me/history", authenticate, userCtrl.getGameHistory);
 
 export default router;

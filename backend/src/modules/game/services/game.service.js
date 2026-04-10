@@ -20,8 +20,8 @@ export const getGameHistoryForUser = async (userId, query) => {
 		search,
 		gameType,
 		result,
-		startDate,
-		endDate,
+		dateFrom,
+		dateTo,
 		sortOrder = "desc",
 	} = query;
 
@@ -41,11 +41,11 @@ export const getGameHistoryForUser = async (userId, query) => {
 		filter.result = result;
 	}
 
-	if (startDate || endDate) {
+	if (dateFrom || dateTo) {
 		filter.startTime = {};
-		if (startDate) filter.startTime.$gte = new Date(startDate);
-		if (endDate) {
-			const end = new Date(endDate);
+		if (dateFrom) filter.startTime.$gte = new Date(dateFrom);
+		if (dateTo) {
+			const end = new Date(dateTo);
 			end.setHours(23, 59, 59, 999);
 			filter.startTime.$lte = end;
 		}

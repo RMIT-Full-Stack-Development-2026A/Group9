@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import AppError from "../../../shared/errors/AppError.js";
 import { uploadToCloudinary } from "../../../shared/utils/cloudinary.js";
 import * as userRepo from "../repositories/user.repository.js";
-
+import { getGameHistoryForUser } from "../../game/interface/game.interface.js";
 /**
  * Get combined profile (account + profile doc).
  */
@@ -92,4 +92,11 @@ export async function uploadAvatar(userId, fileBuffer) {
 	await userRepo.updateProfile(userId, { avatar: url });
 
 	return { avatar: url };
+}
+
+/**
+ * Get game history for the user via the game module interface.
+ */
+export async function getGameHistory(userId, options) {
+	return getGameHistoryForUser(userId, options);
 }

@@ -34,9 +34,9 @@ export default function GameHistoryFilters({ filters, onChange }) {
 						onChange={(e) => update("gameType", e.target.value)}
 					>
 						<option value="">All Types</option>
-						<option value="single">Single Player</option>
-						<option value="local">Two Players</option>
-						<option value="online">Online Match</option>
+						<option value="ai">Single Player</option>
+						<option value="classic">Two Players</option>
+						<option value="multiplayer">Online Match</option>
 					</select>
 				</div>
 

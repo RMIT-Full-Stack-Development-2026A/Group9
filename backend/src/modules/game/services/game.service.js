@@ -32,10 +32,10 @@ export const getGameHistoryForUser = async (userId, query) => {
 	if (gameType) filter.gameType = gameType;
 
 	if (result === "win") {
-		filter.result = "win";
+		filter.result = { $in: ["player1_win", "player2_win"] };
 		filter.winner = new mongoose.Types.ObjectId(userId);
 	} else if (result === "lose") {
-		filter.result = "win";
+		filter.result = { $in: ["player1_win", "player2_win"] };
 		filter.winner = { $ne: new mongoose.Types.ObjectId(userId) };
 	} else if (result === "draw" || result === "aborted") {
 		filter.result = result;
@@ -71,7 +71,7 @@ export const getGameHistoryForUser = async (userId, query) => {
 
 	return sessions.map((session) => {
 		let userResult;
-		if (session.result === "win") {
+		if (session.result === "player1_win" || session.result === "player2_win") {
 			userResult =
 				session.winner && session.winner._id.toString() === userId
 					? "Win"
@@ -83,9 +83,9 @@ export const getGameHistoryForUser = async (userId, query) => {
 		}
 
 		const opponent =
-			session.gameType === "single"
+			session.gameType === "ai"
 				? session.botName || "AI Bot"
-				: session.gameType === "local"
+				: session.gameType === "classic"
 				? session.localPlayer2Name || "Player 2"
 				: session.players
 						.filter((p) => p._id.toString() !== userId)
@@ -93,9 +93,9 @@ export const getGameHistoryForUser = async (userId, query) => {
 						.join(", ") || "Unknown";
 
 		const gameTypeLabels = {
-			single: "Single Player",
-			local: "Two Players",
-			online: "Online Match",
+			ai: "Single Player",
+			classic: "Two Players",
+			multiplayer: "Online Match",
 		};
 
 		return {

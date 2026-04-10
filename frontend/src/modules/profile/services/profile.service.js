@@ -9,9 +9,11 @@ const getAuthHeaders = () => {
 
 /**
  * GET /api/users/me — fetch current user's profile
+ * GET /api/users/:userId - fetch target's public profile
  */
-export async function fetchProfile() {
-	const res = await fetch(`${API_BASE_URL}/api/users/me`, {
+export async function fetchProfile(userId = null) {
+	const url = userId ? `${API_BASE_URL}/api/users/${userId}` : `${API_BASE_URL}/api/users/me`;
+	const res = await fetch(url, {
 		headers: getAuthHeaders(),
 	});
 	const body = await res.json();
@@ -55,8 +57,9 @@ export async function uploadAvatar(file) {
 
 /**
  * GET /api/users/me/history — fetch game session history
+ * GET /api/users/:userId/history — fetch public user's history
  */
-export async function fetchGameHistory(params = {}) {
+export async function fetchGameHistory(userId = null, params = {}) {
 	const query = new URLSearchParams();
 	if (params.search) query.set("search", params.search);
 	if (params.result) query.set("result", params.result);
@@ -65,7 +68,11 @@ export async function fetchGameHistory(params = {}) {
 	if (params.dateTo) query.set("dateTo", params.dateTo);
 	if (params.sortOrder) query.set("sortOrder", params.sortOrder);
 
-	const res = await fetch(`${API_BASE_URL}/api/users/me/history?${query}`, {
+	const url = userId
+		? `${API_BASE_URL}/api/users/${userId}/history?${query}`
+		: `${API_BASE_URL}/api/users/me/history?${query}`;
+
+	const res = await fetch(url, {
 		headers: getAuthHeaders(),
 	});
 	const body = await res.json();

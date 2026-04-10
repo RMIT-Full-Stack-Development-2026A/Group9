@@ -36,3 +36,21 @@ export async function getGameHistory(req, res, next) {
 		next(err);
 	}
 }
+
+export async function getUserProfile(req, res, next) {
+	try {
+		const { account, profile } = await userService.getProfile(req.params.userId);
+		res.status(200).json({ success: true, data: UserDto.toPublicProfileResponse(account, profile) });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function getUserGameHistory(req, res, next) {
+	try {
+		const sessions = await userService.getGameHistory(req.params.userId, req.query);
+		res.status(200).json({ success: true, data: sessions });
+	} catch (err) {
+		next(err);
+	}
+}

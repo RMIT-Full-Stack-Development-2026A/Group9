@@ -116,3 +116,24 @@
 @keyframes profile-spin {
 	to { transform: rotate(360deg); }
 }
+
+/* ── Mobile Responsive Overrides (A.4.b) ──────────────────────────── */
+@media (max-width: 768px) {
+	.profile-page {
+		padding: var(--space-md) var(--space-sm);
+	}
+	
+	.profile-page__tabs {
+		flex-wrap: wrap;
+	}
+
+	.profile-page__tab {
+		flex: 1 1 calc(50% - 12px);
+		justify-content: center;
+	}
+
+	.profile-page__wallet-card {
+		padding: var(--space-lg) var(--space-md);
+		width: 100%;
+	}
+}

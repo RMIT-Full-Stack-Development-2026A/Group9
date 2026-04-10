@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { useParams } from "react-router-dom";
 import { AuthContext } from "../../../app/providers/AuthProvider.jsx";
 import ProfileCard from "../components/ProfileCard/ProfileCard.jsx";
 import EditProfile from "../components/EditProfile/EditProfile.jsx";
@@ -14,7 +15,10 @@ const TABS = [
 ];
 
 export default function Profile() {
-	const [activeTab, setActiveTab] = useState("edit");
+	const { userId } = useParams();
+	const isOwnProfile = !userId;
+
+	const [activeTab, setActiveTab] = useState(isOwnProfile ? "edit" : "history");
 	const auth = useContext(AuthContext);
 
 	const {
@@ -28,7 +32,7 @@ export default function Profile() {
 		history,
 		historyLoading,
 		loadHistory,
-	} = useProfile();
+	} = useProfile(userId);
 
 	const handleAvatarChange = async (file) => {
 		try {
@@ -83,7 +87,7 @@ export default function Profile() {
 
 					{/* ── Tabs ─────────────────────────────────────────── */}
 					<div className="profile-page__tabs">
-						{TABS.map((tab) => (
+						{TABS.filter(tab => isOwnProfile || tab.key === "history").map((tab) => (
 							<button
 								key={tab.key}
 								id={`tab-${tab.key}`}

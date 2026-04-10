@@ -24,5 +24,18 @@ export const UserDto = {
 			premiumUntil: profile?.premiumUntil || null,
 			walletBalance: profile?.walletBalance || 0,
 		};
+	},
+
+	toPublicProfileResponse: (account, profile) => {
+		return {
+			_id: account._id,
+			username: account.username,
+			role: account.role,
+			isActive: account.isActive,
+			country: profile?.country || "",
+			avatar: profile?.avatar || "",
+			// Explicit omission of email and walletBalance (Security Rule A.3.2)
+		};
 	}
+
 };

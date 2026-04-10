@@ -14,6 +14,15 @@
  * prevent standard players from accessing sensitive tools.
  */
 
+import "./Admin.css";
+
 export default function Admin() {
-	return <div>Admin</div>;
+	return (
+		<div className="admin-page">
+			<div className="admin-page__container">
+				<h1>Admin Dashboard</h1>
+				{/* Admin content components will populate here */}
+			</div>
+		</div>
+	);
 }

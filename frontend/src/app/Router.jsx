@@ -58,7 +58,7 @@ function Router() {
 				}
 			/>
 			<Route
-				path="/profile"
+				path="/profile/:userId?"
 				element={
 					<ProtectedRoute>
 						<Profile />

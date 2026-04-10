@@ -4,7 +4,7 @@ import * as profileService from "../services/profile.service.js";
 /**
  * Hook for managing profile data and game history.
  */
-export default function useProfile() {
+export default function useProfile(userId = null) {
 	// ── Profile state ──
 	const [profile, setProfile] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -21,14 +21,14 @@ export default function useProfile() {
 		setLoading(true);
 		setError(null);
 		try {
-			const data = await profileService.fetchProfile();
+			const data = await profileService.fetchProfile(userId);
 			setProfile(data);
 		} catch (err) {
 			setError(err.message);
 		} finally {
 			setLoading(false);
 		}
-	}, []);
+	}, [userId]);
 
 	// ── Save profile ──
 	const saveProfile = useCallback(async (formData) => {
@@ -66,14 +66,14 @@ export default function useProfile() {
 	const loadHistory = useCallback(async (params = {}) => {
 		setHistoryLoading(true);
 		try {
-			const data = await profileService.fetchGameHistory(params);
+			const data = await profileService.fetchGameHistory(userId, params);
 			setHistory(data);
 		} catch (err) {
 			setError(err.message);
 		} finally {
 			setHistoryLoading(false);
 		}
-	}, []);
+	}, [userId]);
 
 	// Auto-load profile on mount
 	useEffect(() => {

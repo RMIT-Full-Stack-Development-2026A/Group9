@@ -17,4 +17,8 @@ router.post("/me/avatar", authenticate, uploadAvatar, userCtrl.uploadMyAvatar);
 // ── Game History ──────────────────────────────────────────────────────
 router.get("/me/history", authenticate, userCtrl.getGameHistory);
 
+// ── Public User ───────────────────────────────────────────────────────
+router.get("/:userId", authenticate, userCtrl.getUserProfile);
+router.get("/:userId/history", authenticate, userCtrl.getUserGameHistory);
+
 export default router;

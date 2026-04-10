@@ -17,14 +17,14 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../shared/ui/ProtectedRoute.jsx";
 
-import Admin from "../pages/Admin.jsx";
-import GameArena from "../pages/GameArena.jsx";
-import Home from "../pages/Home.jsx";
-import Leaderboard from "../pages/Leaderboard.jsx";
-import Login from "../pages/Login.jsx";
-import Payment from "../pages/Payment.jsx";
-import Profile from "../pages/Profile.jsx";
-import Registration from "../pages/Registration.jsx";
+import Admin from "../modules/admin/pages/Admin.jsx";
+import GameArena from "../modules/game/pages/GameArena.jsx";
+import Home from "../modules/home/pages/Home.jsx";
+import Leaderboard from "../modules/leaderboard/pages/Leaderboard.jsx";
+import Login from "../modules/auth/pages/Login.jsx";
+import Payment from "../modules/payment/pages/Payment.jsx";
+import Profile from "../modules/profile/pages/Profile.jsx";
+import Registration from "../modules/auth/pages/Registration.jsx";
 
 function Router() {
 	return (

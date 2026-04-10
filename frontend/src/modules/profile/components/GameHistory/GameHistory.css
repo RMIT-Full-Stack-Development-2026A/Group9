@@ -4,99 +4,132 @@
 	gap: var(--space-md);
 }
 
-/* ── Table wrapper ──────────────────────────────────────────────────── */
-.gh-table-wrap {
-	overflow-x: auto;
-	border-radius: var(--radius-md);
-	border: 1px solid rgba(19, 194, 255, 0.12);
+/* ── List view Cards ─────────────────────────────────────────────────── */
+.gh-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
-.gh-table {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 0.88rem;
-}
-
-.gh-table thead {
-	background: var(--color-surface-2);
-}
-
-.gh-table th {
-	padding: 12px 16px;
-	text-align: left;
-	font-weight: 700;
-	font-size: 0.78rem;
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
-	color: var(--color-muted);
-	white-space: nowrap;
-}
-
-.gh-table td {
-	padding: 10px 16px;
-	border-top: 1px solid rgba(19, 194, 255, 0.06);
-	color: var(--color-text);
-	white-space: nowrap;
-}
-
-.gh-table tbody tr {
+.gh-card {
+	display: flex;
+	align-items: center;
 	background: var(--color-surface);
-	transition: background 0.15s;
+	border: 1px solid rgba(19, 194, 255, 0.06);
+	border-radius: var(--radius-md);
+	padding: 16px 20px;
+	gap: 20px;
+	transition: background 0.15s, border-color 0.15s;
 }
 
-.gh-table tbody tr:hover {
-	background: var(--color-surface-2);
+.gh-card:hover {
+	background: #172336;
+	border-color: rgba(19, 194, 255, 0.15);
 }
 
-.gh-cell--num {
+.gh-card__icon {
+	flex-shrink: 0;
+	width: 48px;
+	height: 48px;
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.5rem;
+	color: #fff;
+}
+
+.gh-icon-wrap--ai { background: #9d4edd; }
+.gh-icon-wrap--local { background: #00b4d8; }
+.gh-icon-wrap--online { background: #2a9d8f; }
+.gh-icon-wrap--default { background: #6c757d; }
+
+.gh-card__info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.gh-card__title {
+	margin: 0;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: var(--color-text);
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.gh-card__subtitle {
+	margin: 0;
+	font-size: 0.8rem;
 	color: var(--color-muted);
-	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 6px;
 }
 
-.gh-cell--player {
-	color: var(--color-primary);
-	font-weight: 600;
+.gh-card__subtitle i {
+	font-size: 0.4rem;
+	color: #9d4edd; /* default dot color */
 }
-
-/* ── Type chip ──────────────────────────────────────────────────────── */
-.gh-type {
-	display: inline-block;
-	padding: 3px 10px;
-	border-radius: 20px;
-	font-size: 0.76rem;
-	font-weight: 600;
-	background: rgba(19, 194, 255, 0.1);
-	color: var(--color-primary);
-}
+.gh-icon-wrap--local ~ .gh-card__info .gh-card__subtitle i { color: #00b4d8; }
+.gh-icon-wrap--online ~ .gh-card__info .gh-card__subtitle i { color: #2a9d8f; }
 
 /* ── Result badges ──────────────────────────────────────────────────── */
 .gh-badge {
 	display: inline-block;
-	padding: 3px 12px;
-	border-radius: 20px;
-	font-size: 0.74rem;
-	font-weight: 700;
+	padding: 3px 8px;
+	border-radius: 6px;
+	font-size: 0.65rem;
+	font-weight: 800;
+	text-transform: uppercase;
 	letter-spacing: 0.4px;
 }
 
 .gh-badge--win {
-	background: rgba(24, 182, 122, 0.15);
-	color: var(--color-success);
+	background: var(--color-success);
+	color: #0b1a0f;
 }
 
 .gh-badge--lose {
-	background: rgba(240, 84, 84, 0.15);
-	color: var(--color-danger);
+	background: var(--color-danger);
+	color: #2b0b0b;
 }
 
 .gh-badge--draw {
-	background: rgba(242, 181, 48, 0.15);
-	color: var(--color-warning);
+	background: var(--color-warning);
+	color: #2e1d05;
 }
 
 .gh-badge--aborted {
-	background: rgba(159, 182, 202, 0.15);
-	color: var(--color-muted);
+	background: rgba(159, 182, 202, 0.3);
+	color: var(--color-text);
+}
+
+/* ── Replay Action ────────────────────────────────────────────────── */
+.gh-card__action {
+	flex-shrink: 0;
+}
+
+.gh-card__replay-btn {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--color-primary);
+	color: #081326;
+	border: none;
+	border-radius: var(--radius-sm);
+	padding: 8px 16px;
+	font-weight: 700;
+	font-size: 0.85rem;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.gh-card__replay-btn:hover {
+	background: #4ae0ff;
 }
 
 /* ── Loading / Empty ────────────────────────────────────────────────── */
@@ -127,4 +160,15 @@
 
 @keyframes gh-spin {
 	to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+	.gh-card {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 12px;
+	}
+	.gh-card__action {
+		align-self: flex-end;
+	}
 }

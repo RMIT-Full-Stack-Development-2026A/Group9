@@ -34,6 +34,8 @@ export default function Profile() {
 		loadHistory,
 	} = useProfile(userId);
 
+	const isPremium = profile?.premiumUntil && new Date(profile.premiumUntil) > new Date();
+
 	const handleAvatarChange = async (file) => {
 		try {
 			const result = await uploadAvatar(file);
@@ -116,17 +118,25 @@ export default function Profile() {
 								history={history}
 								loading={historyLoading}
 								onFilter={loadHistory}
+								isPremium={isPremium}
 							/>
 						)}
 
 						{activeTab === "wallet" && (
 							<div className="profile-page__wallet">
-								<div className="profile-page__wallet-card">
-									<i className="bi bi-wallet2"></i>
-									<p className="profile-page__wallet-balance">
-										${profile?.walletBalance?.toFixed(2) || "0.00"}
-									</p>
-									<p className="profile-page__wallet-label">Wallet Balance</p>
+								<div className="profile-wallet-card">
+									<h3 className="profile-wallet__title">Current Balance</h3>
+									<p className="profile-wallet__balance">${profile?.walletBalance?.toFixed(2) || "0.00"}</p>
+									
+									<div className="profile-wallet__deposit-group">
+										<input type="number" placeholder="Amount (USD)" className="profile-wallet__input" />
+										<button type="button" className="profile-wallet__btn-cyan">Deposit</button>
+									</div>
+
+									<p className="profile-wallet__premium-cost">Premium costs: <span>$10 / month</span></p>
+									<button type="button" className="profile-wallet__btn-orange">
+										<i className="bi bi-star-fill"></i> Subscribe with Wallet ($10)
+									</button>
 								</div>
 							</div>
 						)}

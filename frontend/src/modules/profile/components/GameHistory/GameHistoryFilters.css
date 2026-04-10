@@ -1,74 +1,114 @@
 .ghf {
 	display: flex;
-	flex-wrap: wrap;
-	gap: var(--space-sm);
+	flex-direction: column;
+	gap: 16px;
 	padding: var(--space-md);
 	background: var(--color-surface);
-	border-radius: var(--radius-md);
-	border: 1px solid rgba(19, 194, 255, 0.12);
-	align-items: flex-end;
+	border-radius: var(--radius-lg);
+	border: 1px solid rgba(19, 194, 255, 0.08);
 }
 
-.ghf__group {
+/* ── Search Row ─────────────────────────────────────────────────── */
+.ghf__search-row {
 	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	min-width: 120px;
+	gap: 12px;
+	width: 100%;
 }
 
-.ghf__group--search {
+.ghf__search-input-wrap {
 	flex: 1;
-	min-width: 200px;
-}
-
-.ghf__label {
-	font-size: 0.72rem;
-	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
-	color: var(--color-muted);
-}
-
-.ghf__label i {
-	font-size: 0.7rem;
-}
-
-.ghf__input {
-	background: var(--color-surface-2);
-	border: 1px solid rgba(19, 194, 255, 0.12);
-	border-radius: var(--radius-sm);
-	padding: 8px 12px;
-	color: var(--color-text);
-	font-size: 0.85rem;
-	outline: none;
+	display: flex;
+	align-items: center;
+	background: #0f172a;
+	border: 1px solid rgba(19, 194, 255, 0.2);
+	border-radius: 24px;
+	padding: 0 16px;
 	transition: border-color 0.2s;
 }
 
-.ghf__input:focus {
+.ghf__search-input-wrap:focus-within {
 	border-color: var(--color-primary);
 }
 
-.ghf__input option {
-	background: var(--color-surface-2);
+.ghf__search-icon {
+	color: var(--color-primary);
+	font-size: 0.9rem;
+	margin-right: 12px;
+}
+
+.ghf__search-input {
+	flex: 1;
+	background: transparent;
+	border: none;
+	padding: 12px 0;
+	color: var(--color-text);
+	font-size: 0.9rem;
+	outline: none;
+}
+
+.ghf__search-input::placeholder {
+	color: rgba(255, 255, 255, 0.4);
+}
+
+.ghf__search-btn {
+	background: var(--color-primary);
+	color: #081326;
+	border: none;
+	border-radius: 24px;
+	padding: 0 24px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.ghf__search-btn:hover {
+	background: #4ae0ff;
+}
+
+/* ── Filter Pills Row ───────────────────────────────────────────── */
+.ghf__filters-row {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.ghf__pill-wrap {
+	flex: 1;
+	min-width: 120px;
+}
+
+.ghf__pill {
+	width: 100%;
+	background: transparent;
+	border: 1px solid rgba(19, 194, 255, 0.2);
+	border-radius: 20px;
+	padding: 10px 16px;
+	color: var(--color-text);
+	font-size: 0.85rem;
+	outline: none;
+	appearance: none; /* remove default arrow */
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2313c2ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+	background-repeat: no-repeat;
+	background-position: right 12px center;
+	background-size: 14px;
+	cursor: pointer;
+	transition: border-color 0.2s;
+}
+
+.ghf__pill:focus,
+.ghf__pill:hover {
+	border-color: rgba(19, 194, 255, 0.5);
+}
+
+.ghf__pill option {
+	background: #0f172a;
 	color: var(--color-text);
 }
 
-.ghf__sort-btn {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	background: rgba(19, 194, 255, 0.1);
-	border: 1px solid rgba(19, 194, 255, 0.2);
-	border-radius: var(--radius-sm);
-	padding: 8px 14px;
-	color: var(--color-primary);
-	font-size: 0.82rem;
-	font-weight: 600;
-	cursor: pointer;
-	transition: background 0.15s;
-	white-space: nowrap;
+.ghf__pill--date {
+	background-image: none; /* Browser default date picker usually applies its own stuff */
 }
-
-.ghf__sort-btn:hover {
-	background: rgba(19, 194, 255, 0.18);
+.ghf__pill--date::-webkit-calendar-picker-indicator {
+    filter: invert(1) hue-rotate(180deg); /* Make calendar icon somewhat cyan/light */
+    cursor: pointer;
 }

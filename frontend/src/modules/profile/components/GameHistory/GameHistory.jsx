@@ -9,6 +9,12 @@ const RESULT_COLORS = {
 	aborted: "gh-badge--aborted",
 };
 
+const TYPE_ICONS = {
+	"Single Player": { icon: "bi-robot", wrapClass: "gh-icon-wrap--ai" },
+	"Two Players": { icon: "bi-display", wrapClass: "gh-icon-wrap--local" },
+	"Online Match": { icon: "bi-globe", wrapClass: "gh-icon-wrap--online" }
+};
+
 const formatDate = (iso) => {
 	if (!iso) return "—";
 	const d = new Date(iso);
@@ -22,7 +28,7 @@ const formatDate = (iso) => {
 	});
 };
 
-export default function GameHistory({ history, loading, onFilter }) {
+export default function GameHistory({ history, loading, onFilter, isPremium }) {
 	const [filters, setFilters] = useState({
 		search: "",
 		result: "",
@@ -56,37 +62,36 @@ export default function GameHistory({ history, loading, onFilter }) {
 					<p>No game sessions found</p>
 				</div>
 			) : (
-				<div className="gh-table-wrap">
-					<table className="gh-table" id="game-history-table">
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>Start Time</th>
-								<th>End Time</th>
-								<th>Type</th>
-								<th>Opponent</th>
-								<th>Result</th>
-							</tr>
-						</thead>
-						<tbody>
-							{history.map((s) => (
-								<tr key={s._id}>
-									<td className="gh-cell--num">{s.sessionNumber}</td>
-									<td>{formatDate(s.startTime)}</td>
-									<td>{formatDate(s.endTime)}</td>
-									<td>
-										<span className="gh-type">{s.gameTypeLabel}</span>
-									</td>
-									<td className="gh-cell--player">{s.player2Name || "—"}</td>
-									<td>
-										<span className={`gh-badge ${RESULT_COLORS[s.result] || ""}`}>
-											{s.result?.toUpperCase()}
+				<div className="gh-list">
+					{history.map((s) => {
+						const typeInfo = TYPE_ICONS[s.gameType] || { icon: "bi-joystick", wrapClass: "gh-icon-wrap--default" };
+						return (
+							<div key={s._id} className="gh-card">
+								<div className={`gh-card__icon ${typeInfo.wrapClass}`}>
+									<i className={`bi ${typeInfo.icon}`}></i>
+								</div>
+								<div className="gh-card__info">
+									<h4 className="gh-card__title">
+										vs {s.opponent || "Unknown"}
+										<span className={`gh-badge ${RESULT_COLORS[s.result.toLowerCase()] || ""}`}>
+											{s.result}
 										</span>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+									</h4>
+									<p className="gh-card__subtitle">
+										<i className="bi bi-circle-fill"></i> {s.gameType} &nbsp;&nbsp; {s.sessionNumber} &nbsp;&nbsp; {formatDate(s.startTime)}
+									</p>
+								</div>
+								
+								{isPremium && (
+									<div className="gh-card__action">
+										<button type="button" className="gh-card__replay-btn">
+											<i className="bi bi-play-fill"></i> Replay
+										</button>
+									</div>
+								)}
+							</div>
+						);
+					})}
 				</div>
 			)}
 		</div>

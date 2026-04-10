@@ -61,36 +61,101 @@
 .profile-page__wallet {
 	display: flex;
 	justify-content: center;
-	padding: var(--space-xl);
+	padding: var(--space-md);
 }
 
-.profile-page__wallet-card {
+.profile-wallet-card {
+	background: #172336;
+	border-radius: var(--radius-lg);
+	padding: var(--space-xl);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: var(--space-sm);
-	background: var(--color-surface);
-	border: 1px solid rgba(19, 194, 255, 0.12);
-	border-radius: var(--radius-lg);
-	padding: var(--space-xl) 48px;
+	width: 100%;
+	max-width: 420px;
+	margin: 0 auto;
 }
 
-.profile-page__wallet-card i {
-	font-size: 2.5rem;
+.profile-wallet__title {
+	color: var(--color-muted);
+	font-size: 0.9rem;
+	font-weight: 600;
+	margin-bottom: 8px;
+}
+
+.profile-wallet__balance {
 	color: var(--color-primary);
-}
-
-.profile-page__wallet-balance {
-	font-size: 2rem;
+	font-size: 3.5rem;
 	font-weight: 800;
-	color: var(--color-success);
-	margin: 0;
+	margin-bottom: var(--space-xl);
+	margin-top: 0;
+	line-height: 1;
 }
 
-.profile-page__wallet-label {
+.profile-wallet__deposit-group {
+	display: flex;
+	width: 100%;
+	gap: 12px;
+	margin-bottom: var(--space-xl);
+}
+
+.profile-wallet__input {
+	flex: 1;
+	background: #0f172a;
+	border: 1px solid rgba(19, 194, 255, 0.12);
+	border-radius: var(--radius-sm);
+	padding: 12px 16px;
+	color: var(--color-text);
+	outline: none;
+}
+
+.profile-wallet__input::placeholder {
+	color: rgba(255,255,255,0.4);
+}
+
+.profile-wallet__btn-cyan {
+	background: var(--color-primary);
+	color: #081326;
+	border: none;
+	border-radius: var(--radius-sm);
+	padding: 0 24px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.profile-wallet__btn-cyan:hover {
+	background: #4ae0ff;
+}
+
+.profile-wallet__premium-cost {
 	color: var(--color-muted);
 	font-size: 0.85rem;
-	margin: 0;
+	margin-bottom: 12px;
+}
+
+.profile-wallet__premium-cost span {
+	color: #ff8a33;
+	font-weight: 700;
+}
+
+.profile-wallet__btn-orange {
+	width: 100%;
+	background: #ff8a33;
+	color: #fff;
+	border: none;
+	border-radius: var(--radius-sm);
+	padding: 16px;
+	font-weight: 700;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: opacity 0.15s, transform 0.1s;
+}
+.profile-wallet__btn-orange:hover {
+	opacity: 0.9;
+}
+.profile-wallet__btn-orange:active {
+	transform: scale(0.98);
 }
 
 /* ── Loading ──────────────────────────────────────────────────────── */

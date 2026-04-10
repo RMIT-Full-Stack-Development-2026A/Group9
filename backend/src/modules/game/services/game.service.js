@@ -58,13 +58,21 @@ export const getGameHistoryForUser = async (userId, query) => {
 	if (search) {
 		const searchLower = search.toLowerCase();
 		sessions = sessions.filter((session) => {
+			if (session.sessionNumber && String(session.sessionNumber).includes(searchLower))
+				return true;
+			
 			const otherPlayers = session.players.filter(
 				(p) => p._id.toString() !== userId
 			);
 			if (otherPlayers.some((p) => p.username.toLowerCase().includes(searchLower)))
 				return true;
+			
 			if (session.botName && session.botName.toLowerCase().includes(searchLower))
 				return true;
+			
+			if (session.localPlayer2Name && session.localPlayer2Name.toLowerCase().includes(searchLower))
+				return true;
+
 			return false;
 		});
 	}

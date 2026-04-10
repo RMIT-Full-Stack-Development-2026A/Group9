@@ -24,51 +24,5 @@ export const UserDto = {
 			premiumUntil: profile?.premiumUntil || null,
 			walletBalance: profile?.walletBalance || 0,
 		};
-	},
-
-	toGameHistoryResponse: (sessions, userId) => {
-		return sessions.map((s) => {
-			const playerNames = (s.players || []).map((p) => p.username || "Unknown");
-			const otherPlayers = (s.players || []).filter(
-				(p) => String(p._id) !== String(userId)
-			);
-
-			// Determine player2 display name
-			let player2Name = "";
-			if (s.gameType === "ai" && s.botName) {
-				player2Name = s.botName;
-			} else if (s.gameType === "classic" && s.localPlayer2Name) {
-				player2Name = s.localPlayer2Name;
-			} else if (otherPlayers.length > 0) {
-				player2Name = otherPlayers[0].username;
-			}
-
-			// Determine result relative to the requesting player
-			let relativeResult = s.result;
-			if (s.result === "player1_win" || s.result === "player2_win") {
-				const isWinner = s.winner && String(s.winner._id) === String(userId);
-				relativeResult = isWinner ? "win" : "lose";
-			}
-
-			// Map gameType to display label
-			const gameTypeLabels = {
-				ai: "Single Player",
-				classic: "Two Players",
-				multiplayer: "Online Match",
-			};
-
-			return {
-				_id: s._id,
-				sessionNumber: s.sessionNumber,
-				startTime: s.startTime,
-				endTime: s.endTime,
-				gameType: s.gameType,
-				gameTypeLabel: gameTypeLabels[s.gameType] || s.gameType,
-				result: relativeResult,
-				players: playerNames,
-				player2Name,
-				winner: s.winner?.username || null,
-			};
-		});
 	}
 };

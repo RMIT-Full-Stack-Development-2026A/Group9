@@ -1,6 +1,6 @@
 import * as userService from "../services/user.service.js";
 import { UserDto } from "../dto/user.dto.js";
-import { getPlayerHistory } from "../../game/interface/game.interface.js";
+import { getGameHistoryForUser } from "../../game/interface/game.interface.js";
 
 export async function getMyProfile(req, res, next) {
 	try {
@@ -31,17 +31,16 @@ export async function uploadMyAvatar(req, res, next) {
 
 export async function getMyHistory(req, res, next) {
 	try {
-		const sessions = await getPlayerHistory(req.user.id, {
+		const sessions = await getGameHistoryForUser(req.user.id, {
 			search: req.query.search,
 			result: req.query.result,
 			gameType: req.query.gameType,
-			dateFrom: req.query.dateFrom,
-			dateTo: req.query.dateTo,
+			startDate: req.query.dateFrom, // Map frontend 'dateFrom' to service 'startDate'
+			endDate: req.query.dateTo,     // Map frontend 'dateTo' to service 'endDate'
 			sortOrder: req.query.sortOrder,
 		});
 
-		const formatted = UserDto.toGameHistoryResponse(sessions, req.user.id);
-		res.status(200).json({ success: true, data: formatted });
+		res.status(200).json({ success: true, data: sessions });
 	} catch (err) {
 		next(err);
 	}

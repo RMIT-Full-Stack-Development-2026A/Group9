@@ -13,11 +13,11 @@
  * 3) Expose stable functions used by controllers and realtime handlers.
  */
 
-import * as gameRepo from "../repositories/game.repository.js";
+import * as gameService from "../services/game.service.js";
 
 /**
  * Fetch game history for a player
  */
-export async function getPlayerHistory(userId, options = {}) {
-	return await gameRepo.findByPlayer(userId, options);
-}
+export const getGameHistoryForUser = (userId, query) => {
+	return gameService.getGameHistoryForUser(userId, query);
+};

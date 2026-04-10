@@ -19,10 +19,10 @@ export const findAccountByUsername = (username) =>
 
 // ── Write ─────────────────────────────────────────────────────────────
 export const updateAccount = (id, fields) =>
-	UserAccount.findByIdAndUpdate(id, { $set: fields }, { new: true, runValidators: true })
+	UserAccount.findByIdAndUpdate(id, { $set: fields }, { returnDocument: 'after', runValidators: true })
 		.select("-password")
 		.lean();
 
 export const updateProfile = (id, fields) =>
-	UserProfile.findByIdAndUpdate(id, { $set: fields }, { new: true, runValidators: true })
+	UserProfile.findByIdAndUpdate(id, { $set: fields }, { returnDocument: 'after', runValidators: true })
 		.lean();

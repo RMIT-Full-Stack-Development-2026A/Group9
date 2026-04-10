@@ -102,6 +102,6 @@ export const revokeAuthSessionByTokenHash = async (token) => {
 	return AuthSession.findOneAndUpdate(
 		{ token, isRevoked: false },
 		{ $set: { isRevoked: true } },
-		{ new: true }
+		{ returnDocument: 'after' }
 	).lean();
 };

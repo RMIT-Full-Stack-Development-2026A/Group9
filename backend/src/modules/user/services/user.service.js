@@ -3,6 +3,7 @@ import AppError from "../../../shared/errors/AppError.js";
 import { uploadToCloudinary } from "../../../shared/utils/cloudinary.js";
 import * as userRepo from "../repositories/user.repository.js";
 import { getGameHistoryForUser } from "../../game/interface/game.interface.js";
+import { UserDto } from "../dto/user.dto.js";
 /**
  * Get combined profile (account + profile doc).
  */
@@ -14,7 +15,21 @@ export async function getProfile(userId) {
 
 	if (!account) throw new AppError("User not found", 404);
 
-	return { account, profile };
+	return UserDto.toProfileResponse(account, profile);
+}
+
+/**
+ * Get public profile logic enforcing security DTO.
+ */
+export async function getPublicProfile(userId) {
+	const [account, profile] = await Promise.all([
+		userRepo.findAccountById(userId),
+		userRepo.findProfileById(userId),
+	]);
+
+	if (!account) throw new AppError("User not found", 404);
+
+	return UserDto.toPublicProfileResponse(account, profile);
 }
 
 /**

@@ -7,17 +7,20 @@ import registerMultiplayerModule from "./multiplayer/index.js";
 import registerUserModule from "./user/index.js";
 
 const registrars = [
-	registerAuthModule,
-	registerUserModule,
-	registerAdminModule,
-	registerBillingModule,
-	registerGameModule,
-	registerLeaderboardModule,
-	registerMultiplayerModule,
+    registerAuthModule,
+    registerUserModule,
+    registerAdminModule,
+    registerBillingModule,
+    registerGameModule,
+    registerLeaderboardModule,
+    registerMultiplayerModule,
 ];
 
+//go thru all module registrars and mounts them to the express app
 export default function registerModules(app) {
-	for (const registerModule of registrars) {
-		registerModule(app);
-	}
+    for (const registerModule of registrars) {
+        if (typeof registerModule === 'function') {
+            registerModule(app);
+        }
+    }
 }

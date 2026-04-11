@@ -15,3 +15,70 @@
 // 1) Service methods orchestrate repository calls and policy checks.
 // 2) Throw AppError for expected failures; let global middleware format output.
 // 3) Keep method names action-oriented (listUsers, banUser, unbanUser, etc.).
+import AppError from "../../shared/errors/AppError.js";
+import { adminRepository } from "./admin.repository.js";
+import { adminDto } from "./admin.dto.js";
+
+export const adminService = {
+    getMetrics: async () => {
+        const totalPlayers = await adminRepository.countTotalUsers();
+        const activeRooms = await adminRepository.countActiveRooms();
+        
+        return adminDto.toMetricsResponse(totalPlayers, activeRooms);
+    },
+
+    getPlayers: async () => {
+        const users = await adminRepository.findAllUsers();
+        return users.map(adminDto.toPlayerResponse);
+    },
+
+    getRooms: async () => {
+        const rooms = await adminRepository.findAllRooms();
+        return rooms.map(adminDto.toRoomResponse);
+    },
+
+    togglePlayerStatus: async (adminId, targetUserId) => {
+        const user = await adminRepository.findUserById(targetUserId);
+        
+        if (!user) {
+            throw new AppError("User not found", 404);
+        }
+
+       
+        const newStatus = !user.isDeactivated;
+        const updatedUser = await adminRepository.updateUserDeactivationStatus(targetUserId, newStatus);
+
+        
+        await adminRepository.createActionLog({
+            adminId,
+            actionType: newStatus ? "DEACTIVATE_USER" : "ACTIVATE_USER",
+            targetUserId,
+            metadata: { previousStatus: user.isDeactivated }
+        });
+
+        return adminDto.toPlayerResponse(updatedUser);
+    },
+
+    closeRoom: async (adminId, roomId) => {
+        const room = await adminRepository.findRoomById(roomId);
+
+        if (!room) {
+            throw new AppError("Room not found", 404);
+        }
+        if (room.status === "CLOSED") {
+            throw new AppError("Room is already closed", 400);
+        }
+
+        const closedRoom = await adminRepository.updateRoomStatus(roomId, "CLOSED");
+
+       
+        await adminRepository.createActionLog({
+            adminId,
+            actionType: "CLOSE_ROOM",
+            targetRoomId: roomId,
+            metadata: { reason: "Force closed by admin" }
+        });
+
+        return adminDto.toRoomResponse(closedRoom);
+    }
+};

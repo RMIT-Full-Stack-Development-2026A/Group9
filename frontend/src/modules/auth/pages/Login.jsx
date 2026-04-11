@@ -53,7 +53,7 @@ export default function Login() {
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
             <div className="card p-4 shadow-sm" style={{ maxWidth: '400px', width: '100%' }}>
-                <h2 className="text-center mb-4">Login to Toang</h2>
+                <h2 className="text-center mb-4">Login to TicTacToang</h2>
                 {error && <div className="alert alert-danger">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">

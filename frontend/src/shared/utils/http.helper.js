@@ -15,40 +15,61 @@
 
 import { API_BASE_URL, AUTH_TOKEN_KEY } from "../../config/api.config.js";
 
+//injects JWS token into headers automatically
 const normalizeHeaders = (headers = {}) => {
-	const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
 
-	return {
-		"Content-Type": "application/json",
-		...(token ? { Authorization: `Bearer ${token}` } : {}),
-		...headers,
-	};
+    return {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+    };
 };
 
-export const http = async (url, options = {}) => {
-	const response = await fetch(`${API_BASE_URL}${url}`, {
-		...options,
-		headers: normalizeHeaders(options.headers),
-	});
+//core request wrapper using native fetch api
+ 
+const request = async (url, options = {}) => {
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+        ...options,
+        headers: normalizeHeaders(options.headers),
+    });
 
-	const contentType = response.headers.get("content-type") || "";
-	const payload = contentType.includes("application/json")
-		? await response.json()
-		: await response.text();
+    const contentType = response.headers.get("content-type") || "";
+    const payload = contentType.includes("application/json")
+        ? await response.json()
+        : await response.text();
 
-	if (!response.ok) {
-		const message =
-			typeof payload === "object" && payload?.message
-				? payload.message
-				: `Request failed with status ${response.status}`;
+    if (!response.ok) {
+        const message =
+            typeof payload === "object" && payload?.message
+                ? payload.message
+                : `Request failed with status ${response.status}`;
 
-		const error = new Error(message);
-		error.status = response.status;
-		error.payload = payload;
-		throw error;
-	}
+        const error = new Error(message);
+        error.status = response.status;
+        error.payload = payload;
+        throw error;
+    }
 
-	return payload;
+    return payload;
 };
 
-export default http;
+// export 'httpHelper' object to match api.js import
+export const httpHelper = {
+    get: (url, options) => 
+        request(url, { ...options, method: "GET" }),
+
+    post: (url, data, options) => 
+        request(url, { ...options, method: "POST", body: JSON.stringify(data) }),
+    
+    put: (url, data, options) => 
+        request(url, { ...options, method: "PUT", body: JSON.stringify(data) }),
+    
+    patch: (url, data, options) => 
+        request(url, { ...options, method: "PATCH", body: JSON.stringify(data) }),
+    
+    del: (url, options) => 
+        request(url, { ...options, method: "DELETE" }),
+};
+
+export default httpHelper;

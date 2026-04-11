@@ -105,3 +105,12 @@ export const revokeAuthSessionByTokenHash = async (token) => {
 		{ new: true }
 	).lean();
 };
+
+//updates security tracking fields for brute force protection.
+export const updateLoginMetadata = async (userId, updateData) => {
+    return await UserAccount.findByIdAndUpdate(
+        userId,
+        { $set: updateData },
+        { new: true }
+    );
+};

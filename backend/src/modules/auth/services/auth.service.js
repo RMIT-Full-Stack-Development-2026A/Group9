@@ -110,27 +110,46 @@ export const register = async (payload, sessionContext = {}) => {
 };
 
 export const login = async (payload, sessionContext = {}) => {
-	// Use shared DTO rules for consistent auth validation errors.
-	const { valid, errors } = validateLoginPayload(payload);
-	if (!valid) {
-		throw new AppError("Invalid login payload", 400, errors);
-	}
+    const { identifier, password } = payload;
+    
+    //see if the user provided an email or a username
+    const loginType = identifier.includes("@") ? "email" : "username";
+    
+    //use the existing repo signature
+    const user = await authRepository.findUserByIdentifier(identifier, loginType);
+    
+    if (!user || user.isActive === false) {
+        throw new AppError("Invalid credentials or account inactive", 401);
+    }
 
-	if (!user) {
-		throw new AppError("Invalid username/email or password", 401);
-	}
+    //brute force check
+    if (user.lockUntil && user.lockUntil > Date.now()) {
+        throw new AppError("Account locked. Try again in 60s.", 429);
+    }
 
-	if (user.isActive === false) {
-		throw new AppError("Account is inactive", 403);
-	}
+    const isMatch = await bcrypt.compare(password, user.password);
+    
+    if (!isMatch) {
+        const attempts = (user.loginAttempts || 0) + 1;
+        const lockUntil = attempts >= 5 ? Date.now() + 60000 : null;
+        
+        //use new repo func added above
+        await authRepository.updateLoginMetadata(user._id, { 
+            loginAttempts: attempts, 
+            lockUntil 
+        });
+        
+        throw new AppError("Invalid credentials", 401);
+    }
 
-	const isPasswordValid = await bcrypt.compare(dto.password, user.password);
-	if (!isPasswordValid) {
-		throw new AppError("Invalid username/email or password", 401);
-	}
+    //login success: reset attempts
+    await authRepository.updateLoginMetadata(user._id, { 
+        loginAttempts: 0, 
+        lockUntil: null 
+    });
 
-	const accessToken = signAccessToken(user);
-	const token = hashSessionToken(accessToken);
+    const accessToken = signAccessToken(user);
+    const token = hashSessionToken(accessToken);
 	await authRepository.createAuthSession({
 		userId: user._id,
 		token,
@@ -140,11 +159,11 @@ export const login = async (payload, sessionContext = {}) => {
 	});
 
 	return createAuthResponseDTO({
-		accessToken,
-		   user: {
-			   id: user._id,
-			   username: user.username,
-			   email: user.email,
+        accessToken,
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email,
 			   role: user.role,
 			   premiumUntil: user.premiumUntil,
 			   avatar: user.avatar,

@@ -1,4 +1,4 @@
-import { httpHelper } from "../utils/http.helper";
+import { httpHelper } from "../shared/utils/http.helper";
 
 export const api = {
 	get: (path, options) => httpHelper.get(path, options),

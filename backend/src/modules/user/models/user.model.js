@@ -33,6 +33,6 @@ const userSchema = new mongoose.Schema(
 );
 
 const UserAccount =
-    mongoose.models.UserAccount || mongoose.model("UserAccount", userSchema);
+    mongoose.models.UserAccount || mongoose.model("User", userSchema, "users");
 
 export default UserAccount;

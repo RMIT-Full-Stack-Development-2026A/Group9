@@ -21,5 +21,5 @@ const server = createServer(app);
 initSocket(server);
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });

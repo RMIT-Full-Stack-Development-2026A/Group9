@@ -119,7 +119,7 @@ export const login = async (payload, sessionContext = {}) => {
     const user = await authRepository.findUserByIdentifier(identifier, loginType);
     
     if (!user || user.isActive === false) {
-        throw new AppError("Invalid username/email or password", 401);
+        throw new AppError("The username or password you entered is incorrect. Please try again", 401);
     }
 
     //brute force check
@@ -139,7 +139,7 @@ export const login = async (payload, sessionContext = {}) => {
             lockUntil 
         });
         
-        throw new AppError("Invalid username/email or password", 401);
+        throw new AppError("The username or password you entered is incorrect. Please try again", 401);
     }
 
     //login success: reset attempts

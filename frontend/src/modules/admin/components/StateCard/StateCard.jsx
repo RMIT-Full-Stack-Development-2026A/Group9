@@ -1,4 +1,4 @@
-import './StatCard.css';
+import './StateCard.css';
 
 const StatCard = ({ label, value, color }) => {
   return (

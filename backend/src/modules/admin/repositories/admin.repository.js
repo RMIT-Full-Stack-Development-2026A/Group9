@@ -20,7 +20,7 @@
 // 2) Return plain documents/rows; response shaping belongs to service/DTO layers.
 // 3) Keep naming convention: find*, list*, create*, update*, delete*.
 import mongoose from "mongoose";
-import AdminActionLog from "./models/AdminActionLog.model.js"; // Adjust path if needed
+import AdminActionLog from "../models/adminActionLog.model.js"; // Adjust path if needed
 
 const getUserModel = () => mongoose.model("UserAccount");
 const getRoomModel = () => mongoose.model("GameRoom");

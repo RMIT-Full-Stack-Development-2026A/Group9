@@ -1,9 +1,273 @@
-/**
- * ============================================================================
- * REGISTRATION FORM STYLES (Scoped)
- * ============================================================================
- * Location: src/modules/auth/components/RegistrationForm.module.css
- * Purpose: Provides a layout for the registration process. Since registration 
- * forms are typically longer than login forms, this focuses on vertical 
- * rhythm and clear grouping of related fields.
- */
+.pageContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  background: rgba(11, 17, 32, 0.95);
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.headerIcon {
+  width: 56px;
+  height: 56px;
+  background: var(--bg-card);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1rem;
+}
+
+.headerIcon svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--accent);
+}
+
+.headerSection h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.headerSection p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.formCard {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 460px;
+  padding: 2.4rem 2rem;
+  border-radius: 18px;
+  box-sizing: border-box;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+}
+
+.formCard h2 {
+  font-size: 1.55rem;
+  margin: 0 0 0.3rem;
+}
+
+.formSubtitle {
+  color: var(--text-muted);
+  font-size: 0.94rem;
+  margin-bottom: 2rem;
+}
+
+.profileSection {
+  margin-bottom: 1.5rem;
+}
+
+.profileSection label {
+  margin-bottom: 0.75rem;
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.profileUploadRow {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.avatarCircle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-input);
+  overflow: hidden;
+}
+
+.avatarCircle svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--text-muted);
+}
+
+.avatarPreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uploadColumn {
+  flex: 1;
+  min-width: 180px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.uploadBtn {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.uploadBtn:hover {
+  background: var(--accent-hover);
+}
+
+.uploadHint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.65rem;
+}
+
+.formGroup {
+  margin-bottom: 1.35rem;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.errorLabel {
+  color: var(--error);
+}
+
+input,
+select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 0.92rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
+}
+
+.errorInput {
+  border-color: var(--error);
+}
+
+.validationMsg {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  margin-top: 0.55rem;
+}
+
+.validationMsg.error {
+  color: var(--error);
+}
+
+.validationMsg svg {
+  width: 16px;
+  height: 16px;
+}
+
+.divider {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 42%;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.termsText,
+.loginLink {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.termsText a,
+.loginLink a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.loginLink {
+  margin-bottom: 1.5rem;
+}
+
+.btnSubmit {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background 0.2s ease;
+}
+
+.btnSubmit:hover {
+  background: var(--accent-hover);
+}
+
+.serverErrorBox {
+  background: rgba(239, 68, 68, 0.11);
+  border-left: 4px solid var(--error);
+  padding: 1rem 1rem 1rem 1.1rem;
+  margin-top: 1.5rem;
+  border-radius: 0 12px 12px 0;
+}
+
+.serverErrorBox p {
+  font-size: 0.86rem;
+  margin: 0.35rem 0;
+  color: var(--text-main);
+}

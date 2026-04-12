@@ -34,7 +34,7 @@ export const login = async (payload) => {
 };
 
 export const registerPlayer = async (submitData) => {
-  const apiBase = import.meta.env.VITE_API_URL || '';
+  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
   try {
     const response = await fetch(`${apiBase}/api/register`, {

@@ -92,7 +92,7 @@ export function extractUserRecord(payload) {
 	return looksLikeUser(payload) ? payload : null;
 }
 
-// Attempts to retrieve and parse the stored user object from localStorage using several possible keys.
+// Attempts to retrieve and parse the stored user object from localStorage using possible key.
 // Returns the first valid user object found, or null if none are valid.
 export function getStoredUser() {
     const storageKeys = [AUTH_USER_KEY];
@@ -119,24 +119,20 @@ export function getStoredUser() {
     return null;
 }
 
+// Checks if the user is a premium member based solely on the premiumUntil field.
+// Returns true if premiumUntil is a valid future date, otherwise false.
 export function isPremiumUser(user) {
-	if (typeof user.isPremium === "boolean") {
-		return user.isPremium;
-	}
-
-	const role = String(user.role || "").toLowerCase();
-	if (role === "premium") {
-		return true;
-	}
-
-	if (!user.premiumUntil) {
-		return false;
-	}
-
-	const premiumUntilDate = new Date(user.premiumUntil);
-	return !Number.isNaN(premiumUntilDate.getTime()) && premiumUntilDate.getTime() > Date.now();
+    // Use premiumUntil as the source of truth for premium status check
+    if (!user.premiumUntil) {
+        return false;
+    }
+    const premiumUntilDate = new Date(user.premiumUntil);
+    return !Number.isNaN(premiumUntilDate.getTime()) && premiumUntilDate.getTime() > Date.now();
 }
 
+// Generates a welcome line for the user based on their authentication and premium status.
+// Uses username as the primary display name, falling back to email or 'PLAYER' if not present.
+// Returns a different message and type for guests, premium members, and normal users.
 export function getWelcomeLine(user) {
 	if (!user) {
 		return {
@@ -145,7 +141,7 @@ export function getWelcomeLine(user) {
 		};
 	}
 
-	const displayName = String(user.username || user.name || user.email || "PLAYER")
+	const displayName = String(user.username || user.email || "PLAYER")
 		.split("@")[0]
 		.toUpperCase();
 

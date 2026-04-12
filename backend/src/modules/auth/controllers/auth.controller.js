@@ -34,7 +34,7 @@ const extractSessionContext = (req) => ({
 
 export const register = async (req, res, next) => {
 	try {
-		const result = await authService.register(req.body, extractSessionContext(req));
+		const result = await authService.register(req.body, req.file, extractSessionContext(req));
 		return res.status(201).json({ success: true, data: result });
 	} catch (error) {
 		return next(error);

@@ -73,11 +73,13 @@ export const findUserById = async (userId) => {
 
 // Persist new user document. Hashing/validation must be done in service.
 export const createUser = async (payload) => {
-	const createdAccount = await UserAccount.create(payload);
-	await UserProfile.create({ _id: createdAccount._id });
+	const { country, avatar, ...accountData } = payload;
+	const createdAccount = await UserAccount.create(accountData);
+	await UserProfile.create({ _id: createdAccount._id, country, avatar });
 
 	const account = createdAccount.toObject();
-	return mergeAccountAndProfile(account, null);
+	const profile = await UserProfile.findById(createdAccount._id).lean();
+	return mergeAccountAndProfile(account, profile);
 };
 
 // Persist issued auth token digest and device metadata in Auth bounded context.

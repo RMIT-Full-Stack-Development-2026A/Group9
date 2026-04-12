@@ -1,21 +1,19 @@
-//stores account, authentication, and profile information for players and admins
+import mongoose from 'mongoose';
 
-// {
-//   username: { type: String },
-//   email: { type: String, unique: true },
-//   password: { type: String }, // hashed
-//   country: { type: String },
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  country: { type: String, required: true },
+  role: { type: String, enum: ['player', 'admin'], default: 'player' },
+  isActive: { type: Boolean, default: true },
+  avatar: { type: Buffer, default: null },
+  premiumUntil: { type: Date, default: null },
+  walletBalance: { type: Number, default: 0 },
+  failedLoginAttempts: { type: Number, default: 0 },
+  lastFailedLogin: { type: Date, default: null }
+}, {
+  timestamps: true
+});
 
-//   role: { type: String, enum: ["player", "admin"] },
-//   isActive: { type: Boolean },
-
-//   avatar: { type: String },
-
-//   premiumUntil (Replaces isPremium. Type: Date),
-//   walletBalance: { type: Number },
-
-//   failedLoginAttempts: { type: Number },
-//   lastFailedLogin: { type: Date },
-
-//   createdAt: { type: Date }
-// }
+export default mongoose.model('User', userSchema);

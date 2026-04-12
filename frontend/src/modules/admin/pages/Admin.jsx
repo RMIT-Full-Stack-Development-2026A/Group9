@@ -10,11 +10,11 @@
  * in your router to prevent standard players from accessing it.
  */
 
-import Navbar from '../components/Navbar'; 
-import PlayerTable from '../components/PlayerTable';
-import RoomTable from '../components/RoomTable';
-import StatCard from '../components/StatCard';
-import { useAdmin } from '../modules/admin/hooks/useAdmin';
+import Navbar from '../components/Navbar/NavBar.jsx'; 
+import PlayerTable from '../components/PlayerTable/PlayerTable.jsx';
+import RoomTable from '../components/RoomTable/RoomTable.jsx';
+import StatCard from '../components/StateCard/StateCard.jsx';
+import { useAdmin } from '../hooks/useAdmin.js';
 
 
 export default function Admin() {

@@ -19,7 +19,7 @@
 // 1) Export route handlers only (no DB calls directly in this layer).
 // 2) Validate input through DTO/middleware, then delegate to service.
 // 3) Always forward failures to next(error) for global error handling.
-import { adminService } from "./admin.service.js";
+import { adminService } from "../services/admin.service.js";
 
 export const getMetrics = async (req, res, next) => {
     try {

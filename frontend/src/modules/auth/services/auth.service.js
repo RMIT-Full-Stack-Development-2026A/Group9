@@ -14,23 +14,26 @@
  */
 
 import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "../../../config/api.config.js";
-import { http } from "../../../shared/utils/http.helper.js";
+import httpHelper from "../../../shared/utils/http.helper.js";
 
 export const login = async (payload) => {
-	const data = await http("/auth/login", {
-		method: "POST",
-		body: JSON.stringify(payload),
-	});
+  const data = await httpHelper.post("/api/auth/login", payload);
 
-	if (data?.data?.accessToken) {
-		localStorage.setItem(AUTH_TOKEN_KEY, data.data.accessToken);
-	}
+  if (data?.accessToken) {
+    localStorage.setItem(AUTH_TOKEN_KEY, data.accessToken);
+  }
 
-	if (data?.data?.user) {
-		localStorage.setItem(AUTH_USER_KEY, JSON.stringify(data.data.user));
-	}
+  if (data?.user) {
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(data.user));
+  }
 
-	return data;
+  return data;
+};
+
+export const getMe = async () => {
+  return httpHelper("/auth/me", {
+    method: "GET",
+  });
 };
 
 export const registerPlayer = async (submitData) => {
@@ -59,12 +62,6 @@ export const registerPlayer = async (submitData) => {
       example: 'Check if backend is running.' 
     }];
   }
-};
-
-export const getMe = async () => {
-	return http("/auth/me", {
-		method: "GET",
-	});
 };
 
 export const logout = async () => {

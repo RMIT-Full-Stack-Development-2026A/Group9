@@ -1,0 +1,137 @@
+/* idk where to put this so i put it here for now */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.custom-modal-content {
+    background: rgba(18, 50, 90, 0.4);
+    backdrop-filter: blur(15px);
+    border: 1px solid #00d2ff;
+    padding: 2.5rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 450px;
+    color: white;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
+}
+
+.modal-title {
+    margin-top: 0;
+    font-size: 1.8rem;
+    color: #00d2ff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.setting-section {
+    margin-bottom: 1.5rem;
+}
+
+.setting-section h4 {
+    margin-bottom: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.size-btn, .marker-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.size-btn.active, .marker-btn.selected {
+    background: #00d2ff;
+    border-color: #00d2ff;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+}
+
+.style-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.style-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.style-card.selected {
+    border-color: #00d2ff;
+    background: rgba(0, 210, 255, 0.1);
+}
+
+.confirm-start-btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 1rem;
+    background: #00d2ff;
+    border: none;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.confirm-start-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+}
+
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: #0d1527;
+    border: 1px solid #00d2ff;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
+    padding: 40px;
+    border-radius: 20px;
+    width: 500px;
+}
+
+.setting-button {
+    background: #111a2e;
+    border: 1px solid #1f2b47;
+    color: white;
+    padding: 12px 20px;
+    cursor: pointer;
+}
+
+.setting-button.active {
+    background: #00d2ff;
+    color: #0b0f1a;
+    box-shadow: 0 0 15px #00d2ff;
+    font-weight: bold;
+}
+
+.start-btn {
+    width: 100%;
+    margin-top: 30px;
+    background: #00d2ff;
+    border: none;
+    padding: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+}

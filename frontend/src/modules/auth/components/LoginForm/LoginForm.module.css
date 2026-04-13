@@ -6,22 +6,38 @@
  * in the Login module don't accidentally leak into the Registration module 
  * or other parts of TicTacToang.
  */
- .pageWrapper {
-    background-color: #0d121f;
-    height: 100vh;
-    width: 100%;
+
+.pageWrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 20px;
-    color: #ffffff;
-    overflow: hidden;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    background: transparent;
 }
+
 
 .headerSection {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.headerIcon {
+    width: 56px;
+    height: 56px;
+    background: var(--bg-card, #1e293b);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 1rem;
+}
+
+.headerIcon svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--accent, #06b6d4);
 }
 
 .iconCircle {
@@ -35,36 +51,40 @@
     margin-bottom: 0.5rem;
 }
 
+
 .welcomeText {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 0.25rem;
+    margin: 0 0 0.5rem 0;
 }
 
 .welcomeSubtext {
-    color: #9ca3af;
+    color: var(--text-muted, #94a3b8);
     font-size: 0.95rem;
+    margin: 0;
 }
+
 
 .loginCard {
-    background-color: #171c2a;
-    border-radius: 20px;
-    padding: 2rem 2.5rem;
+    background: var(--bg-card, #1e293b);
     width: 100%;
-    max-width: 440px;
-    border: 1px solid #171c2a;
+    max-width: 420px;
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    box-sizing: border-box;
 }
 
+
 .cardTitle {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+    margin: 0 0 0.25rem 0;
     font-weight: 700;
-    margin-bottom: 0.5rem;
 }
 
 .cardSubtitle {
-    color: #9ca3af;
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
+    color: var(--text-muted, #94a3b8);
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
 }
 
 .inputGroup {

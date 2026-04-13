@@ -7,3 +7,49 @@
  * uses a flexbox layout to sandwich the game messages between the two 
  * player profile cards.
  */
+
+.game-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.player-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.player-badge.active-turn {
+    background: rgba(0, 210, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+    border: 1px solid #00d2ff;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #00d2ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #0b0f1a;
+}
+
+.active-turn .avatar {
+    outline: 2px solid #00d2ff;
+    outline-offset: 3px;
+}
+
+.vs-circle {
+    font-size: 0.8rem;
+    color: #4b5563;
+    font-weight: bold;
+}

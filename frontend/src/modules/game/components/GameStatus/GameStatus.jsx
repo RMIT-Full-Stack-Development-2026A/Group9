@@ -11,3 +11,32 @@
  * 3. Player Identity: Showing usernames and avatars next to their symbols.
  * 4. Match State: Displaying 'Waiting for opponent' during matchmaking.
  */
+
+import React from 'react';
+import '../GameStatus/GameStatus.module.css';
+
+export default function GameStatus({ markerIndex }) { 
+    return (
+        <div className="game-status-bar">
+            {/*player1 badge*/}
+            <div className="player-badge active-turn">
+                <div className="avatar p1-avatar"></div>
+                <div className="player-info">
+                    <span className="name">Player 1</span>
+                    <span className="status">Your Turn</span>
+                </div>
+            </div>
+
+            <div className="vs-circle">VS</div>
+
+            {/*player2 bade*/}
+            <div className="player-badge waiting">
+                <div className="avatar p2-avatar"></div>
+                <div className="player-info">
+                    <span className="name">Waiting...</span>
+                    <span className="status">Opponent</span>
+                </div>
+            </div>
+        </div>
+    );
+}

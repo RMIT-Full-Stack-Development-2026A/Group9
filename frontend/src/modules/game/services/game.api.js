@@ -12,4 +12,15 @@
  * 4. Game Validation: Fetching static game config or rules.
  */
 
-export {};
+export const recordMatchResult = async (matchData) => {
+    try {
+        const response = await fetch('/api/matches/record', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(matchData),
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to record match:", error);
+    }
+};

@@ -13,4 +13,15 @@
  * 4. Sound/Effect Triggers: Determining which "Toang" sounds to play.
  */
 
-export {};
+export const formatMatchPayload = (startTime, winner, players, size) => {
+    return {
+        startTime,
+        endTime: new Date().toISOString(),
+        participants: players.map(p => p.id),
+        result: winner ? winner.id : "DRAW",
+        metadata: {
+            boardSize: `${size}x${size}`,
+            mode: "Local/AI"
+        }
+    };
+};

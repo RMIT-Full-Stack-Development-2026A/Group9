@@ -74,7 +74,7 @@ const Registration = () => {
             <label className={getFieldError('username') ? styles.errorLabel : ''}>Username</label>
             <input 
               type="text" 
-              placeholder="your name"
+              placeholder="Enter your name"
               className={getFieldError('username') ? styles.errorInput : ''}
               onChange={(e) => setformData({...formData, username: e.target.value})} 
             />
@@ -87,7 +87,7 @@ const Registration = () => {
             <label className={getFieldError('email') ? styles.errorLabel : ''}>Email Address</label>
             <input 
               type="email" 
-              placeholder="your.email@example.com"
+              placeholder="Enter your email@example.com"
               className={getFieldError('email') ? styles.errorInput : ''}
               onChange={(e) => setformData({...formData, email: e.target.value})} 
             />
@@ -100,7 +100,7 @@ const Registration = () => {
             <label className={getFieldError('password') ? styles.errorLabel : ''}>Password</label>
             <input 
               type="password" 
-              placeholder="your password"
+              placeholder="Enter your password"
               className={getFieldError('password') ? styles.errorInput : ''}
               onChange={(e) => setformData({...formData, password: e.target.value})} 
             />
@@ -113,7 +113,7 @@ const Registration = () => {
             <label className={getFieldError('confirmPassword') ? styles.errorLabel : ''}>Confirm Password</label>
             <input 
               type="password" 
-              placeholder="Input your password again"
+              placeholder="Enter your password again"
               className={getFieldError('confirmPassword') ? styles.errorInput : ''}
               onChange={(e) => setformData({...formData, confirmPassword: e.target.value})} 
             />

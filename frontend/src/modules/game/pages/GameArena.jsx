@@ -117,15 +117,42 @@ export default function GameArena() {
                 {/*sidebar*/}
                 <aside className="arena-sidebar">
                     <div className="sidebar-panel">
-                        <h3>Match Details</h3>
-                        <p>Grid: {matchData.size}x{matchData.size}</p>
-                        <p>Theme: {matchData.style}</p>
-                        <p>Moves: {matchData.moveHistory.length}</p>
-                    </div>
+						<h3>Match Details</h3>
+						
+						<div className="detail-row">
+							<span className="detail-icon">🎯</span>
+							<span className="detail-label">Board:</span>
+							<span className="detail-value">{matchData.size}×{matchData.size}</span>
+						</div>
+
+						<div className="detail-row">
+							<span className="detail-icon">🎮</span>
+							<span className="detail-label">Type:</span>
+
+							{/* placeholder match type */}
+							<span className="detail-value">Local Match</span>
+						</div>
+
+						<div className="detail-row">
+							<span className="detail-icon">🔑</span>
+							<span className="detail-label">Room:</span>
+							<span className="detail-value room-link">
+								{/* placeholder room id */}
+								chgifguiqf7y23orh2hukvsdh 
+							</span>
+						</div>
+
+						<div className="detail-row">
+							<span className="detail-icon">📊</span>
+							<span className="detail-label">Moves:</span>
+							<span className="detail-value">{matchData.moveHistory.length}</span>
+						</div>
+					</div>
                     
                     <div className="sidebar-panel chat-panel">
                         <h3>Room Chat</h3>
                         <div className="chat-box">
+							{/* place holder chat history */}
                             <p className="system-msg">Match started...</p>
                         </div>
                         <input type="text" placeholder="Send a message..." className="chat-input" />

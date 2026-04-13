@@ -136,3 +136,49 @@
     color: #4a5d85;
     font-style: italic;
 }
+
+/* match details */
+.sidebar-panel h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+}
+
+.detail-icon {
+    font-size: 1.1rem;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.detail-label {
+    color: #94a3b8;
+    min-width: 60px;
+}
+
+.detail-value {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.room-link {
+    color: #00d2ff;
+    font-size: 0.8rem;
+    word-break: break-all;
+    cursor: pointer;
+    font-weight: 400;
+}
+
+.room-link:hover {
+    text-decoration: underline;
+}

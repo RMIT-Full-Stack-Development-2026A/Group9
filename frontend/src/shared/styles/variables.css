@@ -29,3 +29,36 @@
 	--space-xl: 32px;
 	--shadow-soft: 0 8px 24px rgba(3, 16, 36, 0.25);
 }
+
+
+/* this is here instead of cell.module.css to allow player to pick a theme */
+.game-cell {
+    background: #111a2e;
+    border: 1px solid #1f2b47;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.game-cell:hover:not(:disabled) {
+    background: #1e2945;
+    border-color: #00d2ff;
+    box-shadow: inset 0 0 10px rgba(0, 210, 255, 0.2);
+}
+
+.marker-text {
+    font-size: clamp(1rem, 3vh, 2rem);
+    filter: drop-shadow(0 0 8px #00d2ff);
+}
+
+/* theme overide */
+.neon-theme .game-cell {
+    border-color: rgba(0, 210, 255, 0.3);
+}
+
+.dark-theme .game-cell {
+    background: #050a14;
+    border-color: #111a2e;
+}

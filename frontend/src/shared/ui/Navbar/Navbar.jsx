@@ -49,7 +49,17 @@ export default function Navbar() {
 	const navigate = useNavigate();
 	const isAuthenticated = Boolean(currentUser);
 	const displayName = currentUser?.username || currentUser?.name || currentUser?.email || "Player";
-	const avatarSrc = currentUser?.avatar || "";
+
+	// Avatar logic: handle base64 avatar from backend
+	let avatarSrc = "";
+	if (currentUser?.avatar) {
+		if (typeof currentUser.avatar === "object" && currentUser.avatar.data) {
+			// Assume PNG, adjust if your backend sends a different mime type
+			avatarSrc = `data:image/png;base64,${currentUser.avatar.data}`;
+		} else if (typeof currentUser.avatar === "string") {
+			avatarSrc = currentUser.avatar;
+		}
+	}
 	const fallbackInitial = displayName.charAt(0).toUpperCase();
 
 	const openHome = () => {

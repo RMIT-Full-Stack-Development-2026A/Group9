@@ -25,7 +25,7 @@ export const validateRegisterPayload = (payload = {}) => {
 	const value = createRegisterDTO(payload);
 	const errors = [];
 
-	const requiredCheck = assertRequiredFields(value, ["username", "email", "password", "country"]);
+	const requiredCheck = validators.assertRequiredFields(value, ["username", "email", "password", "country"]);
 	if (!requiredCheck.valid) {
 		errors.push(`Missing required fields: ${requiredCheck.missing.join(", ")}`);
 	}
@@ -49,7 +49,7 @@ export const validateLoginPayload = (payload = {}) => {
 	const value = createLoginDTO(payload);
 	const errors = [];
 
-	const requiredCheck = assertRequiredFields(value, ["identifier", "password"]);
+	const requiredCheck = validators.assertRequiredFields(value, ["identifier", "password"]);
 	if (!requiredCheck.valid) {
 		errors.push(`Missing required fields: ${requiredCheck.missing.join(", ")}`);
 	}

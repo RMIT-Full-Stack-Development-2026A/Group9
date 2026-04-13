@@ -1,13 +1,24 @@
-/**
- * ============================================================================
- * USE LOGIN HOOK (The Auth Orchestrator)
- * ============================================================================
- * Location: src/modules/auth/hooks/useLogin.js
- * Purpose: This custom hook encapsulates the business logic for logging in.
- * It bridges the gap between the UI (LoginForm) and the API (authService).
- * * Key Responsibilities:
- * 1. State Orchestration: Tracking 'isSubmitting' and 'error' status.
- * 2. Auth Integration: Updating the Global AuthProvider state upon success.
- * 3. Persistence: Ensuring the JWT is stored safely after a login.
- * 4. Error Normalization: Turning complex API errors into user-friendly strings.
- */
+import { useState } from "react";
+import { login } from "../services/auth.service";
+
+export const useLogin = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleLogin = async (payload) => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const data = await login(payload);
+      // Optionally update global auth state here
+      return data;
+    } catch (err) {
+      setError(err.message || "Login failed");
+      throw err;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return { handleLogin, isSubmitting, error };
+};

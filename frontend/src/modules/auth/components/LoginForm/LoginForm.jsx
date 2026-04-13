@@ -18,16 +18,14 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AuthContext } from "/src/app/providers/AuthProvider.jsx";
-import { api } from "/src/services/api.js";
-import { AUTH_TOKEN_KEY } from "/src/config/api.config.js";
+import { useLogin } from "../../hooks/useLogin.js";
 import { FiLock, FiAlertCircle, FiCheck } from 'react-icons/fi'; 
 import styles from './LoginForm.module.css';
 
 export default function Login() {
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const { handleLogin, isSubmitting, error } = useLogin();
     
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -38,23 +36,13 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setIsLoading(true);
-
         try {
-            const response = await api.post('/api/auth/login', { identifier, password });
-
-            // jws storage
-            localStorage.setItem(AUTH_TOKEN_KEY, response.accessToken);
-
+            const response = await handleLogin({ identifier, password });
             // update global state
-            login(response.user);
-
+            login(response.user || response.data?.user);
             navigate(from, { replace: true });
         } catch (err) {
-            setError(err.payload?.message || "Login failed");
-        } finally {
-            setIsLoading(false);
+            // error is handled by useLogin
         }
     };
 
@@ -110,9 +98,9 @@ export default function Login() {
 
                     {/* Footer removed as requested */}
 
-                    <button type="submit" className={styles.signInBtn} disabled={isLoading}>
+                    <button type="submit" className={styles.signInBtn} disabled={isSubmitting}>
                         <FiCheck />
-                        {isLoading ? 'Signing In...' : 'Sign In'}
+                        {isSubmitting ? 'Signing In...' : 'Sign In'}
                     </button>
                 </form>
 

@@ -1,39 +1,19 @@
-/**
- * ============================================================================
- * AUTH DTO CONTRACT
- * ============================================================================
- * Purpose: Defines request/response DTOs and payload validation used only by
- * the Auth module (register, login, auth response shape).
- *
- * Split-model note:
- * - Identity fields come from UserAccount (id/username/email/role).
- * - Premium entitlement is represented by premiumUntil from UserProfile.
- *
- * Team boundary:
- * - Keep this file auth-only.
- * - Do not add Admin feature DTOs here; place Admin contracts in
- *   modules/admin/dto/admin.dto.js.
- */
+import * as validators from "../../../shared/utils/validators.js";
 
-import {
-	assertRequiredFields,
-	isEmail,
-	isStrongPassword,
-	sanitizeString,
-} from "../../../shared/utils/validators.js";
-
-export const createRegisterDTO = ({ username, email, password, country }) => ({
-	username: sanitizeString(username),
-	email: sanitizeString(email)?.toLowerCase(),
-	password,
-	country: sanitizeString(country),
-});
+// Export DTO functions directly for use by other modules
+export const createRegisterDTO = ({ username, email, password, country }) => {
+	return {
+		username: validators.sanitizeString(username),
+		email: validators.sanitizeString(email)?.toLowerCase(),
+		password,
+		country: validators.sanitizeString(country),
+	};
+};
 
 export const createLoginDTO = (payload = {}) => {
 	const rawIdentifier =
-		sanitizeString(payload.identifier || payload.email || payload.username || "") || "";
+		validators.sanitizeString(payload.identifier || payload.email || payload.username || "") || "";
 	const loginType = rawIdentifier.includes("@") ? "email" : "username";
-
 	return {
 		identifier: loginType === "email" ? rawIdentifier.toLowerCase() : rawIdentifier,
 		password: payload.password,
@@ -86,14 +66,14 @@ export const validateLoginPayload = (payload = {}) => {
 };
 
 export const createAuthResponseDTO = ({ accessToken, user }) => ({
-	   accessToken,
-	   user: {
-		   // Keep login/register response minimal and identity-focused.
-		   id: user.id || user._id,
-		   username: user.username,
-		   email: user.email,
-		   role: user.role,
-		   premiumUntil: user.premiumUntil || null,
-		   avatar: user.avatar || "",
-	   },
+	accessToken,
+	user: {
+		// Keep login/register response minimal and identity-focused.
+		id: user.id || user._id,
+		username: user.username,
+		email: user.email,
+		role: user.role,
+		premiumUntil: user.premiumUntil || null,
+		avatar: user.avatar || "",
+	},
 });

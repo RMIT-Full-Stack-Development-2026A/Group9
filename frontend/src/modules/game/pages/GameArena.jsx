@@ -83,15 +83,21 @@ export default function GameArena() {
                 
                 {/*the board*/}
                 <main className="match-stage">
-                    <div className="player-dashboard" style={{ display: 'flex', gap: '20px', marginBottom: '20px', color: 'white', justifyContent: 'center' }}>
-                        <div style={{ color: xIsNext ? '#00d2ff' : 'white' }}>
-                            Player 1: {MARKERS[matchData.markerIndex]}
-                        </div>
-                        <div>VS</div>
-                        <div style={{ color: !xIsNext ? '#00d2ff' : 'white' }}>
-                            Player 2: {O_MARKERS[matchData.markerIndex]}
-                        </div>
-                    </div>
+                    <div className="player-dashboard">
+					{/*player1 card*/}
+					<div className={`player-card ${xIsNext ? 'active-turn' : ''}`}>
+						<div className="player-avatar">P1</div>
+						<div className="marker-display">{MARKERS[matchData.markerIndex]}</div>
+					</div>
+
+					<div className="vs-badge">VS</div>
+
+					{/*player2 card*/}
+					<div className={`player-card ${!xIsNext ? 'active-turn' : ''}`}>
+						<div className="marker-display">{O_MARKERS[matchData.markerIndex]}</div>
+						<div className="player-avatar">P2</div>
+					</div>
+				</div>
                     
                     <div className="board-wrapper">
                         <GameBoard 

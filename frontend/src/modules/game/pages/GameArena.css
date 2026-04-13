@@ -82,3 +82,57 @@
 .abort-btn:hover {
     background: rgba(255, 77, 77, 0.1);
 }
+
+.player-dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 25px;
+    background: rgba(17, 26, 46, 0.6);
+    padding: 15px 30px;
+    border-radius: 12px;
+    border: 1px solid #1f2b47;
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+/*glow effect for player on turn*/
+.player-card.active-turn {
+    opacity: 1;
+    background: rgba(0, 210, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+    border-color: rgba(0, 210, 255, 0.5);
+}
+
+.player-avatar {
+    width: 40px;
+    height: 40px;
+    background: #1e2945;
+    border: 2px solid #3a4b70;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+}
+
+.marker-display {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.vs-badge {
+    font-weight: 800;
+    color: #4a5d85;
+    font-style: italic;
+}

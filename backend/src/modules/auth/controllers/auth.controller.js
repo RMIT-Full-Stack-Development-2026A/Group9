@@ -17,7 +17,7 @@
  * generation, or Mongoose queries. It strictly manages the HTTP flow.
  */
 
-import * as authService from "../services/auth.service.js";
+import { register as registerAuth, login as loginAuth, getMyProfile, logout as logoutAuth } from "../interface/auth.interface.js";
 
 const getBearerToken = (authorizationHeader = "") => {
 	if (!authorizationHeader.startsWith("Bearer ")) {
@@ -34,7 +34,7 @@ const extractSessionContext = (req) => ({
 
 export const register = async (req, res, next) => {
 	try {
-		const result = await authService.register(req.body, req.file, extractSessionContext(req));
+		const result = await registerAuth(req.body, req.file, extractSessionContext(req));
 		return res.status(201).json({ success: true, data: result });
 	} catch (error) {
 		return next(error);
@@ -43,7 +43,7 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
 	try {
-		const result = await authService.login(req.body, extractSessionContext(req));
+		const result = await loginAuth(req.body, extractSessionContext(req));
 		return res.status(200).json({ success: true, data: result });
 	} catch (error) {
 		return next(error);
@@ -52,7 +52,7 @@ export const login = async (req, res, next) => {
 
 export const me = async (req, res, next) => {
 	try {
-		const profile = await authService.getMyProfile(req.user.id);
+		const profile = await getMyProfile(req.user.id);
 		return res.status(200).json({ success: true, data: profile });
 	} catch (error) {
 		return next(error);
@@ -62,7 +62,7 @@ export const me = async (req, res, next) => {
 export const logout = async (req, res, next) => {
 	try {
 		const token = getBearerToken(req.headers.authorization || "");
-		const result = await authService.logout(token);
+		const result = await logoutAuth(token);
 		return res.status(200).json({ success: true, data: result });
 	} catch (error) {
 		return next(error);

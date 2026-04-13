@@ -6,6 +6,9 @@ import connectDB from "./config/db.js";
 const PORT = process.env.PORT || 3000;
 connectDB();
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const server = createServer(app);
+initSocket(server);
+
+server.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });

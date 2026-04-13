@@ -16,6 +16,7 @@
 
 import { createContext, useMemo, useState } from "react";
 import { AUTH_USER_KEY } from "../../config/api.config.js";
+import { api } from "../../services/api.js";
 
 export const AuthContext = createContext(null);
 
@@ -38,10 +39,19 @@ export function AuthProvider({ children }) {
 		}
 	};
 
-	const logout = () => {
-		setUser(null);
-		localStorage.removeItem(AUTH_USER_KEY);
-	};
+	const logout = async () => {
+        try {
+            //backend revocation api
+            await api.post('/auth/logout');
+        } catch (error) {
+            console.error("Session revocation failed on server", error);
+        } finally {
+            //clears local state and storage
+            setUser(null);
+            localStorage.removeItem(AUTH_USER_KEY);
+            localStorage.removeItem(AUTH_TOKEN_KEY);
+        }
+    };
 
 	const value = useMemo(
 		() => ({

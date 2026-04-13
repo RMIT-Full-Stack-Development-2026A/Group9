@@ -1,20 +1,13 @@
-user → gameSession (1-to-many)
-user → transaction (1-to-many)
+How to test:
 
-gameSession → move (1-to-many)
-gameSession → user (many-to-many via players)
+open terminal #1
+cd into backend and run "npm run dev"
 
-gameRoom → user (player1, player2)
+open terminal #2
+cd into frontend and run "npm run dev"
 
-transaction → user (many-to-1)
+click on frontend link and add "/login" at the end of the url
 
-database relationships:
-
--a user can participate in multiple game sessions (1-to-many)
--a user can have multiple transactions (1-to-many)
-
--a gameSession contains multiple moves (1-to-many)
--a gameSession involves multiple users (many-to-many via players array)
--a gameRoom contains two users (player1 and player2) for online gameplay
-
--each transaction belongs to one user (many-to-1)
+test user
+-username: player1
+-password: password123

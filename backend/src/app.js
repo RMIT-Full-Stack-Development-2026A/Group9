@@ -36,4 +36,10 @@ app.use((err, req, res, next) => {
   });
 });
 
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
 export default app;

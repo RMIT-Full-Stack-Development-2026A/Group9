@@ -13,6 +13,8 @@
  * 3. Guest Access: Providing a link for new users to reach the Registration page.
  */
 
+import LoginForm from "../components/LoginForm/LoginForm.jsx";
+
 export default function Login() {
-	return <div>Login</div>;
+    return <LoginForm />;
 }

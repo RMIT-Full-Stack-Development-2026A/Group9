@@ -6,3 +6,157 @@
  * in the Login module don't accidentally leak into the Registration module 
  * or other parts of TicTacToang.
  */
+ .pageWrapper {
+    background-color: #0d121f;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+.headerSection {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.iconCircle {
+    display: inline-flex;
+    padding: 0.8rem;
+    border-radius: 50%;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    background: rgba(56, 189, 248, 0.05);
+    color: #38bdf8;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.welcomeText {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.welcomeSubtext {
+    color: #9ca3af;
+    font-size: 0.95rem;
+}
+
+.loginCard {
+    background-color: #171c2a;
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    width: 100%;
+    max-width: 440px;
+    border: 1px solid #171c2a;
+}
+
+.cardTitle {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.cardSubtitle {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.inputGroup {
+    margin-bottom: 1rem;
+}
+
+.inputLabel {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.customInput {
+    background-color: #0d121f;
+    border: 1px solid #171c2a;
+    border-radius: 10px;
+    color: white;
+    padding: 0.8rem 1rem;
+    width: 100%;
+    font-size: 0.95rem;
+}
+
+.formFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.25rem 0;
+    font-size: 0.85rem;
+}
+
+.signInBtn {
+    background-color: #1ed7ff;
+    color: #171c2a;
+    border: none;
+    border-radius: 10px;
+    padding: 0.85rem;
+    font-weight: 700;
+    font-size: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.registerLinkSection {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #9ca3af;
+    font-size: 0.9rem;
+}
+
+.registerLink{
+    color:#1ed7ff;
+}
+
+
+.errorAlert {
+    background-color: #2a1215;
+    border: 1px solid #4a1a1e;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.errorIcon {
+    color: #ef4444;
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.errorContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.errorTitle {
+    color: #ef4444;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.errorDescription {
+    color: #fca5a5;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 0;
+}

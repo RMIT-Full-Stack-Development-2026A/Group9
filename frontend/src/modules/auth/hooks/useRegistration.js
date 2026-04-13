@@ -1,7 +1,10 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { registerPlayer } from '../services/auth.service';
 
 export const useRegistration = () => {
+  const navigate = useNavigate();
+  const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setformData] = useState({
     username: '',
     email: '',
@@ -73,7 +76,11 @@ export const useRegistration = () => {
 
     try {
       await registerPlayer(submitData);
-      alert("Registration Successful!");
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate('/login');
+      }, 1800); // Show notification for 1.8 seconds
     } catch (errors) {
       setApiErrors(errors);
     }
@@ -92,6 +99,7 @@ export const useRegistration = () => {
     handleSubmit,
     getFieldError,
     isUsernameValid,
-    passRegex
+    passRegex,
+    showSuccess,
   };
 };

@@ -32,7 +32,8 @@ const userSchema = new mongoose.Schema(
     }
 );
 
+
 const UserAccount =
-    mongoose.models.UserAccount || mongoose.model("User", userSchema, "users");
+    mongoose.models.UserAccount || mongoose.model("UserAccount", userSchema, "UserAccounts");
 
 export default UserAccount;

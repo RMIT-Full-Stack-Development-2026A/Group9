@@ -14,3 +14,7 @@ export const login = (payload, sessionContext) => {
 export const getMyProfile = (userId) => {
   return authService.getMyProfile(userId);
 };
+
+export const logout = (accessToken) => {
+  return authService.logout(accessToken);
+};

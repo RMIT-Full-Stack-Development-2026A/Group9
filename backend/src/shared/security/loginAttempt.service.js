@@ -1,17 +1,58 @@
-/**
- * ============================================================================
- * LOGIN ATTEMPT SERVICE (The Security Sentinel)
- * ============================================================================
- * Purpose: This file manages the logic for tracking and limiting login 
- * attempts in TicTacToang. It is the primary defense against "Brute Force" 
- * attacks, where a malicious bot tries thousands of passwords to break 
- * into a player's account.
- * * Key Responsibilities:
- * 1. Tracking: Recording every failed login attempt by IP or Username.
- * 2. Rate Limiting: "Cooling down" an account after X failed attempts.
- * 3. Lockout Logic: Temporarily disabling login for a specific user.
- * 4. Cleanup: Removing old, successful, or expired attempt records.
- * * CRITICAL RULE: This service should be "Fast and Lightweight." It is 
- * called every time someone tries to log in, so it must not slow down 
- * the legitimate user experience.
- */
+
+// In-memory store: { key: { count, lastAttempt, lockUntil } }
+const attempts = {};
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const LOCK_TIME_MS = 15 * 60 * 1000; // 15 minutes
+
+function getKey(identifier, ip) {
+	return `${identifier || ''}|${ip || ''}`;
+}
+
+export const recordFailedAttempt = (identifier, ip) => {
+	const key = getKey(identifier, ip);
+	const now = Date.now();
+	if (!attempts[key]) {
+		attempts[key] = { count: 1, lastAttempt: now, lockUntil: null };
+	} else {
+		if (attempts[key].lockUntil && now < attempts[key].lockUntil) {
+			// Still locked
+			return;
+		}
+		if (now - attempts[key].lastAttempt > WINDOW_MS) {
+			attempts[key].count = 1;
+		} else {
+			attempts[key].count += 1;
+		}
+		attempts[key].lastAttempt = now;
+		if (attempts[key].count >= MAX_ATTEMPTS) {
+			attempts[key].lockUntil = now + LOCK_TIME_MS;
+		}
+	}
+};
+
+export const isLocked = (identifier, ip) => {
+	const key = getKey(identifier, ip);
+	const now = Date.now();
+	if (attempts[key] && attempts[key].lockUntil && now < attempts[key].lockUntil) {
+		return true;
+	}
+	return false;
+};
+
+export const resetAttempts = (identifier, ip) => {
+	const key = getKey(identifier, ip);
+	delete attempts[key];
+};
+
+export const cleanup = () => {
+	const now = Date.now();
+	for (const key in attempts) {
+		if (
+			(attempts[key].lockUntil && now > attempts[key].lockUntil) ||
+			(now - attempts[key].lastAttempt > WINDOW_MS)
+		) {
+			delete attempts[key];
+		}
+	}
+};

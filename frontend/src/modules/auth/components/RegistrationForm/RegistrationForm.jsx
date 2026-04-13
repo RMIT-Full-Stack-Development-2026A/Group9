@@ -74,10 +74,9 @@ const Registration = () => {
             <label className={getFieldError('username') ? styles.errorLabel : ''}>Username</label>
             <input 
               type="text" 
-              placeholder="your username"
+              placeholder="your name"
               className={getFieldError('username') ? styles.errorInput : ''}
               onChange={(e) => setformData({...formData, username: e.target.value})} 
-              required 
             />
             {getFieldError('username') ? (
               <div className={`${styles.validationMsg} ${styles.error}`}><ErrorIcon/> {getFieldError('username').cause}</div>
@@ -91,7 +90,6 @@ const Registration = () => {
               placeholder="your.email@example.com"
               className={getFieldError('email') ? styles.errorInput : ''}
               onChange={(e) => setformData({...formData, email: e.target.value})} 
-              required 
             />
             {getFieldError('email') ? (
               <div className={`${styles.validationMsg} ${styles.error}`}><ErrorIcon/> {getFieldError('email').cause}</div>
@@ -105,7 +103,6 @@ const Registration = () => {
               placeholder="your password"
               className={getFieldError('password') ? styles.errorInput : ''}
               onChange={(e) => setformData({...formData, password: e.target.value})} 
-              required 
             />
             {getFieldError('password') ? (
               <div className={`${styles.validationMsg} ${styles.error}`}><ErrorIcon/> {getFieldError('password').cause}</div>
@@ -119,7 +116,6 @@ const Registration = () => {
               placeholder="Input your password again"
               className={getFieldError('confirmPassword') ? styles.errorInput : ''}
               onChange={(e) => setformData({...formData, confirmPassword: e.target.value})} 
-              required 
             />
             {getFieldError('confirmPassword') && (
               <div className={`${styles.validationMsg} ${styles.error}`}><ErrorIcon/> {getFieldError('confirmPassword').cause}</div>
@@ -128,7 +124,7 @@ const Registration = () => {
 
           <div className={styles.formGroup}>
             <label>Country</label>
-            <select defaultValue="" onChange={(e) => setformData({...formData, country: e.target.value})} required>
+            <select defaultValue="" onChange={(e) => setformData({...formData, country: e.target.value})}>
               <option value="" disabled>Select a country...</option>
               {countries.map(c => <option key={c} value={c}>{c}</option>)}
             </select>

@@ -43,13 +43,13 @@ export default function Login() {
 
         try {
             const response = await api.post('/api/auth/login', { identifier, password });
-            
-            //jws storage
-            localStorage.setItem(AUTH_TOKEN_KEY, response.data.accessToken);
-            
-            //update global state
-            login(response.data.user);
-            
+
+            // jws storage
+            localStorage.setItem(AUTH_TOKEN_KEY, response.accessToken);
+
+            // update global state
+            login(response.user);
+
             navigate(from, { replace: true });
         } catch (err) {
             setError(err.payload?.message || "Login failed");
@@ -108,15 +108,7 @@ export default function Login() {
                         />
                     </div>
 
-                    <div className={styles.formFooter}>
-                        <div className={styles.rememberMe}>
-                            <input type="checkbox" id="remember" />
-                            <label htmlFor="remember">Remember me</label>
-                        </div>
-                        <Link to="/forgot-password" className={styles.forgotLink}>
-                            Forgot password?
-                        </Link>
-                    </div>
+                    {/* Footer removed as requested */}
 
                     <button type="submit" className={styles.signInBtn} disabled={isLoading}>
                         <FiCheck />

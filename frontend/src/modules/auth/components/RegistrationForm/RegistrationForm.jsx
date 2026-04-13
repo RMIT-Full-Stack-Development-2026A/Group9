@@ -1,5 +1,6 @@
 
 import { useRegistration } from '../../hooks/useRegistration';
+import { Link } from 'react-router-dom';
 import styles from './RegistrationForm.module.css';
 
 const ErrorIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>);
@@ -139,7 +140,7 @@ const Registration = () => {
             I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
           </div>
           <div className={styles.loginLink}>
-            Already have an account? <a href="signin">Sign in</a>
+            Already have an account? <Link to="/login">Sign in</Link>
           </div>
 
           <button type="submit" className={styles.btnSubmit}>

@@ -1,20 +1,5 @@
-/**
- * ============================================================================
- * AUTH SERVICE (The Brain / Security Core)
- * ============================================================================
- * Purpose: This file contains the absolute core business logic for Authentication. 
- * It is responsible for enforcing security rules, hashing passwords, comparing 
- * credentials, and generating JSON Web Tokens (JWTs).
- * * Key Responsibilities:
- * 1. Enforce business rules (e.g., "Passwords must be hashed before saving").
- * 2. Handle cryptography (bcrypt for passwords, jsonwebtoken for sessions).
- * 3. Coordinate with the AuthRepository to fetch or save user data.
- * 4. Keep Admin feature logic out of this file (Admin belongs to admin service).
- * * CRITICAL RULE: The Service layer knows NOTHING about HTTP. You will never 
- * see 'req', 'res', or 'status(200)' here. If a user provides a bad password, 
- * the Service throws an 'AppError' and trusts the Controller to catch it.
- */
-
+import * as loginAttemptService from "../../../shared/security/loginAttempt.service.js";
+import * as tokenBlacklistService from "../../../shared/security/tokenBlacklist.service.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import AppError from "../../../shared/errors/AppError.js";
@@ -112,6 +97,11 @@ export const register = async (payload, file, sessionContext = {}) => {
 };
 
 export const login = async (payload, sessionContext = {}) => {
+	// Brute-force protection: check lock before proceeding
+	const identifier = payload.identifier || payload.email || payload.username;
+	if (loginAttemptService.isLocked(identifier, sessionContext.ipAddress)) {
+		throw new AppError("Too many failed login attempts. Please try again later.", 429);
+	}
 	// Use shared DTO rules for consistent auth validation errors.
 	const { valid, errors } = validateLoginPayload(payload);
 	if (!valid) {
@@ -122,6 +112,7 @@ export const login = async (payload, sessionContext = {}) => {
 	let user = await authRepository.findUserByIdentifier(dto.identifier, dto.loginType);
 
 	if (!user) {
+		loginAttemptService.recordFailedAttempt(identifier, sessionContext.ipAddress);
 		throw new AppError("Invalid username/email or password", 401);
 	}
 
@@ -137,6 +128,7 @@ export const login = async (payload, sessionContext = {}) => {
 	const isMatch = await bcrypt.compare(dto.password, user.password);
 
 	if (!isMatch) {
+		loginAttemptService.recordFailedAttempt(identifier, sessionContext.ipAddress);
 		const attempts = (user.loginAttempts || 0) + 1;
 		const lockUntil = attempts >= 5 ? Date.now() + 60000 : null;
 
@@ -153,6 +145,7 @@ export const login = async (payload, sessionContext = {}) => {
 		loginAttempts: 0,
 		lockUntil: null
 	});
+	loginAttemptService.resetAttempts(identifier, sessionContext.ipAddress);
 
 	const accessToken = signAccessToken(user);
 	const token = hashSessionToken(accessToken);
@@ -203,6 +196,17 @@ export const logout = async (accessToken) => {
 
 	const token = hashSessionToken(accessToken);
 	const revokedSession = await authRepository.revokeAuthSessionByTokenHash(token);
+
+	// Add to blacklist (extract exp from JWT)
+	try {
+		const decoded = jwt.decode(accessToken);
+		const exp = decoded?.exp;
+		if (exp) {
+			tokenBlacklistService.add(accessToken, exp);
+		}
+	} catch (e) {
+		// ignore
+	}
 
 	if (!revokedSession) {
 		throw new AppError("Authentication session not found or already revoked", 404);

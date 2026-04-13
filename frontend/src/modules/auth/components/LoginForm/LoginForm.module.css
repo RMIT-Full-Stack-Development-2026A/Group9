@@ -88,13 +88,12 @@
     width: 100%;
     font-size: 0.95rem;
 }
-
-.formFooter {
+.formFooterSingle {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin: 1.25rem 0;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
 }
 
 .signInBtn {

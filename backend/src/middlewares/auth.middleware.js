@@ -25,6 +25,7 @@ import AppError from "../shared/errors/AppError.js";
 import UserProfile from "../modules/user/models/userProfile.model.js";
 import AuthSession from "../modules/auth/models/authSession.model.js";
 import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";
+import * as tokenBlacklistService from "../shared/security/tokenBlacklist.service.js";
 
 const isPremiumActive = (premiumUntil) => {
 	if (!premiumUntil) {
@@ -47,6 +48,11 @@ export const authenticate = async (req, res, next) => {
 
 	if (!token) {
 		return next(new AppError("Authentication required", 401));
+	}
+
+	// Token blacklist check
+	if (tokenBlacklistService.isBlacklisted(token)) {
+		return next(new AppError("Token has been revoked. Please log in again.", 401));
 	}
 
 	try {

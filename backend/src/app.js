@@ -1,34 +1,24 @@
-/**
- * ============================================================================
- * APP BOOTSTRAP FILE PURPOSE
- * ============================================================================
- * Purpose: Creates and configures the Express application instance.
- * This is shared infrastructure, not feature business-logic code.
- *
- * Responsibilities:
- * 1) Register global middlewares.
- * 2) Mount module routes via module registry.
- * 3) Provide centralized not-found and error handling.
- */
-
 import express from "express";
 import cors from "cors";
-import registerModules from "./modules/index.js";
+import authRoutes from "./modules/auth/routes/auth.route.js";
 import AppError from "./shared/errors/AppError.js";
 
 const app = express();
 
+// middleware
 app.use(cors());
 app.use(express.json());
 
+// Apply your API routes
+app.use("/api", authRoutes);
+
+// test route
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "TicTacToang backend is running",
   });
 });
-
-registerModules(app);
 
 app.use((req, res, next) => {
   next(new AppError("Route not found", 404));

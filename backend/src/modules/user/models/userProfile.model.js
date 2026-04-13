@@ -13,9 +13,8 @@ const userProfileSchema = new mongoose.Schema(
       trim: true,
     },
     avatar: {
-      type: String,
-      default: "",
-      trim: true,
+      data: Buffer,
+      contentType: String,
     },
     premiumUntil: {
       type: Date,

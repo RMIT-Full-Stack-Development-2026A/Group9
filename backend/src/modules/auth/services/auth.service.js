@@ -65,7 +65,7 @@ const resolveExpiresAt = () => {
 	return new Date(now + amount * multipliers[unit]);
 };
 
-export const register = async (payload, sessionContext = {}) => {
+export const register = async (payload, file, sessionContext = {}) => {
 	// Validate early so downstream layers only receive trusted input shape.
 	const { valid, errors } = validateRegisterPayload(payload);
 	if (!valid) {
@@ -84,6 +84,8 @@ export const register = async (payload, sessionContext = {}) => {
 		username: dto.username,
 		email: dto.email,
 		password: passwordHash,
+		country: dto.country,
+		avatar: file ? { data: file.buffer, contentType: file.mimetype } : undefined,
 	});
 
 	const accessToken = signAccessToken(createdUser);

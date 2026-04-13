@@ -22,10 +22,11 @@ import {
 	sanitizeString,
 } from "../../../shared/utils/validators.js";
 
-export const createRegisterDTO = ({ username, email, password }) => ({
+export const createRegisterDTO = ({ username, email, password, country }) => ({
 	username: sanitizeString(username),
 	email: sanitizeString(email)?.toLowerCase(),
 	password,
+	country: sanitizeString(country),
 });
 
 export const createLoginDTO = (payload = {}) => {
@@ -44,7 +45,7 @@ export const validateRegisterPayload = (payload = {}) => {
 	const value = createRegisterDTO(payload);
 	const errors = [];
 
-	const requiredCheck = assertRequiredFields(value, ["username", "email", "password"]);
+	const requiredCheck = assertRequiredFields(value, ["username", "email", "password", "country"]);
 	if (!requiredCheck.valid) {
 		errors.push(`Missing required fields: ${requiredCheck.missing.join(", ")}`);
 	}

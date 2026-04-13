@@ -16,13 +16,28 @@
 import styles from "./HomeContent.module.css";
 import { useHome } from "../../hooks/useHome.js";
 import Button from "../../../../shared/ui/Button/Button.jsx";
+import { useContext } from "react";
+import { AuthContext } from "../../../../app/providers/AuthProvider.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-    const { welcome, showRankings } = useHome();
-    const welcomeClass = styles[`welcomeLine--${welcome.type}`] || "";
+        const { welcome, showRankings } = useHome();
+        const welcomeClass = styles[`welcomeLine--${welcome.type}`] || "";
+        const { isAuthenticated } = useContext(AuthContext) || {};
+        const navigate = useNavigate();
 
-  return (
-    <main className={styles.container}>
+        // Handler for guest users
+        const requireAuth = (callback) => (e) => {
+            if (!isAuthenticated) {
+                e.preventDefault();
+                navigate("/login");
+                return;
+            }
+            if (callback) callback(e);
+        };
+
+    return (
+        <main className={styles.container}>
         <section>
             <p className={`${styles.welcomeLine} ${welcomeClass}`}>
                 {welcome.type === "premium" && <i className={`bi bi-stars ${styles.welcomeLineStar}`} aria-hidden="true"></i>}
@@ -38,7 +53,7 @@ export default function Home() {
         </section>
 
         <section className={`${styles.modeRow} ${styles.row1}`}>
-            <button className={styles.btn1}>
+            <button className={styles.btn1} onClick={requireAuth()}>
                 <span className={styles.Model_icon}>
                     <i className="bi bi-display" style={{ fontSize: 32, color: "#06B6D4" }}></i>
                 </span>
@@ -46,7 +61,7 @@ export default function Home() {
                 <span className={styles.Model_desc}>Play against a friend on the same device. Share the keyboard and battle it out.</span>
             </button>
             
-            <button className={styles.btn1}>
+            <button className={styles.btn1} onClick={requireAuth()}>
                 <span className={styles.Model_icon}>
                     <i className="bi bi-robot" style={{ fontSize: 32, color: "#8B5CF6" }}></i>
                 </span>
@@ -54,7 +69,7 @@ export default function Home() {
                 <span className={styles.Model_desc}>Test your strategy against our AI. Choose Easy, Medium, or Hard difficulty.</span>
             </button>
 
-            <button className={styles.btn1}>
+            <button className={styles.btn1} onClick={requireAuth()}>
                 <span className={styles.Model_icon}>
                     <i className="bi bi-globe2" style={{ fontSize: 32, color: "#06B6D4" }}></i>
                 </span>
@@ -73,6 +88,7 @@ export default function Home() {
                     </span>
                 }
                 text="Browse Rooms"
+                onClick={requireAuth()}
             />
 
             <Button
@@ -84,6 +100,7 @@ export default function Home() {
                     </span>
                 }
                 text="My History"
+                onClick={requireAuth()}
             />
 
             <Button
@@ -95,6 +112,7 @@ export default function Home() {
                     </span>
                 }
                 text={showRankings ? "Rankings" : "Go Premium"}
+                onClick={requireAuth()}
             />
         </section>
     </main>

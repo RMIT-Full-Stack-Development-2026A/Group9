@@ -15,7 +15,7 @@
  */
 
 import { createContext, useMemo, useState } from "react";
-import { AUTH_USER_KEY } from "../../config/api.config.js";
+import { AUTH_USER_KEY, AUTH_TOKEN_KEY } from "../../config/api.config.js";
 import { api } from "../../services/api.js";
 
 export const AuthContext = createContext(null);

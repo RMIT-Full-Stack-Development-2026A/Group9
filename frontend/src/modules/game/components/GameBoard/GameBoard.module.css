@@ -6,3 +6,38 @@
  * Purpose: This handles the 10x10(or 15x15) grid layout and the "Toang" visual style. 
  * It uses CSS Grid for a perfectly responsive Tic-Tac-Toe board.
  */
+
+ .game-board {
+    display: grid;
+    gap: 1px;
+    background-color: #444;
+    border: 2px solid #444;
+    margin: 20px auto;
+}
+
+.game-cell {
+    aspect-ratio: 1;
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/*neon theme*/
+.neon-style .game-cell {
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    color: #00d2ff;
+    text-shadow: 0 0 10px #00d2ff;
+}
+
+.neon-style .game-cell:hover {
+    background: rgba(0, 210, 255, 0.1);
+}
+
+/*dark theme*/
+.dark-style .game-cell {
+    background: #0f0f1b;
+    border: 1px solid #333;
+}

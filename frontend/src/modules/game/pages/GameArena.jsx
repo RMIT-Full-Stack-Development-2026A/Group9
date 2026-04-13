@@ -13,17 +13,22 @@
 import React, { useState } from 'react';
 import CustomizationModal from '../components/CustomizationModal';
 import GameBoard from '../components/GameBoard/GameBoard';
-import GameStatus from '../components/GameStatus/GameStatus';
+import GameStatus from '../components/GameStatus/GameStatus'; 
 import './GameArena.css';
+
+const MARKERS = ['X', '👻', '🔥', '⚡', '💎', '💖'];
+const O_MARKERS = ['O', '👾', '💧', '🛡️', '💠', '🖤']; 
 
 export default function GameArena() {
     const [isConfiguring, setIsConfiguring] = useState(true);
+    const [xIsNext, setXIsNext] = useState(true); // Tracks turns
     const [matchData, setMatchData] = useState({
         size: 10,
         style: 'neon',
         markerIndex: 0,
         startTime: null,
-        boardState: [] 
+        boardState: [],
+        moveHistory: []
     });
 
     const handleStartMatch = (finalSettings) => {
@@ -33,18 +38,39 @@ export default function GameArena() {
         setMatchData({
             ...finalSettings,
             startTime,
-            boardState: initialBoard
+            boardState: initialBoard,
+            moveHistory: []
         });
         
+        setXIsNext(true); //resets turn to player1
         setIsConfiguring(false);
     };
 
     const handleCellClick = (index) => {
+        //prevent double clicking on cells, determine which players turn, updates score board
+        if (matchData.boardState[index]) return;
+
+        const currentPlayer = xIsNext ? 'X' : 'O';
+        
+        const displayMarker = xIsNext ? MARKERS[matchData.markerIndex] : O_MARKERS[matchData.markerIndex];
+
         const newBoard = [...matchData.boardState];
-        if (!newBoard[index]) {
-            newBoard[index] = 'X'; 
-            setMatchData({ ...matchData, boardState: newBoard });
-        }
+        newBoard[index] = displayMarker; 
+
+        setMatchData(prev => ({
+            ...prev,
+            boardState: newBoard,
+            moveHistory: [
+                ...prev.moveHistory,
+                {
+                    player: currentPlayer,
+                    index: index,
+                    time: new Date().toISOString()
+                }
+            ]
+        }));
+
+        setXIsNext(!xIsNext);
     };
 
     if (isConfiguring) {
@@ -57,7 +83,15 @@ export default function GameArena() {
                 
                 {/*the board*/}
                 <main className="match-stage">
-                    <GameStatus markerIndex={matchData.markerIndex} />
+                    <div className="player-dashboard" style={{ display: 'flex', gap: '20px', marginBottom: '20px', color: 'white', justifyContent: 'center' }}>
+                        <div style={{ color: xIsNext ? '#00d2ff' : 'white' }}>
+                            Player 1: {MARKERS[matchData.markerIndex]}
+                        </div>
+                        <div>VS</div>
+                        <div style={{ color: !xIsNext ? '#00d2ff' : 'white' }}>
+                            Player 2: {O_MARKERS[matchData.markerIndex]}
+                        </div>
+                    </div>
                     
                     <div className="board-wrapper">
                         <GameBoard 
@@ -80,6 +114,7 @@ export default function GameArena() {
                         <h3>Match Details</h3>
                         <p>Grid: {matchData.size}x{matchData.size}</p>
                         <p>Theme: {matchData.style}</p>
+                        <p>Moves: {matchData.moveHistory.length}</p>
                     </div>
                     
                     <div className="sidebar-panel chat-panel">
@@ -90,7 +125,6 @@ export default function GameArena() {
                         <input type="text" placeholder="Send a message..." className="chat-input" />
                     </div>
                 </aside>
-
             </div>
         </div>
     );

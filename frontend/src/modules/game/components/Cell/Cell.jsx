@@ -14,25 +14,20 @@
  */
 
 import React from 'react';
-import './Cell.module.css';
+import styles from './Cell.module.css';
 
-//diff markers as per requirement, can be changed
-const MARKER_THEMES = {
-    0: { X: 'X', O: 'O' },
-    1: { X: '👻', O: '💀' },
-    2: { X: '🔥', O: '💧' },
-    3: { X: '⚡', O: '❄️' },
-    4: { X: '💎', O: '💍' },
-    5: { X: '❤️', O: '💔' }
-};
-
-export default function Cell({ value, markerIndex = 0, onClick }) {
-    const theme = MARKER_THEMES[markerIndex] || MARKER_THEMES[0];
-    const content = value === 'X' ? theme.X : value === 'O' ? theme.O : null;
-
+export default function Cell({ value, onClick }) {
     return (
-        <button className="game-cell" onClick={onClick} disabled={!!value}>
-            <span className="marker-text">{content}</span>
+        <button 
+            className={styles['game-cell']} 
+            onClick={onClick}
+            disabled={!!value}
+        >
+            {value && (
+                <span className={styles['marker-text']}>
+                    {value}
+                </span>
+            )}
         </button>
     );
 }

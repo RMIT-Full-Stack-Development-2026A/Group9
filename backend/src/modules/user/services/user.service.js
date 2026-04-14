@@ -29,22 +29,23 @@ export const getProfile = async (userId) => {
 	const user = await userRepository.findById(userId);
 	if (!user) throw new Error("User not found");
 
-	// Fetch user profile for avatar and country
-	const profile = await UserProfile.findById(userId);
-	let avatar = "";
-	let country = "";
-	if (profile) {
-		avatar = profile.avatar || "";
-		country = profile.country || "";
-        premiumUntil = profile.premiumUntil || null;
-	}
+	       // Fetch user profile for avatar, country, and premiumUntil
+	       const profile = await UserProfile.findById(userId);
+	       let avatar = "";
+	       let country = "";
+	       let premiumUntil = null;
+	       if (profile) {
+		       avatar = profile.avatar || "";
+		       country = profile.country || "";
+		       premiumUntil = profile.premiumUntil || null;
+	       }
 
-	// Merge avatar, country and premium into user object
-	const userObj = user.toObject ? user.toObject() : { ...user };
-	userObj.avatar = avatar;
-	userObj.country = country;
-    userObj.premiumUntil = premiumUntil;
-	return userObj;
+	       // Merge avatar, country, and premiumUntil into user object
+	       const userObj = user.toObject ? user.toObject() : { ...user };
+	       userObj.avatar = avatar;
+	       userObj.country = country;
+	       userObj.premiumUntil = premiumUntil;
+	       return userObj;
 };
 
 export const updateProfile = async (userId, updateData) => {
@@ -79,20 +80,23 @@ export const updateProfile = async (userId, updateData) => {
 
 	await user.save();
 
-	// Merge avatar and country from UserProfile (same as getProfile)
-	const profile = await UserProfile.findById(userId);
-	let avatar = "";
-	let country = "";
-	if (profile) {
-		avatar = profile.avatar || "";
-		country = profile.country || "";
-	}
+	       // Merge avatar, country, and premiumUntil from UserProfile (same as getProfile)
+	       const profile = await UserProfile.findById(userId);
+	       let avatar = "";
+	       let country = "";
+	       let premiumUntil = null;
+	       if (profile) {
+		       avatar = profile.avatar || "";
+		       country = profile.country || "";
+		       premiumUntil = profile.premiumUntil || null;
+	       }
 
-	const userData = user.toObject();
-	userData.avatar = avatar;
-	userData.country = country;
-	delete userData.password;
-	return userData;
+	       const userData = user.toObject();
+	       userData.avatar = avatar;
+	       userData.country = country;
+	       userData.premiumUntil = premiumUntil;
+	       delete userData.password;
+	       return userData;
 };
 
 export const updateAvatar = async (userId, avatarPath) => {

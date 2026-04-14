@@ -36,12 +36,14 @@ export const getProfile = async (userId) => {
 	if (profile) {
 		avatar = profile.avatar || "";
 		country = profile.country || "";
+        premiumUntil = profile.premiumUntil || null;
 	}
 
-	// Merge avatar and country into user object
+	// Merge avatar, country and premium into user object
 	const userObj = user.toObject ? user.toObject() : { ...user };
 	userObj.avatar = avatar;
 	userObj.country = country;
+    userObj.premiumUntil = premiumUntil;
 	return userObj;
 };
 

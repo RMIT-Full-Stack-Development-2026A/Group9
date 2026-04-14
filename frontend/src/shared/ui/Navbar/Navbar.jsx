@@ -54,10 +54,14 @@ export default function Navbar() {
 	let avatarSrc = "";
 	if (currentUser?.avatar) {
 		if (typeof currentUser.avatar === "object" && currentUser.avatar.data) {
-			// Assume PNG, adjust if your backend sends a different mime type
 			avatarSrc = `data:image/png;base64,${currentUser.avatar.data}`;
 		} else if (typeof currentUser.avatar === "string") {
-			avatarSrc = currentUser.avatar;
+			// Only append cache buster for URLs, not base64
+			if (currentUser.avatar.startsWith("data:image")) {
+				avatarSrc = currentUser.avatar;
+			} else {
+				avatarSrc = `${currentUser.avatar}?t=${Date.now()}`;
+			}
 		}
 	}
 	const fallbackInitial = displayName.charAt(0).toUpperCase();

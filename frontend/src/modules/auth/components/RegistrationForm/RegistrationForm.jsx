@@ -1,7 +1,7 @@
-
 import { useRegistration } from '../../hooks/useRegistration';
 import { Link } from 'react-router-dom';
 import styles from './RegistrationForm.module.css';
+import { COUNTRIES } from "../../../../shared/constants/countries.js";
 
 const ErrorIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>);
 const SuccessIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>);
@@ -19,8 +19,6 @@ const Registration = () => {
     showSuccess,
   } = useRegistration();
 
-  const countries = ['USA', 'Canada', 'UK', 'Australia', 'Germany', 'Vietnam', 'France', 'India', 'China', 'Japan'];
-  
   return (
     <div className={styles.pageContainer}>
       {showSuccess && (
@@ -126,7 +124,7 @@ const Registration = () => {
             <label>Country</label>
             <select defaultValue="" onChange={(e) => setformData({...formData, country: e.target.value})}>
               <option value="" disabled>Select a country...</option>
-              {countries.map(c => <option key={c} value={c}>{c}</option>)}
+              {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 

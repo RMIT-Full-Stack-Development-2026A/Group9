@@ -1,9 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
+import { AuthContext } from "../../../app/providers/AuthProvider.jsx";
 import * as profileService from "../services/profile.service.js";
+import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "../../../config/api.config.js";
 
 export const useProfile = (onUserUpdate) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const authContext = useContext(AuthContext);
+  // Only show loading if there is no user in context
+  const [loading, setLoading] = useState(!authContext?.user);
+  // Track background fetch for subtle spinner if needed
+  const [backgroundFetching, setBackgroundFetching] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [activeTab, setActiveTab] = useState("history");
@@ -39,18 +44,25 @@ export const useProfile = (onUserUpdate) => {
 
   const syncUser = useCallback(
     (nextUser) => {
-      setUser(nextUser);
-      localStorage.setItem("user", JSON.stringify(nextUser));
+      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(nextUser));
+      if (authContext && typeof authContext.login === "function") {
+        authContext.login(nextUser);
+      }
       if (onUserUpdate) {
         onUserUpdate(nextUser);
       }
     },
-    [onUserUpdate]
+    [onUserUpdate, authContext]
   );
 
   const fetchProfile = useCallback(async () => {
     try {
-      setLoading(true);
+      // Only set loading=true if there is no user data
+      if (!authContext?.user) {
+        setLoading(true);
+      } else {
+        setBackgroundFetching(true);
+      }
       const { data } = await profileService.getProfile();
       syncUser(data);
       setFormData((prev) => ({
@@ -65,9 +77,13 @@ export const useProfile = (onUserUpdate) => {
         "error"
       );
     } finally {
-      setLoading(false);
+      if (!authContext?.user) {
+        setLoading(false);
+      } else {
+        setBackgroundFetching(false);
+      }
     }
-  }, [syncUser]);
+  }, [syncUser, authContext]);
 
   const fetchGameHistory = useCallback(async () => {
     try {
@@ -87,11 +103,20 @@ export const useProfile = (onUserUpdate) => {
   }, [search, filters]);
 
   useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
+    // If user exists, render immediately and fetch latest profile in background
+    if (authContext?.user) {
+      setLoading(false);
+      setBackgroundFetching(true);
+      fetchProfile().finally(() => setBackgroundFetching(false));
+    } else {
+      setLoading(true);
+      fetchProfile().finally(() => setLoading(false));
+    }
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
     if (token) {
       fetchGameHistory();
     }
@@ -140,8 +165,16 @@ export const useProfile = (onUserUpdate) => {
 
     try {
       setSaving(true);
-      const { data } = await profileService.uploadAvatar(fd);
+      await profileService.uploadAvatar(fd);
+      // Always fetch the latest profile after avatar upload
+      const { data } = await profileService.getProfile();
       syncUser(data);
+      setFormData((prev) => ({
+        ...prev,
+        username: data.username || "",
+        email: data.email || "",
+        country: data.country || "",
+      }));
       showMessage("Avatar updated successfully");
     } catch (error) {
       showMessage(error.response?.data?.message || "Upload failed", "error");
@@ -178,7 +211,7 @@ export const useProfile = (onUserUpdate) => {
   };
 
   return {
-    user,
+    user: authContext.user,
     loading,
     saving,
     message,

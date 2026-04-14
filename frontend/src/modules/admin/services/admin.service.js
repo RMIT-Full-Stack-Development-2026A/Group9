@@ -14,3 +14,31 @@
  */
 
 import { http } from "../../../shared/utils/http.helper.js";
+
+export const adminService = {
+    getMetrics: async () => {
+        return await http.get('/admin/metrics');
+    },
+
+    getPlayers: async () => {
+        return await http.get('/admin/players');
+    },
+    getRooms: async () => {
+        return await http.get('/admin/rooms');
+    },
+
+    togglePlayerStatus: async (playerId) => {
+        return await http.put(`/admin/players/${playerId}/toggle-status`);
+    },
+    closeRoom: async (roomNumber) => {
+        return await http.delete(`/admin/rooms/${roomNumber}`);
+    },
+
+    broadcastMessage: async (message) => {
+        return await http.post('/admin/broadcast', { message });
+    },
+
+    getAuditLogs: async () => {
+        return await http.get('/admin/audit-logs');
+    }
+};

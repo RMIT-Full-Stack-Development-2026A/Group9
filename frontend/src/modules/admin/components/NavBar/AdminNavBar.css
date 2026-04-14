@@ -1,0 +1,29 @@
+.admin-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #111827; 
+    padding: 0 24px;
+    height: 64px;
+    border-bottom: 1px solid #1f2937;
+    color: #ffffff; 
+}
+.nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 32px;
+}
+.nav-link {
+    cursor: pointer;
+    padding: 10px 20px;
+    color: #9ca3af;
+    transition: 0.3s;
+}
+
+.nav-link.active {
+    color: #00d1ff; 
+    border-bottom: 2px solid #00d1ff;
+    font-weight: bold;
+}

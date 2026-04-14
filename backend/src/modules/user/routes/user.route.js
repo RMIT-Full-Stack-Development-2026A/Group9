@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as userController from "../controllers/user.controller.js";
-import { authenticate } from "../../middlewares/auth.middleware.js";
-import upload, { uploadToCloudinary } from "../../middlewares/upload.middleware.js";
+import { authenticate } from "../../../middlewares/auth.middleware.js";
+import upload, { uploadToCloudinary } from "../../../middlewares/upload.middleware.js";
 
 const router = Router();
 

@@ -134,7 +134,7 @@
 
 .actionBtn--cyan   { background-color: var(--color-primary); }
 .actionBtn--purple { background-color: #8b5cf6; }
-.actionBtn--orange { background-color: var(--color-warning); }
+.actionBtn--orange { background-color: var(--premium-orange); }
 .actionBtn--red    { background-color: var(--color-danger); }
 
 .btn{

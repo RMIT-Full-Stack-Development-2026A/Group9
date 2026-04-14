@@ -92,6 +92,7 @@ export const register = async (payload, file, sessionContext = {}) => {
 			   role: createdUser.role,
 			   premiumUntil: createdUser.premiumUntil,
 			   avatar: createdUser.avatar,
+			   country: createdUser.country,
 		   },
 	});
 };
@@ -166,6 +167,7 @@ export const login = async (payload, sessionContext = {}) => {
 			   role: user.role,
 			   premiumUntil: user.premiumUntil,
 			   avatar: user.avatar,
+			   country: user.country,
 		   },
 	});
 };

@@ -22,12 +22,27 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import * as userRepository from "../repositories/user.repository.js";
-import GameSession from "../../game/gameSession.model.js";
+import UserProfile from "../models/userProfile.model.js";
+import GameSession from "../../game/models/gameSession.model.js";
 
 export const getProfile = async (userId) => {
 	const user = await userRepository.findById(userId);
 	if (!user) throw new Error("User not found");
-	return user;
+
+	// Fetch user profile for avatar and country
+	const profile = await UserProfile.findById(userId);
+	let avatar = "";
+	let country = "";
+	if (profile) {
+		avatar = profile.avatar || "";
+		country = profile.country || "";
+	}
+
+	// Merge avatar and country into user object
+	const userObj = user.toObject ? user.toObject() : { ...user };
+	userObj.avatar = avatar;
+	userObj.country = country;
+	return userObj;
 };
 
 export const updateProfile = async (userId, updateData) => {
@@ -41,7 +56,15 @@ export const updateProfile = async (userId, updateData) => {
 	}
 
 	if (updateData.username) user.username = updateData.username;
-	if (updateData.country !== undefined) user.country = updateData.country;
+	if (updateData.country !== undefined) {
+		user.country = updateData.country;
+		// Update country in UserProfile
+		await UserProfile.findByIdAndUpdate(
+			userId,
+			{ country: updateData.country },
+			{ new: true, upsert: true }
+		);
+	}
 
 	if (updateData.newPassword) {
 		if (!updateData.currentPassword) {
@@ -49,17 +72,36 @@ export const updateProfile = async (userId, updateData) => {
 		}
 		const isMatch = await bcrypt.compare(updateData.currentPassword, user.password);
 		if (!isMatch) throw new Error("Current password is incorrect");
-		user.password = updateData.newPassword;
+		user.password = await bcrypt.hash(updateData.newPassword, 10);
 	}
 
 	await user.save();
 
-	const { password, ...userData } = user.toObject();
+	// Merge avatar and country from UserProfile (same as getProfile)
+	const profile = await UserProfile.findById(userId);
+	let avatar = "";
+	let country = "";
+	if (profile) {
+		avatar = profile.avatar || "";
+		country = profile.country || "";
+	}
+
+	const userData = user.toObject();
+	userData.avatar = avatar;
+	userData.country = country;
+	delete userData.password;
 	return userData;
 };
 
 export const updateAvatar = async (userId, avatarPath) => {
-	return userRepository.updateUser(userId, { avatar: avatarPath });
+		// Update avatar in UserProfile
+		await UserProfile.findByIdAndUpdate(
+			userId,
+			{ avatar: avatarPath },
+			{ new: true, upsert: true }
+		);
+		// Return merged profile as in getProfile
+		return getProfile(userId);
 };
 
 export const getGameHistory = async (userId, query) => {

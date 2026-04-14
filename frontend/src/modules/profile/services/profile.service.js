@@ -13,16 +13,18 @@
  * 4. Image Handling: Optimizing or choosing default avatars based on rank.
  */
 
-import http from "../../../utils/http.helper.js";
+import http from "../../../shared/utils/http.helper.js";
 
-export const getProfile = () => http.get("/users/profile");
+export const getProfile = () => http.get("/api/users/profile");
 
-export const updateProfile = (data) => http.put("/users/profile", data);
+export const updateProfile = (data) => http.put("/api/users/profile", data);
+
 
 export const uploadAvatar = (formData) =>
-	http.post("/users/profile/avatar", formData, {
-		headers: { "Content-Type": "multipart/form-data" },
-	});
+  http.post("/api/users/profile/avatar", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
 
 export const getGameHistory = (params) =>
-	http.get("/users/game-history", { params });
+  http.get("/api/users/game-history", { params });

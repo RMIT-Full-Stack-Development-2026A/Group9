@@ -1,3 +1,229 @@
+.profilePage {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  text-align: left;
+}
+
+.profileLoading {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.profileMessage {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.success {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.profileCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 32px;
+  margin-bottom: 24px;
+}
+
+.profileCardLeft {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatarWrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.avatarCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarLetter {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.avatarEditIcon {
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  border: 2px solid var(--bg-card);
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profileNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profileNameRow h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.premiumBadge {
+  background: var(--orange);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.profileEmail {
+  color: var(--cyan);
+  font-size: 13px;
+}
+
+.profileCountry {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.goPremiumBtn {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.goPremiumBtn:hover { opacity: 0.85; }
+
+.profileTabs { display: flex; gap: 10px; margin-bottom: 24px; }
+
+.tabBtn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tabBtn:hover { border-color: var(--cyan); color: var(--text-h); }
+.active { background: var(--cyan); border-color: var(--cyan); color: #0b0f19; font-weight: 600; }
+
+.editPanel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 32px; }
+.editForm { max-width: 500px; }
+
+.formGroup { margin-bottom: 20px; }
+.formGroup label { display: block; font-size: 13px; font-weight: 600; color: var(--cyan); margin-bottom: 8px; }
+.formGroup input, .formGroup select { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-h); font-size: 14px; font-family: var(--sans); transition: border-color 0.2s; appearance: none; }
+.formGroup select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2306b6d4' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.formGroup input:focus, .formGroup select:focus { outline: none; border-color: var(--cyan); }
+
+.passwordHint { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; margin-top: 8px; }
+
+.saveBtn { padding: 10px 28px; background: var(--cyan); color: #0b0f19; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; margin-top: 4px; }
+.saveBtn:hover:not(:disabled) { opacity: 0.85; }
+.saveBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.historyPanel { display: flex; flex-direction: column; gap: 16px; }
+.searchRow { display: flex; gap: 10px; }
+.searchInputWrapper { flex: 1; position: relative; }
+.searchIcon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; }
+.searchInputWrapper input { width: 100%; padding: 12px 14px 12px 40px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text-h); font-size: 14px; font-family: var(--sans); }
+.searchInputWrapper input:focus { outline: none; border-color: var(--cyan); }
+.searchBtn { padding: 10px 24px; background: var(--cyan); color: #0b0f19; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
+.searchBtn:hover { opacity: 0.85; }
+
+.filtersRow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filtersRow select, .filtersRow input[type="date"] { padding: 8px 12px; border: 1px solid var(--border-cyan); border-radius: 8px; background: transparent; color: var(--cyan); font-size: 13px; font-family: var(--sans); cursor: pointer; appearance: none; }
+.filtersRow select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%2306b6d4' d='M5 7L0 2h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+.filtersRow select:focus, .filtersRow input[type="date"]:focus { outline: none; }
+
+.filterBtn { padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text); font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+.filterBtn:hover { border-color: var(--cyan); color: var(--cyan); }
+.clear { border-color: var(--border); color: var(--text-muted); }
+
+.sessionList { display: flex; flex-direction: column; gap: 10px; }
+.sessionCard { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; }
+.sessionCard:hover { border-color: var(--border-cyan); }
+
+.sessionIcon { width: 44px; height: 44px; border-radius: 10px; background: var(--cyan-bg); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+
+.sessionInfo { flex: 1; min-width: 0; }
+.sessionTop { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.sessionOpponent { color: var(--text-h); font-size: 15px; font-weight: 600; }
+.sessionMeta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+.metaDot { color: var(--cyan); font-size: 8px; }
+.metaSep::before { content: "·"; margin-right: 8px; color: var(--text-muted); }
+
+.replayBtn { padding: 8px 20px; background: var(--cyan); color: #0b0f19; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; flex-shrink: 0; }
+.replayBtn:hover { opacity: 0.85; }
+
+.resultBadge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; text-transform: capitalize; }
+.win { background: #22c55e; color: #fff; }
+.lose { background: #ef4444; color: #fff; }
+.draw { background: #eab308; color: #1a1a1a; }
+.aborted { background: #6b7280; color: #fff; }
+
+.historyEmpty { text-align: center; padding: 48px 20px; color: var(--text-muted); font-size: 14px; }
+
+.walletPanel { text-align: center; padding: 60px 20px; }
+.walletPlaceholder { color: var(--text-muted); font-size: 15px; }
+
+@media (max-width: 640px) {
+  .profileCard { flex-direction: column; gap: 16px; text-align: center; padding: 20px; }
+  .profileCardLeft { flex-direction: column; }
+  .searchRow { flex-direction: column; }
+  .filtersRow { gap: 6px; }
+  .sessionCard { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .replayBtn { align-self: flex-end; }
+}
 /**
  * ============================================================================
  * PROFILE CARD STYLES (The Player Identity)

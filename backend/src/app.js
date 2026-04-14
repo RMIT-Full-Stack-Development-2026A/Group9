@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import authRoutes from "./modules/auth/routes/auth.route.js";
+import userRoutes from "./modules/user/routes/user.route.js";
 import AppError from "./shared/errors/AppError.js";
 
 const app = express();
@@ -9,8 +10,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Apply your API routes
+// routes
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // test route
 app.get("/", (req, res) => {
@@ -36,10 +38,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+// CORS is already applied above; environment-specific CORS rules can be set in server startup if needed.
 
 export default app;

@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import * as profileService from "../services/profile.service.js";
+﻿import { useState, useEffect, useCallback } from "react";
+import * as profileService from "./Profile.service.js";
 
 export const useProfile = (onUserUpdate) => {
   const [user, setUser] = useState(null);

@@ -1,23 +1,19 @@
 import { Router } from "express";
+import * as userController from "../controllers/user.controller.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
+import upload, { uploadToCloudinary } from "../../middlewares/upload.middleware.js";
 
 const router = Router();
 
-router.get("/health", (req, res) => {
-	res.status(200).json({ module: "user", status: "ok" });
-});
-
-router.get("/search", (req, res) => {
-	return res.status(501).json({
-		success: false,
-		message: "User search service not implemented yet",
-	});
-});
-
-router.patch("/me", (req, res) => {
-	return res.status(501).json({
-		success: false,
-		message: "Profile update service not implemented yet",
-	});
-});
+router.get("/profile", authenticate, userController.getProfile);
+router.put("/profile", authenticate, userController.updateProfile);
+router.post(
+  "/profile/avatar",
+  authenticate,
+  upload.single("avatar"),
+  uploadToCloudinary,
+  userController.uploadAvatar
+);
+router.get("/game-history", authenticate, userController.getGameHistory);
 
 export default router;

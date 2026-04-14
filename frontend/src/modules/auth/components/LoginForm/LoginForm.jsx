@@ -31,10 +31,18 @@ export default function Login() {
         }
         try {
             const response = await handleLogin({ identifier, password });
+            // Save accessToken to localStorage for authenticated requests
+            const accessToken = response.accessToken || response.data?.accessToken;
+            if (accessToken) {
+                localStorage.setItem("authToken", accessToken);
+            }
             // Always fetch latest profile after login to get country and other fields
             let user = response.user || response.data?.user;
             try {
-                const profileRes = await fetch("/api/users/profile", { credentials: "include" });
+                // Use fetch with Authorization header if needed, or rely on httpHelper
+                const profileRes = await fetch("/api/users/profile", {
+                    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+                });
                 if (profileRes.ok) {
                     user = await profileRes.json();
                 }

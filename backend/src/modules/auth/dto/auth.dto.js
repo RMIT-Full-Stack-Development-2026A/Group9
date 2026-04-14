@@ -30,12 +30,40 @@ export const validateRegisterPayload = (payload = {}) => {
 		errors.push(`Missing required fields: ${requiredCheck.missing.join(", ")}`);
 	}
 
-	if (value.email && !isEmail(value.email)) {
-		errors.push("Email format is invalid");
+	// Username validation
+	if (value.username && !validators.isValidUsername(value.username)) {
+		errors.push(
+			[
+				"Invalid username.",
+				"Cause: Username contains invalid characters.",
+				"Valid examples: 'john_doe', 'Jane-123', 'user_01'",
+				"Allowed: English letters, numbers, underscores, hyphens."
+			].join(' ')
+		);
 	}
 
-	if (value.password && !isStrongPassword(value.password)) {
-		errors.push("Password must be at least 8 chars and contain upper, lower, and number");
+	// Email validation
+	if (value.email && !validators.isEmail(value.email)) {
+		errors.push(
+			[
+				"Invalid email address.",
+				"Cause: Email format is incorrect or contains prohibited characters.",
+				"Valid examples: 'user@example.com', 'john.doe@mail.co', 'jane-doe_123@domain.org'",
+				"Requirements: Only allowed characters, one '@', at least one '.' after '@', less than 255 characters."
+			].join(' ')
+		);
+	}
+
+	// Password validation
+	if (value.password && !validators.isStrongPassword(value.password)) {
+		errors.push(
+			[
+				"Invalid password.",
+				"Cause: Password does not meet strength requirements.",
+				"Valid examples: 'Password1!', 'My$ecureP@ss', 'Abcdef1#'",
+				"Requirements: At least 8 characters, one uppercase letter, one number, one special character."
+			].join(' ')
+		);
 	}
 
 	return {
@@ -45,25 +73,39 @@ export const validateRegisterPayload = (payload = {}) => {
 	};
 };
 
-export const validateLoginPayload = (payload = {}) => {
-	const value = createLoginDTO(payload);
-	const errors = [];
 
-	const requiredCheck = validators.assertRequiredFields(value, ["identifier", "password"]);
-	if (!requiredCheck.valid) {
-		errors.push(`Missing required fields: ${requiredCheck.missing.join(", ")}`);
-	}
+	export const validateLoginPayload = (payload = {}) => {
+		const value = createLoginDTO(payload);
+		const errors = [];
 
-	if (value.loginType === "email" && value.identifier && !isEmail(value.identifier)) {
-		errors.push("Email format is invalid");
-	}
+		const requiredCheck = validators.assertRequiredFields(value, ["identifier", "password"]);
+		if (!requiredCheck.valid) {
+			errors.push(`Missing required fields: ${requiredCheck.missing.join(", ")}`);
+		}
 
-	return {
-		valid: errors.length === 0,
-		errors,
-		value,
+		if (value.loginType === "email" && value.identifier && !validators.isEmail(value.identifier)) {
+			errors.push([
+				"Invalid email address.",
+				"Cause: Email format is incorrect or contains prohibited characters.",
+				"Valid examples: 'user@example.com', 'john.doe@mail.co', 'jane-doe_123@domain.org'",
+				"Requirements: Only allowed characters, one '@', at least one '.' after '@', less than 255 characters."
+			].join(' '));
+		}
+		if (value.loginType === "username" && value.identifier && !validators.isValidUsername(value.identifier)) {
+			errors.push([
+				"Invalid username.",
+				"Cause: Username contains invalid characters.",
+				"Valid examples: 'john_doe', 'Jane-123', 'user_01'",
+				"Allowed: English letters, numbers, underscores, hyphens."
+			].join(' '));
+		}
+
+		return {
+			valid: errors.length === 0,
+			errors,
+			value,
+		};
 	};
-};
 
 export const createAuthResponseDTO = ({ accessToken, user }) => ({
 	accessToken,

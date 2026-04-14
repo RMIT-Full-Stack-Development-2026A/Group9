@@ -7,7 +7,11 @@ import AppError from "./shared/errors/AppError.js";
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:5174"], // Allow both dev ports
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(express.json());
 
 // routes

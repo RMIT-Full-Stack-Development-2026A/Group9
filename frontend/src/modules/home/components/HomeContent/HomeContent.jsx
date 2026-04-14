@@ -105,7 +105,7 @@ export default function Home() {
 
             <Button
                 className={`${styles.btn} text-white ${showRankings ? styles["actionBtn--red"] : styles["actionBtn--orange"]}`}
-                color={showRankings ? "#ef4444" : "#f97316"}
+                color={showRankings ? "--color-danger" : "--premium-orange"}
                 icon={
                     <span className="btn_icon">
                         <i className={`bi ${showRankings ? "bi-trophy" : "bi-gem"}`}></i>

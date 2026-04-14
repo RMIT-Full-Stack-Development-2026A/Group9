@@ -13,8 +13,9 @@ const userProfileSchema = new mongoose.Schema(
       trim: true,
     },
     avatar: {
-      data: Buffer,
-      contentType: String,
+      type: String, // Store Cloudinary URL
+      default: "",
+      trim: true,
     },
     premiumUntil: {
       type: Date,

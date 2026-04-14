@@ -31,8 +31,15 @@ export default function Login() {
         }
         try {
             const response = await handleLogin({ identifier, password });
-            // update global state
-            login(response.user || response.data?.user);
+            // Always fetch latest profile after login to get country and other fields
+            let user = response.user || response.data?.user;
+            try {
+                const profileRes = await fetch("/api/users/profile", { credentials: "include" });
+                if (profileRes.ok) {
+                    user = await profileRes.json();
+                }
+            } catch (e) { /* ignore profile fetch errors */ }
+            login(user);
             navigate(from, { replace: true });
         } catch (err) {
             // error is handled by useLogin

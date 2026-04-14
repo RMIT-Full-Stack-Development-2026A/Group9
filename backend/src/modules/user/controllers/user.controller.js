@@ -47,15 +47,16 @@ export const updateProfile = async (req, res) => {
 };
 
 export const uploadAvatar = async (req, res) => {
-	try {
-		if (!req.file) {
-			return res.status(400).json({ message: "No image file provided" });
-		}
-		const user = await userService.updateAvatar(req.user.id, req.file.cloudinaryUrl);
-		res.json(user);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+	 try {
+		 if (!req.file) {
+			 return res.status(400).json({ message: "No image file provided" });
+		 }
+         
+		 const user = await userService.updateAvatar(req.user.id, req.file.cloudinaryUrl);
+		 res.json(user);
+	 } catch (error) {
+		 res.status(500).json({ message: error.message });
+	 }
 };
 
 export const getGameHistory = async (req, res) => {

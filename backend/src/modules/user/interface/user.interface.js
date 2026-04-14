@@ -1,6 +1,6 @@
 import * as userService from '../services/user.service.js';
 
-// Example: Expose a public function for other modules
-export const getUserProfile = (userId) => {
-	return userService.getUserProfile(userId);
-};
+export const getProfile = (...args) => userService.getProfile(...args);
+export const updateProfile = (...args) => userService.updateProfile(...args);
+export const updateAvatar = (...args) => userService.updateAvatar(...args);
+export const getGameHistory = (...args) => userService.getGameHistory(...args);

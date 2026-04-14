@@ -100,7 +100,9 @@ export default function Home() {
                     </span>
                 }
                 text="My History"
-                onClick={requireAuth()}
+                onClick={requireAuth(() => {
+                  navigate("/profile", { state: { tab: "history" } });
+                })}
             />
 
             <Button

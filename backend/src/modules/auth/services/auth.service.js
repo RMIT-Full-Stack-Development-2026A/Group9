@@ -85,15 +85,15 @@ export const register = async (payload, file, sessionContext = {}) => {
 
 	return createAuthResponseDTO({
 		accessToken,
-		   user: {
-			   id: createdUser._id,
-			   username: createdUser.username,
-			   email: createdUser.email,
-			   role: createdUser.role,
-			   premiumUntil: createdUser.premiumUntil,
-			   avatar: createdUser.avatar,
-			   country: createdUser.country,
-		   },
+		user: {
+			id: createdUser._id,
+			username: createdUser.username,
+			email: createdUser.email,
+			role: createdUser.role,
+			premiumUntil: createdUser.premiumUntil,
+			avatar: createdUser.avatar,
+			country: createdUser.country,
+		},
 	});
 };
 
@@ -159,16 +159,16 @@ export const login = async (payload, sessionContext = {}) => {
 	});
 
 	return createAuthResponseDTO({
-        accessToken,
-        user: {
-            id: user._id,
-            username: user.username,
-            email: user.email,
-			   role: user.role,
-			   premiumUntil: user.premiumUntil,
-			   avatar: user.avatar,
-			   country: user.country,
-		   },
+		accessToken,
+		user: {
+			id: user._id,
+			username: user.username,
+			email: user.email,
+			role: user.role,
+			premiumUntil: user.premiumUntil,
+			avatar: user.avatar,
+			country: user.country,
+		},
 	});
 };
 

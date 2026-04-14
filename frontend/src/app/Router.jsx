@@ -19,6 +19,7 @@ import ProtectedRoute from "../shared/ui/ProtectedRoute.jsx";
 import Navbar from "../shared/ui/Navbar/Navbar.jsx";
 
 import Admin from "../modules/admin/pages/Admin.jsx";
+import AdminLayout from "../modules/admin/pages/AdminLayout.jsx";
 import GameArena from "../modules/game/pages/GameArena.jsx";
 import Home from "../modules/home/pages/Home.jsx";
 import Leaderboard from "../modules/leaderboard/pages/Leaderboard.jsx";
@@ -39,11 +40,11 @@ function AppLayout() {
 function Router() {
 	return (
 		<Routes>
+			{/* Player/User routes use AppLayout (with Navbar) */}
 			<Route element={<AppLayout />}>
 				<Route path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Registration />} />
-
 				<Route
 					path="/lobby"
 					element={
@@ -78,6 +79,11 @@ function Router() {
 						</ProtectedRoute>
 					}
 				/>
+				<Route path="*" element={<Navigate to="/" replace />} />
+			</Route>
+
+			{/* Admin routes use AdminLayout (NO Navbar) */}
+			<Route element={<AdminLayout />}>
 				<Route
 					path="/admin"
 					element={
@@ -86,8 +92,6 @@ function Router() {
 						</ProtectedRoute>
 					}
 				/>
-
-				<Route path="*" element={<Navigate to="/" replace />} />
 			</Route>
 		</Routes>
 	);

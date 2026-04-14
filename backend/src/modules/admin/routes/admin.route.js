@@ -1,4 +1,6 @@
 import { Router } from "express";
+import * as adminController from "../controllers/admin.controller.js";
+import { authenticate, authorizeRoles } from "../../../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -19,5 +21,14 @@ router.post("/users/ban", (req, res) => {
 		message: "Ban user service not implemented yet",
 	});
 });
+
+router.use(authenticate);
+router.use(authorizeRoles("admin"));
+
+router.get("/metrics", adminController.getMetrics);
+router.get("/players", adminController.getPlayers);
+router.get("/rooms", adminController.getRooms);
+router.put("/players/:id/toggle-status", adminController.togglePlayerStatus);
+router.delete("/rooms/:roomId", adminController.closeRoom);
 
 export default router;

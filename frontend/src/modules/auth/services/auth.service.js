@@ -17,17 +17,16 @@ import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "../../../config/api.config.js";
 import httpHelper from "../../../shared/utils/http.helper.js";
 
 export const login = async (payload) => {
-  const data = await httpHelper.post("/api/auth/login", payload);
-
-  if (data?.accessToken) {
-    localStorage.setItem(AUTH_TOKEN_KEY, data.accessToken);
+  const response = await httpHelper.post("/api/auth/login", payload);
+  const accessToken = response?.data?.accessToken;
+  if (accessToken) {
+    localStorage.setItem(AUTH_TOKEN_KEY, accessToken);
   }
-
-  if (data?.user) {
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(data.user));
+  const user = response?.data?.user;
+  if (user) {
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
   }
-
-  return data;
+  return response.data;
 };
 
 export const getMe = async () => {

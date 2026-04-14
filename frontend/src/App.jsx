@@ -2,7 +2,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import Navbar from "./shared/ui/Navbar/Navbar.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
-import Login from "./pages/Login/Login.jsx";
+import Login from "./modules/auth/pages/Login.jsx";
 import "./App.css";
 
 function App() {

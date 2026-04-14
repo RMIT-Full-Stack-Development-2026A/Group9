@@ -13,6 +13,8 @@
  * 4. Match History: Listing recent games played (Win/Loss/Draw).
  */
 
+import ProfileCard from "../components/ProfileCard/ProfileCard";
+
 export default function Profile() {
-	return <div>Profile</div>;
+	return <ProfileCard />;
 }

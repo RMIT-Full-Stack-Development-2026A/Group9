@@ -1,15 +1,16 @@
 import express from 'express';
 import multer from 'multer';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import UserAccount from '../../user/models/user.model.js';
 import UserProfile from '../../user/models/userProfile.model.js';
 import * as authService from '../services/auth.service.js';
+import { uploadToCloudinary } from '../../../middlewares/upload.middleware.js';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 // Route: POST /api/register
-router.post('/register', upload.single('avatar'), async (req, res) => {
+router.post('/register', upload.single('avatar'), uploadToCloudinary, async (req, res) => {
 	const { username, email, password, country } = req.body || {};
   
 	// 1. Backend Validation (Medium & Ultimo Requirements)
@@ -73,7 +74,7 @@ router.post('/register', upload.single('avatar'), async (req, res) => {
 		await UserProfile.create({
 			_id: newAccount._id,
 			country,
-			avatar: req.file ? { data: req.file.buffer, contentType: req.file.mimetype } : undefined,
+			avatar: req.file && req.file.cloudinaryUrl ? req.file.cloudinaryUrl : "",
 			premiumUntil: null,
 			walletBalance: 0,
 		});

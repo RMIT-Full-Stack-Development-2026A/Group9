@@ -3,12 +3,8 @@ import { useContext } from 'react';
 import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
 
 const icons = {
-    players: (
-        <svg width="20" height="20" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="7" cy="7" r="4"/><path d="M17 17v-1a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v1"/><circle cx="17" cy="7" r="4"/></svg>
-    ),
-    rooms: (
-        <svg width="20" height="20" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="7" height="7" rx="2"/><rect x="14" y="7" width="7" height="7" rx="2"/><path d="M7 7V3a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>
-    )
+    players: <i className="bi bi-people" style={{ fontSize: 20, color: '#9ca3af' }}></i>,
+    rooms: <i className="bi bi-diagram-3" style={{ fontSize: 20, color: '#9ca3af' }}></i>
 };
 const Navbar = ({ activeTab, onTabChange }) => {
     // Listen for custom logout event from header button

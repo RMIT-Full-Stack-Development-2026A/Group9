@@ -16,13 +16,12 @@ export const adminDto = {
         // Use premiumUntil from joined profile if available
         const premiumUntil = user.profile?.premiumUntil;
         return {
-            id: user._id.toString(),
+            id: (user._id && typeof user._id.toString === 'function') ? user._id.toString() : String(user._id),
             username: user.username,
             email: user.email,
             role: user.role,
             isPremium: premiumUntil ? new Date(premiumUntil) > new Date() : false,
-            isActive: user.isActive !== false, 
-            isDeactivated: user.isDeactivated || false,
+            isActive: user.isActive !== false,
             joinedDate: user.createdAt,
         };
     },

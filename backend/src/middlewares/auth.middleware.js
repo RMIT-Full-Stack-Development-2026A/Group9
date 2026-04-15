@@ -87,17 +87,26 @@ export const authorizeRoles = (...allowedRoles) => {
 	};
 };
 
+// Update your existing requirePremium to use the helper
 export const requirePremium = async (req, res, next) => {
 	if (!req.user?.id) {
 		return next(new AppError("Authentication required", 401));
 	}
 
-	const profile = await UserProfile.findById(req.user.id).select("premiumUntil").lean();
-	const hasPremium = isPremiumActive(profile?.premiumUntil);
+	const { hasPremium, premiumUntil } = await checkPremiumStatus(req.user.id);
+	
 	if (!hasPremium) {
-		return next(new AppError("Premium membership is required to access leaderboard", 403));
+		return next(new AppError("Premium membership is required", 403));
 	}
 
-	req.user.premiumUntil = profile?.premiumUntil || null;
+	req.user.premiumUntil = premiumUntil;
 	return next();
 };
+
+// Add this helper function to your auth.middleware.js
+export const checkPremiumStatus = async (userId) => {
+	const profile = await UserProfile.findById(userId).select("premiumUntil").lean();
+	const hasPremium = profile?.premiumUntil && new Date(profile.premiumUntil).getTime() > Date.now();
+	return { hasPremium, premiumUntil: profile?.premiumUntil || null };
+};
+

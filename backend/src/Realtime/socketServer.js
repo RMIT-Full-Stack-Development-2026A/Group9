@@ -10,23 +10,33 @@
 import { Server } from "socket.io";
 import registerGameSocketHandlers from "./socketHandlers/game.socket.js";
 import registerChatSocketHandlers from "./socketHandlers/chat.socket.js";
+import jwt from "jsonwebtoken";
 
 export const initSocket = (httpServer) => {
-	const io = new Server(httpServer, {
-		cors: {
-			origin: process.env.SOCKET_CORS_ORIGIN || "*",
-			credentials: true,
-		},
-	});
+    const io = new Server(httpServer, { /* cors config */ });
 
-	io.on("connection", (socket) => {
-		registerGameSocketHandlers(io, socket);
-		registerChatSocketHandlers(io, socket);
+    // Global Middleware: Authenticate user via JWT
+    io.use((socket, next) => {
+        const token = socket.handshake.auth.token;
+        if (!token) return next(new Error("Authentication error"));
 
-		socket.on("disconnect", () => {
-			io.emit("system:user-disconnected", { socketId: socket.id });
-		});
-	});
+        try {
+            const payload = jwt.verify(token, process.env.JWT_SECRET || "dev_jwt_secret");
+            socket.user = {
+                id: payload.sub || payload.id,
+                role: payload.role || "player",
+                // Check actual DB premium status inside handlers for real-time accuracy
+            };
+            next();
+        } catch (err) {
+            next(new Error("Invalid token"));
+        }
+    });
 
-	return io;
+    io.on("connection", (socket) => {
+        registerGameSocketHandlers(io, socket);
+        registerChatSocketHandlers(io, socket);
+    });
+
+    return io;
 };

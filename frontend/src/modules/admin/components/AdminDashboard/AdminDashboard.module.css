@@ -1,18 +1,63 @@
-
-
-.adminDashboardBg {
-  min-height: 100vh;
-  background: var(--color-bg);
-  padding: 0;
+@media (max-width: 900px) {
+  .adminDashboardWrapper {
+    padding: 0 0 48px 0;
+    max-width: 100%;
+    /* border-radius removed */
+  }
+  .adminHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-md) 16px;
+    min-height: unset;
+  }
+  .adminHeaderLeft {
+    gap: 10px;
+  }
+  .adminTitle {
+    font-size: 22px;
+  }
+  .adminBadge {
+    font-size: 13px;
+    padding: 2px 10px;
+    margin-left: 8px;
+  }
+  .adminStatsRow {
+    gap: var(--space-md);
+    margin: var(--space-lg) 0 16px 0;
+  }
 }
+
+@media (max-width: 600px) {
+  .adminDashboardWrapper {
+    padding: 0 0 24px 0;
+    /* border-radius removed */
+  }
+  .adminHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-sm) 6px;
+  }
+  .adminLogo {
+    width: 32px;
+    height: 32px;
+  }
+  .adminTitle {
+    font-size: 16px;
+  }
+  .adminStatsRow {
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin: var(--space-md) 0 8px 0;
+  }
+}
+
+
+
 
 
 .adminDashboardWrapper {
   max-width: 1200px;
   margin: 0 auto;
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
   padding: 0 0 64px 0;
 }
 
@@ -21,12 +66,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--color-surface-2);
+  /* background, box-shadow removed */
   padding: var(--space-lg) 40px;
   margin-bottom: 0;
   width: 100%;
   box-sizing: border-box;
-  box-shadow: var(--shadow-soft);
   min-height: 80px;
   position: relative;
 }
@@ -41,7 +85,7 @@
 .adminLogo {
   width: 48px;
   height: 48px;
-  border-radius: var(--radius-md);
+  /* border-radius removed */
 }
 
 
@@ -51,18 +95,6 @@
   color: var(--color-text);
   letter-spacing: 1px;
 }
-
-
-.adminBadge {
-  font-size: 16px;
-  background: var(--color-success);
-  color: #fff;
-  border-radius: var(--radius-sm);
-  padding: 2px 14px;
-  margin-left: 14px;
-  font-weight: 600;
-}
-
 
 .adminStatsRow {
   display: flex;

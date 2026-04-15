@@ -13,11 +13,13 @@
 export const adminDto = {
     
     toPlayerResponse: (user) => {
+        // Use premiumUntil from joined profile if available
+        const premiumUntil = user.profile?.premiumUntil;
         return {
             id: user._id.toString(),
             username: user.username,
             email: user.email,
-            isPremium: user.premiumUntil ? new Date(user.premiumUntil) > new Date() : false,
+            isPremium: premiumUntil ? new Date(premiumUntil) > new Date() : false,
             isActive: user.isActive !== false, 
             isDeactivated: user.isDeactivated || false,
             joinedDate: user.createdAt,

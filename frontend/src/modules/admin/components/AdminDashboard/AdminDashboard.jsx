@@ -33,7 +33,8 @@ export default function Admin() {
         rooms,
         setRooms,
         metrics,
-        loading
+        loading,
+        refreshDashboard
     } = useAdmin();
 
     if (loading) {
@@ -82,7 +83,7 @@ export default function Admin() {
                                 )}
                 <main className={styles.adminMainContent}>
                     {activeTab === 'players' && (
-                        <PlayerTable gamers={players} setgamers={setPlayers} />
+                        <PlayerTable gamers={players} setgamers={setPlayers} refreshDashboard={refreshDashboard} />
                     )}
                     {activeTab === 'rooms' && (
                         <RoomTable curRooms={rooms} setRooms={setRooms} />

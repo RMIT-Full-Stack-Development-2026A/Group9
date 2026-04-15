@@ -22,10 +22,26 @@ import { adminDto } from "../dto/admin.dto.js";
 
 export const adminService = {
     getMetrics: async () => {
-        const totalPlayers = await adminRepository.countTotalUsers();
-        const activeRooms = await adminRepository.countActiveRooms();
-        
-        return adminDto.toMetricsResponse(totalPlayers, activeRooms);
+        const [
+            totalPlayers,
+            activeAccounts,
+            inactiveAccounts,
+            premiumUsers,
+            activeRooms
+        ] = await Promise.all([
+            adminRepository.countTotalUsers(),
+            adminRepository.countActiveAccounts(),
+            adminRepository.countInactiveAccounts(),
+            adminRepository.countPremiumUsers(),
+            adminRepository.countActiveRooms()
+        ]);
+        return adminDto.toMetricsResponse({
+            totalPlayers,
+            activeAccounts,
+            inactiveAccounts,
+            premiumUsers,
+            activeRooms
+        });
     },
 
     getPlayers: async () => {

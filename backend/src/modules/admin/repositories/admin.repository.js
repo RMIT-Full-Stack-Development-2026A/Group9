@@ -92,7 +92,7 @@ export const adminRepository = {
     },
 
     countPremiumUsers: async () => {
-        // Join UserProfile and count where premiumUntil is in the future
+        // Join UserProfile and count where premiumUntil is in the future (handle string or Date)
         const result = await getUserModel().aggregate([
             { $match: { role: "player" } },
             {
@@ -105,8 +105,13 @@ export const adminRepository = {
             },
             { $unwind: { path: "$profile", preserveNullAndEmptyArrays: false } },
             {
+                $addFields: {
+                    premiumUntilDate: { $toDate: "$profile.premiumUntil" }
+                }
+            },
+            {
                 $match: {
-                    "profile.premiumUntil": { $gt: new Date() }
+                    premiumUntilDate: { $gt: new Date() }
                 }
             },
             { $count: "premiumCount" }

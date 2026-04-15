@@ -39,11 +39,14 @@ export const adminDto = {
     },
 
     
-    toMetricsResponse: (totalPlayers, activeRooms) => {
+    toMetricsResponse: ({ totalPlayers, activeAccounts, inactiveAccounts, premiumUsers, activeRooms }) => {
         return {
             totalPlayers,
+            activeAccounts,
+            inactiveAccounts,
+            premiumUsers,
             activeRooms,
-            serverLoad: `${Math.min(100, Math.round((activeRooms / 100) * 100))}%` 
+            serverLoad: `${Math.min(100, Math.round((activeRooms / 100) * 100))}%`
         };
     }
 };

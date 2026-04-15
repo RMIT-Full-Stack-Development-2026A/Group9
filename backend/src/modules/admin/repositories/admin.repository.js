@@ -92,10 +92,6 @@ export const adminRepository = {
         return await log.save();
     },
 
-    countTotalUsers: async () => {
-        return await getUserModel().countDocuments();
-    },
-
     countActiveRooms: async () => {
         return await getRoomModel().countDocuments({ status: { $ne: "CLOSED" } });
     },

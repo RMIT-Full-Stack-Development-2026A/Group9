@@ -96,8 +96,8 @@
 }
 
 .adminTable tbody td {
-    border-bottom: 0.25px solid #fff;
-    border-top:  0.25px solid #fff;
+    border-bottom: 0.25px solid grey;
+    border-top:  0.25px solid  grey;
 }
 
  .adminTable td {

@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { adminService } from '../../services/admin.service';
 import styles from './PlayerTable.module.css';
 
-const PlayerTable = ({ gamers, setgamers }) => {
+const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const toggleDeactivate = async (pid) => {
         try {
             await adminService.togglePlayerStatus(pid);
-            // Re-fetch the player list from backend
-            const playersRes = await adminService.getPlayers();
-            setgamers(playersRes.data.data);
+            if (typeof refreshDashboard === "function") {
+                await refreshDashboard();
+            }
         } catch (err) {
             alert("Failed to update player status.");
         }

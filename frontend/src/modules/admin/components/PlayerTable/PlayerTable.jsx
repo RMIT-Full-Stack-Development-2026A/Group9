@@ -1,17 +1,19 @@
 import { useState } from 'react';
+import { adminService } from '../../services/admin.service';
 import styles from './PlayerTable.module.css';
 
 const PlayerTable = ({ gamers, setgamers }) => {
     const [searchQuery, setSearchQuery] = useState('');
 
-    const toggleDeactivate = (pid) => {
-        const updateGamers = gamers.map(p => {
-            if (p.id === pid) {
-                return { ...p, isDeactivated: !p.isDeactivated };
-            }
-            return p;
-        });
-        setgamers(updateGamers);
+    const toggleDeactivate = async (pid) => {
+        try {
+            await adminService.togglePlayerStatus(pid);
+            // Re-fetch the player list from backend
+            const playersRes = await adminService.getPlayers();
+            setgamers(playersRes.data.data);
+        } catch (err) {
+            alert("Failed to update player status.");
+        }
     };
 
     const filteredPlayers = gamers.filter(p => (
@@ -78,10 +80,10 @@ const PlayerTable = ({ gamers, setgamers }) => {
                                 <td>{p.joinedDate}</td>
                                 <td>
                                     <button
-                                        className={`${styles.actionBtn} ${p.isDeactivated ? styles.reactivate : styles.deactivate}`}
+                                        className={`${styles.actionBtn} ${!p.isActive ? styles.reactivate : styles.deactivate}`}
                                         onClick={() => toggleDeactivate(p.id)}
                                     >
-                                        {p.isDeactivated ? 'Reactivate' : 'Deactivate'}
+                                        {!p.isActive ? 'Reactivate' : 'Deactivate'}
                                     </button>
                                 </td>
                             </tr>

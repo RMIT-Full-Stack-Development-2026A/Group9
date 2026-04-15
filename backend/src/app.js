@@ -1,8 +1,13 @@
+
 import express from "express";
 import cors from "cors";
 import authRoutes from "./modules/auth/routes/auth.route.js";
 import userRoutes from "./modules/user/routes/user.route.js";
-import AppError from "./shared/errors/AppError.js";
+import registerAdminModule from "./modules/admin/index.js";
+
+// Register Mongoose models so they are available globally
+import "./modules/multiplayer/models/gameRoom.model.js";
+import "./modules/user/models/user.model.js";
 
 const app = express();
 
@@ -15,8 +20,12 @@ app.use(cors({
 app.use(express.json());
 
 // routes
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+
+// Register admin module routes
+registerAdminModule(app);
 
 // test route
 app.get("/", (req, res) => {

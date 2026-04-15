@@ -48,7 +48,12 @@ export default function Login() {
                 }
             } catch (e) { /* ignore profile fetch errors */ }
             login(user);
-            navigate(from, { replace: true });
+            // Redirect admin users to /admin, others to previous logic
+            if (user && user.role && user.role.toLowerCase() === 'admin') {
+                navigate('/admin', { replace: true });
+            } else {
+                navigate(from, { replace: true });
+            }
         } catch (err) {
             // error is handled by useLogin
         }

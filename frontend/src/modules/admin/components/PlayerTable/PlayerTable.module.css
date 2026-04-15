@@ -107,8 +107,8 @@
 
 /* Premium/Free badge */
  .premiumBadge {
-    background: #ffb300;
-    color: #232946;
+    background: var(--premium-orange);
+    color:var(--color-text);
     border-radius: 8px;
     padding: 2px 12px;
     font-weight: 600;

@@ -21,9 +21,11 @@ export default function Login() {
     const from = location.state?.from || "/";
 
     const [validationError, setValidationError] = useState("");
+    const [loginError, setLoginError] = useState("");
     const handleSubmit = async (e) => {
         e.preventDefault();
         setValidationError("");
+        setLoginError("");
         const validation = validateLogin({ identifier, password });
         if (validation) {
             setValidationError(validation.error);
@@ -31,15 +33,16 @@ export default function Login() {
         }
         try {
             const response = await handleLogin({ identifier, password });
-            // Save accessToken to localStorage for authenticated requests
+            // Only proceed if response contains accessToken and user
             const accessToken = response.accessToken || response.data?.accessToken;
-            if (accessToken) {
-                localStorage.setItem("authToken", accessToken);
-            }
-            // Always fetch latest profile after login to get country and other fields
             let user = response.user || response.data?.user;
+            if (!accessToken || !user) {
+                setLoginError("Invalid credentials");
+                return;
+            }
+            localStorage.setItem("authToken", accessToken);
+            // Always fetch latest profile after login to get country and other fields
             try {
-                // Use fetch with Authorization header if needed, or rely on httpHelper
                 const profileRes = await fetch("/api/users/profile", {
                     headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
                 });
@@ -55,7 +58,7 @@ export default function Login() {
                 navigate(from, { replace: true });
             }
         } catch (err) {
-            // error is handled by useLogin
+            setLoginError(err?.message || error || "Login failed");
         }
     };
 
@@ -75,12 +78,12 @@ export default function Login() {
                     <h2 className={styles.cardTitle}>Sign In</h2>
                     <p className={styles.cardSubtitle}>Enter your credentials to access your account</p>
 
-                    {(validationError || error) && (
+                    {(validationError || loginError) && (
                         <div className={styles.errorAlert}>
                             <FiAlertCircle className={styles.errorIcon} />
                             <div className={styles.errorContent}>
                                 <span className={styles.errorTitle}>{validationError ? "Validation error" : "Invalid credentials"}</span>
-                                <p className={styles.errorDescription}>{validationError || error}</p>
+                                <p className={styles.errorDescription}>{validationError || loginError}</p>
                             </div>
                         </div>
                     )}

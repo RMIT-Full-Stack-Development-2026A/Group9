@@ -58,7 +58,9 @@ const PlayerTable = ({ gamers, setgamers }) => {
                                 <td>{p.email}</td>
                                 <td>
                                     {p.isPremium ? (
-                                        <span className={styles.premiumBadge}>★ Premium</span>
+                                        <span className={styles.premiumBadge}>
+                                            <i className="bi bi-gem"></i> Premium
+                                        </span>
                                     ) : (
                                         <span className={styles.freeBadge}>Free</span>
                                     )}

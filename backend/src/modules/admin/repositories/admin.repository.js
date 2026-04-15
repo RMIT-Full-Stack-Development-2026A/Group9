@@ -38,10 +38,10 @@ export const adminRepository = {
         return await getUserModel().findById(userId).lean();
     },
 
-    updateUserDeactivationStatus: async (userId, isDeactivated) => {
+    updateUserActiveStatus: async (userId, isActive) => {
         return await getUserModel().findByIdAndUpdate(
             userId,
-            { isDeactivated },
+            { isActive },
             { new: true }
         ).lean();
     },
@@ -82,13 +82,13 @@ export const adminRepository = {
     },
 
     countActiveAccounts: async () => {
-        // Only players who are not deactivated
-        return await getUserModel().countDocuments({ role: "player", isDeactivated: { $ne: true } });
+        // Only players who are active
+        return await getUserModel().countDocuments({ role: "player", isActive: true });
     },
 
     countInactiveAccounts: async () => {
-        // Only players who are deactivated
-        return await getUserModel().countDocuments({ role: "player", isDeactivated: true });
+        // Only players who are inactive
+        return await getUserModel().countDocuments({ role: "player", isActive: false });
     },
 
     countPremiumUsers: async () => {

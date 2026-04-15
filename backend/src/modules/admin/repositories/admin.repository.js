@@ -9,7 +9,7 @@ const getRoomModel = () => mongoose.model("GameRoom");
 export const adminRepository = {
    
     countTotalUsers: async () => {
-        return await getUserModel().countDocuments();
+        return await getUserModel().countDocuments({ role: "player" });
     },
 
     countActiveRooms: async () => {

@@ -1,12 +1,12 @@
 
 /* Card container */
- .adminCard {
-    background: #223040;
-    border-radius: 18px;
+.adminCard {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
     padding: 20px 32px 32px 32px;
     margin-bottom: 40px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.10);
-    border: 2px solid #1ec9a7;
+    box-shadow: var(--shadow-soft);
+    border: 2px solid var(--color-primary);
     width: 100%;
     max-width: 1152px;
     margin-left: auto;
@@ -26,7 +26,7 @@
      left: 18px;
      top: 50%;
      transform: translateY(-50%);
-     color: #00d1ff;
+     color: var(--color-primary);
      font-size: 20px;
      pointer-events: none;
      z-index: 2;
@@ -34,10 +34,10 @@
 
  .adminSearchInput {
      padding: 10px 18px 10px 44px;
-     border-radius: 14px;
-     border: 2px solid #00d1ff;
-     background: #20243a;
-     color: #fff;
+     border-radius: var(--radius-md);
+     border: 2px solid var(--color-primary);
+     background: var(--color-bg);
+     color: var(--color-text);
      font-size: 15px;
      width: 100%;
      height: 48px;
@@ -46,7 +46,7 @@
      box-sizing: border-box;
  }
 .admin-search-input:focus {
-    border: 2px solid #1ec9a7;
+    border: 2px solid var(--color-success);
 }
 
 /* Table wrapper */
@@ -62,11 +62,12 @@
     border-collapse: collapse;
     font-size: 15px;
     background: none;
+    color: var(--color-text);
 }
 
 /* Table header */
  .adminTable thead tr {
-    color: #00d1ff;
+    color: var(--color-primary);
     font-weight: 700;
 }
  .adminTable th {
@@ -74,6 +75,8 @@
     text-align: left;
     font-size: 15px;
     letter-spacing: 0.01em;
+    background: var(--color-surface-2);
+    border-bottom: 2px solid var(--color-primary);
 }
  .adminTable th:not(:first-child) {
     border-top-left-radius: 0;
@@ -88,37 +91,38 @@
 
 /* Table rows */
 
-.adminTable tbody tr {
-    color: #fff;
-    border-radius: 12px;
+ .adminTable tbody tr {
+    color: var(--color-text);
+    border-radius: var(--radius-md);
     transition: background 0.15s;
     margin-bottom: 0;
 }
 
-.adminTable tbody td {
-    border-bottom: 0.25px solid grey;
-    border-top:  0.25px solid  grey;
+ .adminTable tbody td {
+    border-bottom: 1px solid var(--color-muted);
+    border-top:  1px solid var(--color-muted);
 }
 
  .adminTable td {
     padding: 16px 20px;
     vertical-align: middle;
+    background: var(--color-surface);
 }
 
 /* Premium/Free badge */
- .premiumBadge {
+.premiumBadge {
     background: var(--premium-orange);
-    color:var(--color-text);
-    border-radius: 8px;
+    color: var(--color-text);
+    border-radius: var(--radius-sm);
     padding: 2px 12px;
     font-weight: 600;
     font-size: 13px;
     display: inline-block;
 }
- .freeBadge {
-    background: #2e3650;
-    color: #bfc9db;
-    border-radius: 8px;
+.freeBadge {
+    background: var(--color-surface-2);
+    color: var(--color-muted);
+    border-radius: var(--radius-sm);
     padding: 2px 12px;
     font-weight: 600;
     font-size: 13px;
@@ -134,35 +138,35 @@
     margin-right: 6px;
 }
  .statusActive {
-    background: #1ec9a7;
+    background: var(--color-success);
 }
  .statusInactive {
-    background: #f44336;
+    background: var(--color-danger);
 }
  .statusTextActive {
-    color: #1ec9a7;
+    color: var(--color-success);
     font-weight: 600;
 }
  .statusTextInactive {
-    color: #f44336;
+    color: var(--color-danger);
     font-weight: 600;
 }
 
 /* Action buttons */
  .actionBtn {
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 7px 20px;
     font-weight: 600;
     font-size: 15px;
     cursor: pointer;
     transition: background 0.2s;
 }
- .actionBtn.deactivate {
-    background: #f44336;
+.actionBtn.deactivate {
+    background: var(--color-danger);
     color: #fff;
 }
- .actionBtn.reactivate {
-    background: #1ec9a7;
+.actionBtn.reactivate {
+    background: var(--color-success);
     color: #fff;
 }

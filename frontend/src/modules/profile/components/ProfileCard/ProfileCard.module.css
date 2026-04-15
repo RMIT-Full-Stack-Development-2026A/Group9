@@ -1,3 +1,31 @@
+@media (max-width: 900px) {
+  .profileTabs {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .tabBtn, .active {
+    width: 100%;
+    text-align: center;
+    border-radius: 16px;
+    font-size: 15px;
+    padding: 10px 0;
+  }
+  .historyPanel {
+    max-width: 100%;
+    padding: 0 4px;
+  }
+  .searchRow, .filtersRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .searchBtn, .filterBtn, .dateBtn, .clear {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 0;
+    font-size: 15px;
+  }
+}
 /* Make the Date button visually consistent with other filter buttons */
 .dateBtn {
   background: transparent;

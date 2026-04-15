@@ -38,8 +38,9 @@ export const adminRepository = {
 
     
     findAllUsers: async () => {
-        // Aggregate to join UserProfile and include premiumUntil
+        // Aggregate to join UserProfile and include premiumUntil, filter only players
         return await getUserModel().aggregate([
+            { $match: { role: "player" } },
             { $sort: { createdAt: -1 } },
             {
                 $lookup: {

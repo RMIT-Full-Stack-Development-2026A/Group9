@@ -18,8 +18,7 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../shared/ui/ProtectedRoute.jsx";
 import Navbar from "../shared/ui/Navbar/Navbar.jsx";
 
-import Admin from "../modules/admin/pages/Admin.jsx";
-import AdminLayout from "../modules/admin/pages/AdminLayout.jsx";
+import AdminDashboard from "../modules/admin/components/AdminDashboard/AdminDashboard.jsx";
 import GameArena from "../modules/game/pages/GameArena.jsx";
 import Home from "../modules/home/pages/Home.jsx";
 import Leaderboard from "../modules/leaderboard/pages/Leaderboard.jsx";
@@ -82,16 +81,18 @@ function Router() {
 				<Route path="*" element={<Navigate to="/" replace />} />
 			</Route>
 
-			{/* Admin routes use AdminLayout (NO Navbar) */}
-			<Route element={<AdminLayout />}>
-				<Route
-					path="/admin"
-					element={
-						<ProtectedRoute roles={["admin"]}>
-							<Admin />
-						</ProtectedRoute>
-					}
-				/>
+			{/* Admin routes use AdminDashboard as layout (NO Navbar) */}
+			<Route
+				path="/admin"
+				element={
+					<ProtectedRoute roles={["admin"]}>
+						<AdminDashboard />
+					</ProtectedRoute>
+				}
+			>
+				{/* Example nested admin routes: */}
+				{/* <Route path="users" element={<AdminUsers />} /> */}
+				{/* <Route path="settings" element={<AdminSettings />} /> */}
 			</Route>
 		</Routes>
 	);

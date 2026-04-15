@@ -8,11 +8,12 @@ const icons = {
 };
 const Navbar = ({ activeTab, onTabChange }) => {
     // Listen for custom logout event from header button
+    const { logout } = useContext(AuthContext);
     if (typeof window !== 'undefined') {
         window.addEventListener('admin-logout', () => {
-            const ctx = require('../../../../app/providers/AuthProvider.jsx');
-            if (ctx && ctx.AuthContext && ctx.AuthContext._currentValue && ctx.AuthContext._currentValue.logout) {
-                ctx.AuthContext._currentValue.logout();
+            if (logout) {
+                logout();
+                window.location.href = '/';
             }
         });
     }

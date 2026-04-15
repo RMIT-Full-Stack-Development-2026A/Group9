@@ -38,7 +38,19 @@ export const adminRepository = {
 
     
     findAllUsers: async () => {
-        return await getUserModel().find({}).sort({ createdAt: -1 }).lean();
+        // Aggregate to join UserProfile and include premiumUntil
+        return await getUserModel().aggregate([
+            { $sort: { createdAt: -1 } },
+            {
+                $lookup: {
+                    from: "UserProfiles",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "profile"
+                }
+            },
+            { $unwind: { path: "$profile", preserveNullAndEmptyArrays: true } }
+        ]);
     },
 
     findUserById: async (userId) => {

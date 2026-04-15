@@ -1,29 +1,32 @@
 
+
 .adminDashboardBg {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a223f 0%, #232946 100%);
+  background: var(--color-bg);
   padding: 0;
 }
+
 
 .adminDashboardWrapper {
   max-width: 1200px;
   margin: 0 auto;
-  background: rgba(30,34,54,0.98);
-  border-radius: 18px;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
-  padding: 0;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 0 0 64px 0;
 }
+
 
 .adminHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #1a223f;
-  padding: 24px 40px;
+  background: var(--color-surface-2);
+  padding: var(--space-lg) 40px;
   margin-bottom: 0;
   width: 100%;
   box-sizing: border-box;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+  box-shadow: var(--shadow-soft);
   min-height: 80px;
   position: relative;
 }
@@ -34,42 +37,48 @@
   gap: 18px;
 }
 
+
 .adminLogo {
   width: 48px;
   height: 48px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 }
+
 
 .adminTitle {
   font-weight: 700;
   font-size: 30px;
-  color: #fff;
+  color: var(--color-text);
   letter-spacing: 1px;
 }
 
+
 .adminBadge {
   font-size: 16px;
-  background: #1ec9a7;
+  background: var(--color-success);
   color: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 2px 14px;
   margin-left: 14px;
   font-weight: 600;
 }
 
+
 .adminStatsRow {
   display: flex;
-  gap: 24px;
-  margin: 32px 0 24px 0;
+  gap: var(--space-lg);
+  margin: var(--space-xl) 0 32px 0;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .adminMainContent {
   margin-top: 0;
+  padding-top: 0;
 }
 
+
 .adminLoading {
-  padding: 2rem;
+  padding: var(--space-xl);
   text-align: center;
 }

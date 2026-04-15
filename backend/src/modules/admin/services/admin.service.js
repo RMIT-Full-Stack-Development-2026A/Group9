@@ -56,23 +56,18 @@ export const adminService = {
 
     togglePlayerStatus: async (adminId, targetUserId) => {
         const user = await adminRepository.findUserById(targetUserId);
-        
         if (!user) {
             throw new AppError("User not found", 404);
         }
-
-       
-        const newStatus = !user.isDeactivated;
-        const updatedUser = await adminRepository.updateUserDeactivationStatus(targetUserId, newStatus);
-
-        
+        // Toggle isActive instead of isDeactivated
+        const newStatus = !user.isActive;
+        const updatedUser = await adminRepository.updateUserActiveStatus(targetUserId, newStatus);
         await adminRepository.createActionLog({
             adminId,
-            actionType: newStatus ? "DEACTIVATE_USER" : "ACTIVATE_USER",
+            actionType: newStatus ? "ACTIVATE_USER" : "DEACTIVATE_USER",
             targetUserId,
-            metadata: { previousStatus: user.isDeactivated }
+            metadata: { previousStatus: user.isActive }
         });
-
         return adminDto.toPlayerResponse(updatedUser);
     },
 

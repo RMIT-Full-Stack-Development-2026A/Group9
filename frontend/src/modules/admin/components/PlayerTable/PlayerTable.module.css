@@ -11,12 +11,13 @@
 /* Search bar */
  .adminSearchInput {
     padding: 10px 18px;
-    border-radius: 10px;
+    border-radius: 14px;
     border: 2px solid #00d1ff;
     background: #20243a;
     color: #fff;
     font-size: 15px;
-    width: 280px;
+    width: 1092px;
+    height: 48px;
     outline: none;
     transition: border 0.2s;
 }

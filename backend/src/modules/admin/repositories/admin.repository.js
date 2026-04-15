@@ -1,27 +1,7 @@
-/**
- * ============================================================================
- * ADMIN REPOSITORY (The Vault Manager / Data Access Layer)
- * ============================================================================
- * Purpose: This file is the ONLY place in the Admin module allowed to talk 
- * directly to the database (MongoDB/Mongoose). It abstracts away the complex 
- * database query languages so the Service layer doesn't have to care about 
- * HOW the data is stored, only THAT it is stored.
- * * Key Responsibilities:
- * 1. Execute CRUD operations (Create, Read, Update, Delete) using Mongoose Models.
- * 2. Handle complex database aggregations or joins (e.g., .populate()).
- * 3. Return raw data back to the Service layer.
- * * CRITICAL RULE: A Repository must NEVER contain business rules (no "if user 
- * is banned, then...") and NEVER know about HTTP. It is a "dumb" worker that 
- * executes database queries exactly as the Service instructs it to.
- */
 
-// Implementation contract:
-// 1) Export read/write functions only (no DTO validation and no policy checks).
-// 2) Return plain documents/rows; response shaping belongs to service/DTO layers.
-// 3) Keep naming convention: find*, list*, create*, update*, delete*.
 
 import mongoose from "mongoose";
-import AdminActionLog from "../models/adminActionLog.model.js"; // Adjust path if needed
+import AdminActionLog from "../models/adminActionLog.model.js";
 
 const getUserModel = () => mongoose.model("UserAccount");
 const getRoomModel = () => mongoose.model("GameRoom");
@@ -91,5 +71,46 @@ export const adminRepository = {
     createActionLog: async (logData) => {
         const log = new AdminActionLog(logData);
         return await log.save();
-    }
+    },
+
+    countTotalUsers: async () => {
+        return await getUserModel().countDocuments();
+    },
+
+    countActiveRooms: async () => {
+        return await getRoomModel().countDocuments({ status: { $ne: "CLOSED" } });
+    },
+
+    countActiveAccounts: async () => {
+        // Only players who are not deactivated
+        return await getUserModel().countDocuments({ role: "player", isDeactivated: { $ne: true } });
+    },
+
+    countInactiveAccounts: async () => {
+        // Only players who are deactivated
+        return await getUserModel().countDocuments({ role: "player", isDeactivated: true });
+    },
+
+    countPremiumUsers: async () => {
+        // Join UserProfile and count where premiumUntil is in the future
+        const result = await getUserModel().aggregate([
+            { $match: { role: "player" } },
+            {
+                $lookup: {
+                    from: "UserProfiles",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "profile"
+                }
+            },
+            { $unwind: { path: "$profile", preserveNullAndEmptyArrays: false } },
+            {
+                $match: {
+                    "profile.premiumUntil": { $gt: new Date() }
+                }
+            },
+            { $count: "premiumCount" }
+        ]);
+        return result[0]?.premiumCount || 0;
+    },
 };

@@ -14,84 +14,70 @@
  */
 
 
-import Navbar from '../components/Navbar/NavBar.jsx'; 
-import PlayerTable from '../components/PlayerTable/PlayerTable.jsx';
-import RoomTable from '../components/RoomTable/RoomTable.jsx';
-import StatCard from '../components/StateCard/StateCard.jsx';
-import { useAdmin } from '../hooks/useAdmin.js';
+
+import AdminNavBar from '../NavBar/AdminNavBar.jsx';
+import PlayerTable from '../PlayerTable/PlayerTable.jsx';
+import RoomTable from '../RoomTable/RoomTable.jsx';
+import StatCard from '../StateCard/StateCard.jsx';
+import { useAdmin } from '../../hooks/useAdmin.js';
+import styles from './AdminDashboard.module.css';
 
 
 export default function Admin() {
-   
-    const { 
-        activeTab, 
-        setActiveTab, 
-        players, 
-        setPlayers, 
-        rooms, 
-        setRooms, 
-        metrics, 
-        loading 
+    const {
+        activeTab,
+        setActiveTab,
+        players,
+        setPlayers,
+        rooms,
+        setRooms,
+        metrics,
+        loading
     } = useAdmin();
 
-    
     if (loading) {
         return (
-            <div className="admin-loading" style={{ padding: '2rem', textAlign: 'center' }}>
+            <div className={styles.adminLoading}>
                 <h3>Loading System Data...</h3>
             </div>
         );
     }
 
-   
     return (
-        <div className="admin-dashboard-container" style={{ padding: '20px' }}>
-            
-           
-            <header className="admin-header" style={{ marginBottom: '30px' }}>
-                <h2 style={{ marginBottom: '20px' }}>Command Center</h2>
-                <div className="stats-row" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                    <StatCard 
-                        label="Total Players" 
-                        value={metrics.totalPlayers} 
-                        color="#4CAF50" 
-                    />
-                    <StatCard 
-                        label="Active Rooms" 
-                        value={metrics.activeRooms} 
-                        color="#2196F3" 
-                    />
-                    <StatCard 
-                        label="Server Load" 
-                        value={metrics.serverLoad} 
-                        color="#F44336" 
-                    />
+        <div className={styles.adminDashboardBg}>
+            <div className={styles.adminDashboardWrapper}>
+                <header className={styles.adminHeader}>
+                    <div className={styles.adminHeaderLeft}>
+                        <img src="/logo.png" alt="Admin" className={styles.adminLogo} />
+                        <span className={styles.adminTitle}>Admin Dashboard</span>
+                        <span className={styles.adminBadge}>ADMIN</span>
+                    </div>
+                    <button
+                        className="logoutIconBtn"
+                        type="button"
+                        onClick={() => { if (window.confirm('Log out of admin dashboard?')) window.dispatchEvent(new CustomEvent('admin-logout')); }}
+                        aria-label="Logout"
+                        style={{ marginLeft: 24 }}
+                    >
+                        <i className="bi bi-box-arrow-right" style={{ fontSize: 22 }}></i>
+                    </button>
+                </header>
+                <AdminNavBar activeTab={activeTab} onTabChange={setActiveTab} />
+                <div className={styles.adminStatsRow}>
+                    <StatCard label="Total Players" value={metrics.totalPlayers} color="#1ec9a7" />
+                    <StatCard label="Active Accounts" value={metrics.activeAccounts} color="#4CAF50" />
+                    <StatCard label="Premium Users" value={metrics.premiumUsers} color="#ffb300" />
+                    <StatCard label="Inactive Accounts" value={metrics.inactiveAccounts} color="#f44336" />
                 </div>
-            </header>
-
-           
-            <Navbar 
-                activeTab={activeTab} 
-                onTabChange={setActiveTab} 
-            />
-
-            
-            <main className="admin-main-content" style={{ marginTop: '20px' }}>
-                {activeTab === 'players' && (
-                    <PlayerTable 
-                        gamers={players} 
-                        setgamers={setPlayers} 
-                    />
-                )}
-                
-                {activeTab === 'rooms' && (
-                    <RoomTable 
-                        curRooms={rooms} 
-                        setRooms={setRooms} 
-                    />
-                )}
-            </main>
-
+                <main className={styles.adminMainContent}>
+                    {activeTab === 'players' && (
+                        <PlayerTable gamers={players} setgamers={setPlayers} />
+                    )}
+                    {activeTab === 'rooms' && (
+                        <RoomTable curRooms={rooms} setRooms={setRooms} />
+                    )}
+                </main>
+            </div>
         </div>
     );
 }

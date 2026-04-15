@@ -19,6 +19,7 @@ export const adminDto = {
             id: user._id.toString(),
             username: user.username,
             email: user.email,
+            role: user.role,
             isPremium: premiumUntil ? new Date(premiumUntil) > new Date() : false,
             isActive: user.isActive !== false, 
             isDeactivated: user.isDeactivated || false,

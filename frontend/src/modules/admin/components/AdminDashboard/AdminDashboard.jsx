@@ -58,7 +58,7 @@ export default function Admin() {
                     <button
                         className="logoutIconBtn"
                         type="button"
-                        onClick={() => { if (window.confirm('Log out of admin dashboard?')) window.dispatchEvent(new CustomEvent('admin-logout')); }}
+                        onClick={() => window.dispatchEvent(new CustomEvent('admin-logout'))}
                         aria-label="Logout"
                         style={{ marginLeft: 24 }}
                     >

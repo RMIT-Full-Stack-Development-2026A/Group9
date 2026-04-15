@@ -19,11 +19,11 @@
 // 1) Export route handlers only (no DB calls directly in this layer).
 // 2) Validate input through DTO/middleware, then delegate to service.
 // 3) Always forward failures to next(error) for global error handling.
-import { adminService } from "../services/admin.service.js";
+import * as adminInterface from "../interface/admin.interface.js";
 
 export const getMetrics = async (req, res, next) => {
     try {
-        const metrics = await adminService.getMetrics();
+        const metrics = await adminInterface.getMetrics();
         return res.status(200).json({ success: true, data: metrics });
     } catch (error) {
         return next(error);
@@ -32,7 +32,7 @@ export const getMetrics = async (req, res, next) => {
 
 export const getPlayers = async (req, res, next) => {
     try {
-        const players = await adminService.getPlayers();
+        const players = await adminInterface.getPlayers();
         return res.status(200).json({ success: true, data: players });
     } catch (error) {
         return next(error);
@@ -41,7 +41,7 @@ export const getPlayers = async (req, res, next) => {
 
 export const getRooms = async (req, res, next) => {
     try {
-        const rooms = await adminService.getRooms();
+        const rooms = await adminInterface.getRooms();
         return res.status(200).json({ success: true, data: rooms });
     } catch (error) {
         return next(error);
@@ -52,13 +52,11 @@ export const togglePlayerStatus = async (req, res, next) => {
     try {
         const adminId = req.user.id;
         const targetUserId = req.params.id;
-
-        const updatedPlayer = await adminService.togglePlayerStatus(adminId, targetUserId);
-        
+        const updatedPlayer = await adminInterface.togglePlayerStatus(adminId, targetUserId);
         return res.status(200).json({ 
             success: true, 
             message: `User ${updatedPlayer.isDeactivated ? 'deactivated' : 'activated'} successfully`,
-            data: updatedPlayer 
+            data: updatedPlayer
         });
     } catch (error) {
         return next(error);

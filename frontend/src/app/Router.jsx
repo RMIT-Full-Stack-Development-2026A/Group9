@@ -27,7 +27,16 @@ import Payment from "../modules/payment/pages/Payment.jsx";
 import Profile from "../modules/profile/pages/Profile.jsx";
 import Registration from "../modules/auth/pages/Registration.jsx";
 
+import { useContext } from "react";
+import { AuthContext } from "../app/providers/AuthProvider.jsx";
+
 function AppLayout() {
+	const { user } = useContext(AuthContext) || {};
+	// If admin, block rendering of non-admin layout
+	if (user && user.role === 'admin') {
+		window.history.replaceState(null, '', '/admin');
+		return <Navigate to="/admin" replace />;
+	}
 	return (
 		<>
 			<Navbar />

@@ -1,9 +1,75 @@
-/**
- * ============================================================================
- * ADMIN DASHBOARD STYLES (The Overlord Console)
- * ============================================================================
- * Location: src/modules/admin/components/AdminDashboard.module.css
- * Purpose: Provides a technical, "command center" aesthetic for moderators.
- * Uses a darker palette with high-contrast accents (Neon Red/Green) to 
- * highlight system health and critical alerts.
- */
+
+.adminDashboardBg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a223f 0%, #232946 100%);
+  padding: 0;
+}
+
+.adminDashboardWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(30,34,54,0.98);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  padding: 0;
+}
+
+.adminHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1a223f;
+  padding: 24px 40px;
+  margin-bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+  min-height: 80px;
+  position: relative;
+}
+
+.adminHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.adminLogo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+.adminTitle {
+  font-weight: 700;
+  font-size: 30px;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.adminBadge {
+  font-size: 16px;
+  background: #1ec9a7;
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 14px;
+  margin-left: 14px;
+  font-weight: 600;
+}
+
+.adminStatsRow {
+  display: flex;
+  gap: 24px;
+  margin: 32px 0 24px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.adminMainContent {
+  margin-top: 0;
+}
+
+.adminLoading {
+  padding: 2rem;
+  text-align: center;
+}

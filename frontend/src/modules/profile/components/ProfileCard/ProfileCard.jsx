@@ -1,7 +1,7 @@
 import styles from './ProfileCard.module.css';
 import { useProfile } from '../../hooks/useProfile.js';
 import { useContext, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
 import { COUNTRIES } from "../../../../shared/constants/countries.js";
 import Button from '../../../../shared/ui/Button/Button.jsx';
@@ -35,9 +35,16 @@ const ProfileCard = ({ onUserUpdate }) => {
 
   // Read tab from location.state (for navigation from Home)
   const location = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
-    if (location.state && location.state.tab && location.state.tab !== activeTab) {
-      setActiveTab(location.state.tab);
+    if (location.state && location.state.tab) {
+      if (location.state.tab !== activeTab) {
+        setActiveTab(location.state.tab);
+      }
+      // Clear the state after using it so repeated navigation always works
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 0);
     } else {
       const savedTab = localStorage.getItem('profileActiveTab');
       if (savedTab && savedTab !== activeTab) {
@@ -45,7 +52,7 @@ const ProfileCard = ({ onUserUpdate }) => {
       }
     }
     // eslint-disable-next-line
-  }, []);
+  }, [location.state, location.pathname]);
 
   useEffect(() => {
     if (activeTab) {

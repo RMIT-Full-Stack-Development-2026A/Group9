@@ -34,6 +34,12 @@ export default function ProtectedRoute({ children, roles = [], requirePremium = 
 		return <Navigate to="/login" replace state={{ from: location.pathname }} />;
 	}
 
+	// If user is admin, restrict them to /admin only (block all other routes, including browser back)
+	if (auth.user.role === 'admin' && location.pathname !== '/admin') {
+		window.history.replaceState(null, '', '/admin');
+		return <Navigate to="/admin" replace />;
+	}
+
 	if (requirePremium && !isPremiumActive(auth.user.premiumUntil)) {
 		return <Navigate to="/payment" replace state={{ from: location.pathname }} />;
 	}

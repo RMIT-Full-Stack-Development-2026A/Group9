@@ -39,11 +39,30 @@ export const adminRepository = {
     },
 
     updateUserActiveStatus: async (userId, isActive) => {
-        return await getUserModel().findByIdAndUpdate(
+        await getUserModel().findByIdAndUpdate(
             userId,
             { isActive },
             { new: true }
-        ).lean();
+        );
+        // Ensure userId is an ObjectId
+        const objectId = (typeof userId === 'string' || typeof userId === 'number') ? new mongoose.Types.ObjectId(userId) : userId;
+        const users = await getUserModel().aggregate([
+            { $match: { _id: objectId } },
+            {
+                $lookup: {
+                    from: "UserProfiles",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "profile"
+                }
+            },
+            { $unwind: { path: "$profile", preserveNullAndEmptyArrays: true } }
+        ]);
+        // Debug log removed
+        if (!users[0]) {
+            throw new Error('User not found after update. objectId: ' + objectId);
+        }
+        return users[0];
     },
 
   

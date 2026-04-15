@@ -39,7 +39,10 @@ http.interceptors.response.use(
       localStorage.removeItem("token");
       localStorage.removeItem(AUTH_USER_KEY);
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      // Only redirect if not already on /login
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }

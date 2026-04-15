@@ -21,6 +21,18 @@ const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
         p.email.toLowerCase().includes(searchQuery.toLowerCase())
     ));
 
+    // Helper to format date for clarity
+    function formatDate(dateStr) {
+        if (!dateStr) return '—';
+        const d = new Date(dateStr);
+        if (isNaN(d)) return dateStr;
+        const day = d.getDate().toString().padStart(2, '0');
+        const mon = d.toLocaleString('en-US', { month: 'short' });
+        const year = d.getFullYear();
+        const time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        return `${day} ${mon} ${year}, ${time}`;
+    }
+
     return (
         <div className={styles.adminCard}>
             <div className={styles.adminCardHeader}>
@@ -77,7 +89,7 @@ const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
                                         )}
                                     </span>
                                 </td>
-                                <td>{p.joinedDate}</td>
+                                <td>{formatDate(p.joinedDate)}</td>
                                 <td>
                                     <button
                                         className={`${styles.actionBtn} ${!p.isActive ? styles.reactivate : styles.deactivate}`}

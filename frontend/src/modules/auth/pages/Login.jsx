@@ -14,7 +14,14 @@
  */
 
 import LoginForm from "../components/LoginForm/LoginForm.jsx";
+import { useContext } from "react";
+import { AuthContext } from "../../../app/providers/AuthProvider.jsx";
+import { Navigate } from "react-router-dom";
 
 export default function Login() {
+    const { user } = useContext(AuthContext) || {};
+    if (user && user.role === 'admin') {
+        return <Navigate to="/admin" replace />;
+    }
     return <LoginForm />;
 }

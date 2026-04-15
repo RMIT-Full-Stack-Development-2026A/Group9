@@ -66,19 +66,19 @@ export default function Admin() {
                 </header>
                 <AdminNavBar activeTab={activeTab} onTabChange={setActiveTab} />
                                 {activeTab === 'players' && (
-                                    <div className={styles.adminStatsRow}>
-                                            <StatCard label="Total Players" value={metrics.totalPlayers} color="#1ec9a7" />
-                                            <StatCard label="Active Accounts" value={metrics.activeAccounts} color="#4CAF50" />
-                                            <StatCard label="Premium Users" value={metrics.premiumUsers} color="#ffb300" />
-                                            <StatCard label="Inactive Accounts" value={metrics.inactiveAccounts} color="#f44336" />
-                                    </div>
+                                        <div className={styles.adminStatsRow}>
+                                            <StatCard label="Total Players" value={metrics.totalPlayers} color="#1ec9a7" bgColor="rgba(30, 201, 167, 0.12)" />
+                                            <StatCard label="Active Accounts" value={metrics.activeAccounts} color="#4CAF50" bgColor="rgba(76, 175, 80, 0.12)" />
+                                            <StatCard label="Premium Users" value={metrics.premiumUsers} color="#ffb300" bgColor="rgba(255, 179, 0, 0.12)" />
+                                            <StatCard label="Inactive Accounts" value={metrics.inactiveAccounts} color="#f44336" bgColor="rgba(244, 67, 54, 0.12)" />
+                                        </div>
                                 )}
                                 {activeTab === 'rooms' && (
                                     <div className={styles.adminStatsRow}>
-                                            <GameRoomStatCard label="Active Rooms" value={metrics.activeRooms} color="#fff" />
-                                            <GameRoomStatCard label="Total Players Online" value={metrics.totalPlayersOnline} color="#00d1ff" />
-                                            <GameRoomStatCard label="Avg. Session Time" value={metrics.avgSessionTime} color="#ff9800" />
-                                            <GameRoomStatCard label="Games Today" value={metrics.gamesToday} color="#bfc9db" />
+                                            <GameRoomStatCard label="Active Rooms" value={metrics.activeRooms} color="#fff" bgColor="rgba(30, 201, 167, 0.12)" />
+                                            <GameRoomStatCard label="Total Players Online" value={metrics.totalPlayersOnline} color="#00d1ff" bgColor="rgba(0, 209, 255, 0.12)" />
+                                            <GameRoomStatCard label="Avg. Session Time" value={metrics.avgSessionTime} color="#ff9800" bgColor="rgba(255, 152, 0, 0.12)" />
+                                            <GameRoomStatCard label="Games Today" value={metrics.gamesToday} color="#bfc9db" bgColor="rgba(191, 201, 219, 0.12)" />
                                     </div>
                                 )}
                 <main className={styles.adminMainContent}>

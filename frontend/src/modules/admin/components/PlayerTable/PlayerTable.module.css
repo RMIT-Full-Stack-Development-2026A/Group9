@@ -1,11 +1,16 @@
 
 /* Card container */
  .adminCard {
-    background: #232946;
+    background: #223040;
     border-radius: 18px;
-    padding: 40px 36px 36px 36px;
+     padding: 20px 32px 32px 32px;
     margin-bottom: 40px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    border: 2px solid #1ec9a7;
+    width: 100%;
+    max-width: 1152px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Search bar */
@@ -47,7 +52,8 @@
 /* Table wrapper */
  .adminTableWrapper {
     overflow-x: auto;
-    padding: 12px 0 0 0;
+     padding: 8px 0 0 0;
+    margin-top: 18px;
 }
 
 /* Table */
@@ -61,14 +67,11 @@
 
 /* Table header */
  .adminTable thead tr {
-    background: #20243a;
     color: #00d1ff;
     font-weight: 700;
 }
  .adminTable th {
     padding: 16px 20px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
     text-align: left;
     font-size: 15px;
     letter-spacing: 0.01em;

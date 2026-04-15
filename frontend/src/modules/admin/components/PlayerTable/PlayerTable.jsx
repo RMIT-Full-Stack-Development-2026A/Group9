@@ -26,13 +26,18 @@ const PlayerTable = ({ gamers, setgamers }) => {
                     <h3 className={styles.adminCardTitle}>All Players</h3>
                     <div className={styles.adminCardSubtitle}>View and manage player accounts</div>
                 </div>
-                <input
-                    type="text"
-                    className={styles.adminSearchInput}
-                    placeholder="Search by username or email..."
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                />
+                <div className={styles.searchBarContainer}>
+                    <span className={styles.searchIcon}>
+                        <i className="bi bi-search"></i>
+                    </span>
+                    <input
+                        type="text"
+                        className={styles.adminSearchInput}
+                        placeholder="Search by username or email..."
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                    />
+                </div>
             </div>
             <div className={styles.adminTableWrapper}>
                 <table className={styles.adminTable}>

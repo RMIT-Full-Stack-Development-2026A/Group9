@@ -57,10 +57,9 @@
 }
 
 /* Table */
- .adminTable {
+.adminTable {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 12px;
+    border-collapse: collapse;
     font-size: 15px;
     background: none;
 }
@@ -88,21 +87,22 @@
 }
 
 /* Table rows */
- .adminTable tbody tr {
-    background: #232946;
+
+.adminTable tbody tr {
     color: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     border-radius: 12px;
     transition: background 0.15s;
-    margin-bottom: 12px;
+    margin-bottom: 0;
 }
- .adminTable tbody tr:hover {
-    background: #262d4a;
+
+.adminTable tbody td {
+    border-bottom: 0.25px solid #fff;
+    border-top:  0.25px solid #fff;
 }
+
  .adminTable td {
     padding: 16px 20px;
     vertical-align: middle;
-    background: #232946;
 }
 
 /* Premium/Free badge */

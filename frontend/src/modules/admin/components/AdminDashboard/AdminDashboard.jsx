@@ -19,6 +19,7 @@ import AdminNavBar from '../NavBar/AdminNavBar.jsx';
 import PlayerTable from '../PlayerTable/PlayerTable.jsx';
 import RoomTable from '../RoomTable/RoomTable.jsx';
 import StatCard from '../StateCard/StateCard.jsx';
+import GameRoomStatCard from '../StateCard/GameRoomStatCard.jsx';
 import { useAdmin } from '../../hooks/useAdmin.js';
 import styles from './AdminDashboard.module.css';
 
@@ -63,12 +64,22 @@ export default function Admin() {
                     </button>
                 </header>
                 <AdminNavBar activeTab={activeTab} onTabChange={setActiveTab} />
-                <div className={styles.adminStatsRow}>
-                    <StatCard label="Total Players" value={metrics.totalPlayers} color="#1ec9a7" />
-                    <StatCard label="Active Accounts" value={metrics.activeAccounts} color="#4CAF50" />
-                    <StatCard label="Premium Users" value={metrics.premiumUsers} color="#ffb300" />
-                    <StatCard label="Inactive Accounts" value={metrics.inactiveAccounts} color="#f44336" />
-                </div>
+                                {activeTab === 'players' && (
+                                    <div className={styles.adminStatsRow}>
+                                            <StatCard label="Total Players" value={metrics.totalPlayers} color="#1ec9a7" />
+                                            <StatCard label="Active Accounts" value={metrics.activeAccounts} color="#4CAF50" />
+                                            <StatCard label="Premium Users" value={metrics.premiumUsers} color="#ffb300" />
+                                            <StatCard label="Inactive Accounts" value={metrics.inactiveAccounts} color="#f44336" />
+                                    </div>
+                                )}
+                                {activeTab === 'rooms' && (
+                                    <div className={styles.adminStatsRow}>
+                                            <GameRoomStatCard label="Active Rooms" value={metrics.activeRooms} color="#fff" />
+                                            <GameRoomStatCard label="Total Players Online" value={metrics.totalPlayersOnline} color="#00d1ff" />
+                                            <GameRoomStatCard label="Avg. Session Time" value={metrics.avgSessionTime} color="#ff9800" />
+                                            <GameRoomStatCard label="Games Today" value={metrics.gamesToday} color="#bfc9db" />
+                                    </div>
+                                )}
                 <main className={styles.adminMainContent}>
                     {activeTab === 'players' && (
                         <PlayerTable gamers={players} setgamers={setPlayers} />

@@ -26,21 +26,31 @@ export const useAdmin = () => {
         fetchDashboardData();
     }, []);
 
-    const fetchDashboardData = async () => {
-        setLoading(true);
+    const fetchDashboardData = async (partial = false) => {
+        if (!partial) setLoading(true);
         try {
-            const [playersRes, roomsRes, metricsRes] = await Promise.all([
-                adminService.getPlayers(),
-                adminService.getRooms(),
-                adminService.getMetrics()
-            ]);
-            setPlayers(playersRes.data.data);
-            setRooms(roomsRes.data.data);
-            setMetrics(metricsRes.data.data);
+            if (partial) {
+                // Only update players and metrics for instant UI update
+                const [playersRes, metricsRes] = await Promise.all([
+                    adminService.getPlayers(),
+                    adminService.getMetrics()
+                ]);
+                setPlayers(playersRes.data.data);
+                setMetrics(metricsRes.data.data);
+            } else {
+                const [playersRes, roomsRes, metricsRes] = await Promise.all([
+                    adminService.getPlayers(),
+                    adminService.getRooms(),
+                    adminService.getMetrics()
+                ]);
+                setPlayers(playersRes.data.data);
+                setRooms(roomsRes.data.data);
+                setMetrics(metricsRes.data.data);
+            }
         } catch (error) {
             console.error("Connection failed:", error.response?.data?.message || error.message);
         } finally {
-            setLoading(false);
+            if (!partial) setLoading(false);
         }
     }
     return {
@@ -51,6 +61,7 @@ export const useAdmin = () => {
         rooms,
         setRooms,   // Exported so RoomTable can use it
         metrics,
-        loading
+        loading,
+        refreshDashboard: () => fetchDashboardData(true)
     };
 };

@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import './PlayerTable.css';
+import styles from './PlayerTable.module.css';
 
-let PlayerTable = ({ gamers, setgamers }) => {
-    
+const PlayerTable = ({ gamers, setgamers }) => {
+    const [searchQuery, setSearchQuery] = useState('');
 
-    const [searchQuery,setSearchQuery]= useState('');
-
-    let toggleDeactivate = (pid) => {
+    const toggleDeactivate = (pid) => {
         const updateGamers = gamers.map(p => {
             if (p.id === pid) {
                 return { ...p, isDeactivated: !p.isDeactivated };
@@ -14,63 +12,78 @@ let PlayerTable = ({ gamers, setgamers }) => {
             return p;
         });
         setgamers(updateGamers);
-    }
+    };
 
-    let filteredPlayers = gamers.filter( p => (
+    const filteredPlayers = gamers.filter(p => (
         p.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.email.toLowerCase().includes(searchQuery.toLowerCase())
-    ))
+    ));
 
     return (
-        <div className='container' >
-            <h5 className='title'>All players</h5>
-
-            <div className='searchBar'>
-                <input 
-                    type="text" 
-                    id='sBar'
-                    placeholder='Search by username or email'
+        <div className={styles.adminCard}>
+            <div className={styles.adminCardHeader}>
+                <div>
+                    <h3 className={styles.adminCardTitle}>All Players</h3>
+                    <div className={styles.adminCardSubtitle}>View and manage player accounts</div>
+                </div>
+                <input
+                    type="text"
+                    className={styles.adminSearchInput}
+                    placeholder="Search by username or email..."
                     value={searchQuery}
-                    onChange={(e)=> setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                 />
             </div>
-
-            <div className='tableContainer'>
-                <table className='tablePlayer'>
+            <div className={styles.adminTableWrapper}>
+                <table className={styles.adminTable}>
                     <thead>
                         <tr>
-                            <td >Username</td>
-                            <td>Email</td>
-                            <td>Prenium Status</td>
-                            <td>Account Status</td>
-                            <td>Join Date</td>
-                            <td>Actions</td>
+                            <th className={styles.adminTableThFirst}>Username</th>
+                            <th>Email</th>
+                            <th>Premium Status</th>
+                            <th>Account Status</th>
+                            <th>Joined Date</th>
+                            <th className={styles.adminTableThLast}>Actions</th>
                         </tr>
                     </thead>
-
                     <tbody>
-                        {filteredPlayers.map(p => {
-                            return (
-                                <tr key={p.id} >
-                                    <td>{p.username}</td>
-                                    <td>{p.email}</td>
-                                    <td>{p.isPremium ? "Premium" : "Free"}</td>
-                                    <td>{p.isActive ? "Active" : "Inactive"}</td>
-                                    <td>{p.joinedDate}</td>
-                                    <td>
-                                        <button onClick={() => { toggleDeactivate(p.id) }} >
-                                            {p.isDeactivated ? "Reactivate" : "Deactivate"}
-                                        </button>
-                                    </td>
-                                </tr>
-                            )
-                        })}
+                        {filteredPlayers.map(p => (
+                            <tr key={p.id}>
+                                <td className={styles.adminTableUsername}>{p.username}</td>
+                                <td>{p.email}</td>
+                                <td>
+                                    {p.isPremium ? (
+                                        <span className={styles.premiumBadge}>★ Premium</span>
+                                    ) : (
+                                        <span className={styles.freeBadge}>Free</span>
+                                    )}
+                                </td>
+                                <td>
+                                    <span className={styles.statusWrap}>
+                                        <span className={`${styles.statusDot} ${p.isActive ? styles.statusActive : styles.statusInactive}`}></span>
+                                        {p.isActive ? (
+                                            <span className={styles.statusTextActive}>Active</span>
+                                        ) : (
+                                            <span className={styles.statusTextInactive}>Inactive</span>
+                                        )}
+                                    </span>
+                                </td>
+                                <td>{p.joinedDate}</td>
+                                <td>
+                                    <button
+                                        className={`${styles.actionBtn} ${p.isDeactivated ? styles.reactivate : styles.deactivate}`}
+                                        onClick={() => toggleDeactivate(p.id)}
+                                    >
+                                        {p.isDeactivated ? 'Reactivate' : 'Deactivate'}
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
-
                 </table>
             </div>
-
         </div>
-    )
-}
+    );
+};
+
 export default PlayerTable;

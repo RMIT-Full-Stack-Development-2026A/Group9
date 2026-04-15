@@ -83,7 +83,17 @@ const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
                                         className={`${styles.actionBtn} ${!p.isActive ? styles.reactivate : styles.deactivate}`}
                                         onClick={() => toggleDeactivate(p.id)}
                                     >
-                                        {!p.isActive ? 'Reactivate' : 'Deactivate'}
+                                        {!p.isActive ? (
+                                            <>
+                                                <i className="bi bi-person-check" style={{ marginRight: 8, fontSize: 22, verticalAlign: 'middle' }}></i>
+                                                Reactivate
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="bi bi-person-x" style={{ marginRight: 8, fontSize: 22, verticalAlign: 'middle' }}></i>
+                                                Deactivate
+                                            </>
+                                        )}
                                     </button>
                                 </td>
                             </tr>

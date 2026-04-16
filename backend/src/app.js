@@ -4,6 +4,7 @@ import cors from "cors";
 import authRoutes from "./modules/auth/routes/auth.route.js";
 import userRoutes from "./modules/user/routes/user.route.js";
 import registerAdminModule from "./modules/admin/index.js";
+import registerBillingModule from "./modules/billing/index.js";
 
 // Register Mongoose models so they are available globally
 import "./modules/multiplayer/models/gameRoom.model.js";
@@ -26,6 +27,9 @@ app.use("/api/users", userRoutes);
 
 // Register admin module routes
 registerAdminModule(app);
+
+// Register billing module routes
+registerBillingModule(app);
 
 // test route
 app.get("/", (req, res) => {

@@ -1,5 +1,6 @@
 import styles from './ProfileCard.module.css';
 import { useProfile } from '../../hooks/useProfile.js';
+import usePayment from '../../../payment/hooks/usePayment.js';
 import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
@@ -32,6 +33,14 @@ const ProfileCard = ({ onUserUpdate }) => {
     clearFilters,
   } = useProfile(onUserUpdate);
 
+  const {
+    wallet,
+    depositAmount,
+    setDepositAmount,
+    loading: walletLoading,
+    message: walletMessage,
+    handleDeposit,
+  } = usePayment();
 
   // Read tab from location.state (for navigation from Home)
   const location = useLocation();
@@ -151,6 +160,7 @@ const ProfileCard = ({ onUserUpdate }) => {
             textColor="#FFFF"
             icon={<i className="bi bi-gem" style={{ marginRight: 6 }}></i>}
             type="button"
+            onClick={() => navigate('/payment')}
           >
             Go Premium
           </Button>
@@ -341,7 +351,41 @@ const ProfileCard = ({ onUserUpdate }) => {
 
         {activeTab === 'wallet' && (
           <div className={styles.walletPanel}>
-            <p className={styles.walletPlaceholder}>Wallet feature coming soon.</p>
+            {walletMessage.text && (
+              <div className={`${styles.profileMessage} ${styles[walletMessage.type]}`}>{walletMessage.text}</div>
+            )}
+            <p className={styles.walletLabel}>Current Balance</p>
+            <p className={styles.walletBalance}>${wallet.walletBalance}</p>
+
+            <div className={styles.walletDepositRow}>
+              <input
+                type="number"
+                placeholder="Amount (USD)"
+                min="1"
+                className={styles.walletDepositInput}
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+              />
+              <button
+                className={styles.walletDepositBtn}
+                onClick={handleDeposit}
+                disabled={walletLoading}
+              >
+                Deposit
+              </button>
+            </div>
+
+            {wallet.premiumUntil && new Date(wallet.premiumUntil).getTime() > Date.now() ? (
+              <div className={styles.premiumStatusBar}>
+                <i className="bi bi-crown" style={{ marginRight: 6 }}></i>
+                Premium Active until {new Date(wallet.premiumUntil).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </div>
+            ) : (
+              <div className={styles.premiumStatusBarExpired}>
+                <i className="bi bi-crown" style={{ marginRight: 6 }}></i>
+                Premium Active until &mdash;
+              </div>
+            )}
           </div>
         )}
       </div>

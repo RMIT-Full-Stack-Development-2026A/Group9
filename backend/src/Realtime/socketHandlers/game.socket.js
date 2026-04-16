@@ -37,6 +37,22 @@ export default function registerGameSocketHandlers(io, socket) {
         }
     });
 
+    socket.on("game:chooseMark", ({ roomId, mark }) => {
+        if (!roomId || !mark) return;
+
+        // Determine the opponent's mark automatically
+        const opponentMark = mark === "X" ? "O" : "X";
+
+        // Broadcast to EVERYONE in the room that the game has started.
+        // We send back both marks so each client knows what to play as.
+        io.to(roomId).emit("game:start", { 
+            message: "The game has started!",
+            chooserSocketId: socket.id,
+            chosenMark: mark,
+            opponentMark: opponentMark
+        });
+    });
+
 	socket.on("game:move", ({ roomId, move }) => {
         const state = gameStates[roomId];
         if (!state) return;

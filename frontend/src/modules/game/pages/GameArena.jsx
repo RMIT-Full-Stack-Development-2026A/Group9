@@ -21,14 +21,26 @@ import { useChat } from "../modules/game/hooks/useChat";
 
 export default function GameArena() {
     const { gameId } = useParams();
-    const token = localStorage.getItem("token"); // Or however you store your JWT
+    const token = localStorage.getItem("token");
 	
 
     // Real-time Game Logic (Requirement 4.3.1)
-    const { board, makeMove, error, opponentJoined, gameStarted, playerMark, chooseMark } = useMultiplayer(gameId, token);
+    const { 
+        board, 
+        makeMove, 
+        error, 
+        opponentJoined, 
+        gameStarted, 
+        playerMark, 
+        chooseMark 
+    } = useMultiplayer(gameId, token);
     
     // Real-time Chat Logic (Requirement 4.3.2)
-    const { messages, sendMessage, chatError } = useChat(gameId, token);
+    const { 
+        messages, 
+        sendMessage, 
+        chatError 
+    } = useChat(gameId, token);
 
     if (error === "Room is full") {
         return <div className="error-page">This arena is full! Only 2 players allowed.</div>;
@@ -36,30 +48,50 @@ export default function GameArena() {
 
     return (
         <div className="arena-container" style={{ display: 'flex', gap: '20px' }}>
-        	<div className="game-section">
-            	<GameStatus opponentJoined={opponentJoined} />
-            
-            {/* Condition 1: Waiting for opponent */}
-            {!opponentJoined && <div>Waiting for Player 2 to join...</div>}
+            <div className="game-section">
+                {/* Status component can now display what mark the user is playing as */}
+                <GameStatus 
+                    opponentJoined={opponentJoined} 
+                    gameStarted={gameStarted}
+                    playerMark={playerMark}
+                />
+                
+                {/* Condition 1: Waiting for opponent */}
+                {!opponentJoined && (
+                    <div className="waiting-screen">
+                        <h2>Waiting for Player 2 to join...</h2>
+                    </div>
+                )}
 
-            {/* Condition 2: Opponent joined, waiting for Mark selection */}
-            {opponentJoined && !gameStarted && (
-                <div className="mark-selection">
-                    <h3>Choose your mark to start!</h3>
-                    <button onClick={() => chooseMark('X')}>Play as X</button>
-                    <button onClick={() => chooseMark('O')}>Play as O</button>
-                </div>
-            )}
+                {/* Condition 2: Opponent joined, waiting for Mark selection */}
+                {opponentJoined && !gameStarted && (
+                    <div className="mark-selection" style={{ textAlign: 'center', padding: '2rem' }}>
+                        <h3>Choose your mark to begin!</h3>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
+                            <button 
+                                onClick={() => chooseMark('X')}
+                                style={{ padding: '1rem 2rem', fontSize: '1.2rem', cursor: 'pointer' }}
+                            >
+                                Play as X
+                            </button>
+                            <button 
+                                onClick={() => chooseMark('O')}
+                                style={{ padding: '1rem 2rem', fontSize: '1.2rem', cursor: 'pointer' }}
+                            >
+                                Play as O
+                            </button>
+                        </div>
+                    </div>
+                )}
 
-            {/* Condition 3: Game Started! */}
-            {gameStarted && (
-                 <GameBoard 
-                 board={board} 
-                 // Pass the actual selected mark instead of hardcoding "X"
-                 onCellClick={(index) => makeMove(index, playerMark)} 
-             />
-            )}
-        </div>
+                {/* Condition 3: Game Started! Show the board */}
+                {gameStarted && (
+                    <GameBoard 
+                        board={board} 
+                        onCellClick={(index) => makeMove(index)} 
+                    />
+                )}
+            </div>
 
             <div className="chat-sidebar">
                 <ChatBox 

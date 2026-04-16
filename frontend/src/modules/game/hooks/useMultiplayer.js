@@ -69,6 +69,17 @@ export const useMultiplayer = (roomId, token) => {
 
         });
 
+        socket.on("game:start", (data) => {
+            setGameStarted(true);
+            
+            // Assign the correct mark based on who chose it
+            if (socket.id === data.chooserSocketId) {
+                setPlayerMark(data.chosenMark);
+            } else {
+                setPlayerMark(data.opponentMark);
+            }
+        });
+
         // Cleanup: Mandatory for external subscriptions
         return () => {
             socket.disconnect();
@@ -76,20 +87,6 @@ export const useMultiplayer = (roomId, token) => {
         };
     }, [roomId, token]);
 
-    // 4. Use the ref to emit events
-    const makeMove = useCallback((index, mark) => {
-        if (socketRef.current && board[index] === null) {
-            setBoard((prev) => {
-                const newBoard = [...prev];
-                newBoard[index] = mark;
-                return newBoard;
-            });
-
-            socketRef.current.emit("game:move", { roomId, move: { index, mark } });
-        }
-    }, [roomId, board]);
-
-    // Emit the mark choice
     const chooseMark = useCallback((mark) => {
         if (socketRef.current) {
             setPlayerMark(mark);
@@ -97,5 +94,27 @@ export const useMultiplayer = (roomId, token) => {
         }
     }, [roomId]);
 
-    return { board, makeMove, error, opponentJoined, gameStarted, playerMark, chooseMark };
+    // 4. Use the ref to emit events
+    const makeMove = useCallback((index) => {
+        if (socketRef.current && board[index] === null && gameStarted && playerMark) {
+            // Optimistic update
+            setBoard((prev) => {
+                const newBoard = [...prev];
+                newBoard[index] = playerMark;
+                return newBoard;
+            });
+
+            socketRef.current.emit("game:move", { roomId, move: { index, mark: playerMark } });
+        }
+    }, [roomId, board, gameStarted, playerMark]);
+
+    return { 
+        board, 
+        makeMove, 
+        error, 
+        opponentJoined, 
+        gameStarted, 
+        playerMark, 
+        chooseMark 
+    };
 };

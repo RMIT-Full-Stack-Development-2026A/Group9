@@ -1,21 +1,59 @@
-/**
- * ============================================================================
- * BILLING CONTROLLER (The Financial Receptionist)
- * ============================================================================
- * Purpose: This file handles incoming HTTP requests related to money, 
- * subscriptions, and transactions. It acts as the bridge between the Express 
- * Routes and the Billing Service.
- * * Key Responsibilities:
- * 1. Extract payment data or user IDs from the request.
- * 2. Pass that data to the Billing Service to process the logic.
- * 3. Send the appropriate HTTP response (e.g., 200 OK, 402 Payment Required).
- * 4. Catch errors (like "Card Declined") and pass them to next().
- * * CRITICAL RULE: A Controller should NEVER contain third-party API keys 
- * (like Stripe/PayPal secrets), complex math for tax calculation, or database 
- * queries. It strictly manages the HTTP flow.
- */
+import * as billingService from "../services/billing.service.js";
 
-// Implementation contract:
-// 1) Keep handlers thin and delegate all payment logic to billing service.
-// 2) Never parse gateway signatures here; service performs verification.
-// 3) Keep response envelope consistent: { success, data | message }.
+export async function getWallet(req, res, next) {
+	try {
+		const data = await billingService.getWallet(req.user.id);
+		res.status(200).json({ success: true, data });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function deposit(req, res, next) {
+	try {
+		const { amount } = req.body;
+		const data = await billingService.depositToWallet(req.user.id, Number(amount));
+		res.status(200).json({ success: true, data });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function subscribeWallet(req, res, next) {
+	try {
+		const data = await billingService.subscribeWithWallet(req.user.id);
+		res.status(200).json({ success: true, data });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function createStripeCheckout(req, res, next) {
+	try {
+		const data = await billingService.createStripeCheckout(req.user.id);
+		res.status(200).json({ success: true, data });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function stripeWebhook(req, res, next) {
+	try {
+		await billingService.handleStripeWebhook(
+			req.body,
+			req.headers["stripe-signature"]
+		);
+		res.status(200).json({ received: true });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function getTransactions(req, res, next) {
+	try {
+		const data = await billingService.getTransactions(req.user.id);
+		res.status(200).json({ success: true, data });
+	} catch (err) {
+		next(err);
+	}
+}

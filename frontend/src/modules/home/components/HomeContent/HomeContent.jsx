@@ -114,7 +114,9 @@ export default function Home() {
                     </span>
                 }
                 text={showRankings ? "Rankings" : "Go Premium"}
-                onClick={requireAuth()}
+                onClick={requireAuth(() => {
+                  navigate(showRankings ? "/leaderboard" : "/payment");
+                })}
             />
         </section>
     </main>

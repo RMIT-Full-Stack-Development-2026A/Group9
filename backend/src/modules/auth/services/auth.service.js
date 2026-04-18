@@ -70,7 +70,7 @@ export const register = async (payload, file, sessionContext = {}) => {
 		email: dto.email,
 		password: passwordHash,
 		country: dto.country,
-		avatar: avatarUrl,
+		avatar: file?.cloudinaryUrl || "",
 	});
 
 	const accessToken = signAccessToken(createdUser);

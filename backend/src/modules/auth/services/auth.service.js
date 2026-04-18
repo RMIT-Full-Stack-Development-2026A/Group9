@@ -70,7 +70,7 @@ export const register = async (payload, file, sessionContext = {}) => {
 		email: dto.email,
 		password: passwordHash,
 		country: dto.country,
-		avatar: file ? { data: file.buffer, contentType: file.mimetype } : undefined,
+		avatar: avatarUrl,
 	});
 
 	const accessToken = signAccessToken(createdUser);

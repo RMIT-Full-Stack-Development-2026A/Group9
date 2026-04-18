@@ -1,3 +1,4 @@
+import { COUNTRIES } from '../constants/countries';
 // Avatar/Image upload validation
 export const avatarErrorMessages = {
 	invalidFormat: {
@@ -28,33 +29,57 @@ export function validateAvatarFile(file) {
 // Centralized error messages for validation
 export const errorMessages = {
 	username: {
-		error: 'Invalid Characters',
-		cause: 'Only letter, number, _ and - allowed.',
-		example: 'TicTacToe_P1ayer',
+		error: 'Invalid username',
+		cause: 'Username must only contain letters, numbers, underscores, or hyphens.',
+		example: 'Valid: user_123, player-1'
 	},
 	password: {
-		error: 'Weak Password',
-		cause: 'Password must be at least 8 characters long.',
-		example: 'G@mer2026!',
+		error: 'Invalid password',
+		cause: 'Password must be at least 8 characters, include one uppercase letter, one number, and one special character.',
+		example: 'Try a password like: My$ecureP@ss1!'
 	},
 	confirmPassword: {
 		error: 'Mismatch',
 		cause: 'Password does not match.',
-		example: 'Make sure that both field are the same',
+		example: 'Make sure that both fields are the same.'
 	},
 	email: {
-		error: 'Invalid Email Format',
-		cause: 'The email address is missing a valid domain or "@" symbol.',
-		example: 'player1@gmail.com, admin@domain.net',
+		error: 'Invalid email',
+		cause: 'The email address format is invalid or missing a valid domain or "@" symbol.',
+		example: 'player1@gmail.com, admin@domain.net'
 	},
 	required: {
 		error: 'All fields are required.'
 	},
-	loginEmail: {
-		error: 'Please enter a valid email address.'
+	duplicateUsername: {
+		error: 'Username is already taken',
+		cause: 'The username you entered is already in use.',
+		example: 'Try a different username.'
 	},
-	loginPassword: {
-		error: 'Password must be at least 8 characters.'
+	emailAlreadyRegistered: {
+		error: 'Email is already registered',
+		cause: 'The email address you entered is already associated with an account.',
+		example: 'Try logging in or use a different email address.'
+	},
+	missingFields: {
+		error: 'Missing required fields',
+		cause: 'One or more required fields are missing.',
+		example: 'Fill in all required fields.'
+	},
+	invalidAvatar: {
+		error: 'Invalid avatar',
+		cause: 'Avatar upload failed or is not a valid image.',
+		example: 'Upload a valid JPG or PNG image.'
+	},
+	network: {
+		error: 'Network Error',
+		cause: 'Could not reach the server.',
+		example: 'Check if backend is running.'
+	},
+	unknown: {
+		error: 'Unknown Error',
+		cause: '',
+		example: ''
 	}
 };
 
@@ -72,6 +97,12 @@ export function validateRegistration(formData) {
 	}
 	if (!isEmail(formData.email)) {
 		errors.push({ field: 'email', ...errorMessages.email });
+	}
+	// Country required and must be valid
+	if (isEmpty(formData.country)) {
+		errors.push({ field: 'country', error: 'Country is required.', cause: 'You must select your country from the list.', example: 'Select a country from the dropdown.' });
+	} else if (!COUNTRIES.includes(formData.country)) {
+		errors.push({ field: 'country', error: 'Invalid country.', cause: 'Selected country is not in the allowed list.', example: 'Choose a valid country from the dropdown.' });
 	}
 	return errors;
 }

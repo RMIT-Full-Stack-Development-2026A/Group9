@@ -101,7 +101,6 @@ export default function Navbar() {
 						key={item.label}
 						className={({ isActive }) => `mainNavLink${isActive ? " mainNavLink--active" : ""}`}
 						to={item.to}
-						state={item.state}
 					>
 						{item.label}
 					</NavLink>

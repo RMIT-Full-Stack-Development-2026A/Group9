@@ -15,6 +15,7 @@
 
 import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "../../../config/api.config.js";
 import httpHelper from "../../../shared/utils/http.helper.js";
+import { errorMessages } from "../../../shared/utils/validators.js";
 
 export const login = async (payload) => {
   const response = await httpHelper.post("/api/auth/login", payload);
@@ -45,10 +46,33 @@ export const registerPlayer = async (submitData) => {
     });
 
     const data = await response.json();
-    
+
     if (!response.ok) {
-      // Throw the backend errors so the hook can catch them
-      throw data.errors || [{ error: 'Unknown Error' }];
+      // Use centralized error messages from validators.js
+      if (data && data.message) {
+        let errObj = errorMessages.unknown;
+        if (data.message === errorMessages.emailAlreadyRegistered.error) {
+          errObj = errorMessages.emailAlreadyRegistered;
+        } else if (data.message === errorMessages.invalidRegisterPayload.error) {
+          errObj = errorMessages.invalidRegisterPayload;
+        } else if (data.message.toLowerCase().includes('password')) {
+          errObj = errorMessages.weakPassword;
+        } else if (data.message === errorMessages.invalidUsername.error) {
+          errObj = errorMessages.invalidUsername;
+        } else if (data.message === errorMessages.invalidEmail.error) {
+          errObj = errorMessages.invalidEmail;
+        } else if (data.message === errorMessages.duplicateUsername.error) {
+          errObj = errorMessages.duplicateUsername;
+        } else if (data.message === errorMessages.missingFields.error) {
+          errObj = errorMessages.missingFields;
+        } else if (data.message === errorMessages.invalidAvatar.error) {
+          errObj = errorMessages.invalidAvatar;
+        }
+        // If backend provides details, override cause
+        if (data.details) errObj = { ...errObj, cause: data.details };
+        throw [errObj];
+      }
+      throw data.errors || [errorMessages.unknown];
     }
     return data;
   } catch (error) {

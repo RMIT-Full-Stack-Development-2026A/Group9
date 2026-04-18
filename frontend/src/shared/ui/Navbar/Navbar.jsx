@@ -22,7 +22,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 const NAV_LINKS = [
 	{ label: "Home", to: "/" },
 	{ label: "Lobby", to: "/lobby" },
-	{ label: "Profile", to: "/profile", state: { tab: "edit" }},
+	{ label: "Profile", to: "/profile"},
 ];
 
 const normalizeNavUser = (user) => {

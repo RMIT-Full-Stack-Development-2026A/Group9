@@ -1,0 +1,31 @@
+/* GameArena.css */
+.game-board {
+  display: grid;
+  gap: 2px;
+  background-color: #dee2e6; /* Grid line color */
+  border: 2px solid #343a40;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.game-cell {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.game-cell:hover:not(:disabled) {
+  background: #f8f9fa;
+  cursor: pointer;
+}
+
+.game-cell.occupied {
+  cursor: default;
+}

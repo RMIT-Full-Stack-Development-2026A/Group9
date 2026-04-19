@@ -11,3 +11,13 @@
  * 3. Player Identity: Showing usernames and avatars next to their symbols.
  * 4. Match State: Displaying 'Waiting for opponent' during matchmaking.
  */
+export const GameStatus = ({ isP1Turn, winner, status, p1Mark, p2Mark }) => {
+  if (status === 'aborted') return <div className="alert alert-danger">Game Aborted!</div>;
+  if (winner) return <div className="alert alert-success">Winner: {winner}!</div>;
+
+  return (
+    <div className="status-indicator">
+      Current Turn: <strong>{isP1Turn ? p1Mark : p2Mark}</strong>
+    </div>
+  );
+};

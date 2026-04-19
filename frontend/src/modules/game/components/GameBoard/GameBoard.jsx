@@ -11,3 +11,23 @@
  * 3. Visual Feedback: Displaying "X", "O", or an empty space with animations.
  * 4. State Sync: Reflecting the 'board' state received from the backend.
  */
+import { Cell } from "../Cell/Cell";
+
+export const Board = ({ grid, onMove, disabled }) => {
+  return (
+    <div className="game-board" style={{ 
+      gridTemplateColumns: `repeat(${grid.length}, 1fr)` 
+    }}>
+      {grid.map((row, rowIndex) => 
+        row.map((cellValue, colIndex) => (
+          <Cell 
+            key={`${rowIndex}-${colIndex}`}
+            value={cellValue}
+            onClick={() => onMove(rowIndex, colIndex)}
+            disabled={disabled}
+          />
+        ))
+      )}
+    </div>
+  );
+};

@@ -18,7 +18,14 @@ app.use(cors({
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
-app.use(express.json());
+// Parse JSON for all routes EXCEPT Stripe webhook (needs raw body)
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/billing/webhook/stripe") {
+    express.raw({ type: "application/json" })(req, res, next);
+  } else {
+    express.json()(req, res, next);
+  }
+});
 
 // routes
 

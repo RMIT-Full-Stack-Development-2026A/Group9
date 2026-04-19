@@ -1,5 +1,4 @@
 import { Router } from "express";
-import express from "express";
 import { authenticate } from "../../../middlewares/auth.middleware.js";
 import * as billingCtrl from "../controllers/billing.controller.js";
 
@@ -19,12 +18,8 @@ router.post("/subscribe/wallet", authenticate, billingCtrl.subscribeWallet);
 // ── Stripe checkout ───────────────────────────────────────────────────
 router.post("/checkout/stripe", authenticate, billingCtrl.createStripeCheckout);
 
-// ── Stripe webhook (raw body required) ────────────────────────────────
-router.post(
-	"/webhook/stripe",
-	express.raw({ type: "application/json" }),
-	billingCtrl.stripeWebhook
-);
+// ── Stripe webhook (raw body handled by app.js middleware) ────────────
+router.post("/webhook/stripe", billingCtrl.stripeWebhook);
 
 // ── Transaction history ───────────────────────────────────────────────
 router.get("/transactions", authenticate, billingCtrl.getTransactions);

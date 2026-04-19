@@ -24,11 +24,11 @@ let transporter = null;
 const getTransporter = () => {
 	if (!transporter) {
 		transporter = nodemailer.createTransport({
-			host: process.env.SMTP_HOST || "smtp.gmail.com",
-			port: Number(process.env.SMTP_PORT) || 587,
+			host: process.env.EMAIL_HOST || "smtp.gmail.com",
+			port: Number(process.env.EMAIL_PORT) || 587,
 			auth: {
-				user: process.env.SMTP_USER,
-				pass: process.env.SMTP_PASS,
+				user: process.env.EMAIL_USER,
+				pass: process.env.EMAIL_PASS,
 			},
 		});
 	}
@@ -36,10 +36,12 @@ const getTransporter = () => {
 };
 
 const sendPaymentEmail = async (email, username) => {
-	if (!process.env.SMTP_USER) return; // skip if not configured
+	if (!process.env.EMAIL_USER) return; // skip if not configured
+	const from = `"TicTacToang" <${process.env.EMAIL_USER}>`;
+	console.log(`[EMAIL DEBUG] Sending payment confirmation FROM: ${from} TO: ${email}`);
 	try {
 		await getTransporter().sendMail({
-			from: `"TicTacToang" <${process.env.SMTP_USER}>`,
+			from,
 			to: email,
 			subject: "Premium Subscription Confirmed!",
 			html: `<h2>Hey ${username},</h2>
@@ -47,8 +49,9 @@ const sendPaymentEmail = async (email, username) => {
 			       <p>Enjoy advanced ranking and match replay features!</p>
 			       <p>&mdash; TicTacToang Team</p>`,
 		});
+		console.log(`[EMAIL DEBUG] Email sent successfully to ${email}`);
 	} catch (err) {
-		console.error("Email send failed (non-blocking):", err.message);
+		console.error("[EMAIL DEBUG] Email send failed (non-blocking):", err.message);
 	}
 };
 
@@ -140,8 +143,8 @@ export async function createStripeCheckout(userId) {
 			},
 		],
 		metadata: { userId: String(userId) },
-		success_url: `${process.env.FRONTEND_URL || "http://localhost:5173"}/profile?tab=wallet&payment=success`,
-		cancel_url: `${process.env.FRONTEND_URL || "http://localhost:5173"}/payment?payment=cancelled`,
+		success_url: `${process.env.CLIENT_URL || "http://localhost:5173"}/profile?tab=wallet&payment=success`,
+		cancel_url: `${process.env.CLIENT_URL || "http://localhost:5173"}/payment?payment=cancelled`,
 	});
 
 	// Create pending transaction
@@ -158,6 +161,7 @@ export async function createStripeCheckout(userId) {
 
 // ── Stripe Webhook Handler ────────────────────────────────────────────
 export async function handleStripeWebhook(rawBody, signature) {
+	console.log("[WEBHOOK DEBUG] Received webhook event, signature present:", !!signature);
 	const s = getStripe();
 	const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 	if (!endpointSecret) throw new AppError("Webhook secret not configured", 503);
@@ -166,17 +170,22 @@ export async function handleStripeWebhook(rawBody, signature) {
 	try {
 		event = s.webhooks.constructEvent(rawBody, signature, endpointSecret);
 	} catch (err) {
+		console.error("[WEBHOOK DEBUG] Signature verification failed:", err.message);
 		throw new AppError(`Webhook signature verification failed: ${err.message}`, 400);
 	}
+
+	console.log(`[WEBHOOK DEBUG] Event type: ${event.type}`);
 
 	if (event.type === "checkout.session.completed") {
 		const session = event.data.object;
 		const userId = session.metadata?.userId;
+		console.log(`[WEBHOOK DEBUG] checkout.session.completed for userId: ${userId}`);
 		if (!userId) return;
 
 		const currentPremium = await billingRepo.getPremiumUntil(userId);
 		const newPremiumUntil = computeNewPremiumUntil(currentPremium);
 		await billingRepo.setPremiumUntil(userId, newPremiumUntil);
+		console.log(`[WEBHOOK DEBUG] Premium set until: ${newPremiumUntil.toISOString()}`);
 
 		// Send email notification
 		const account = await userRepo.findById(userId);

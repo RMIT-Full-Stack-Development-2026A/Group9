@@ -43,24 +43,22 @@ export const GameService = {
         } else break;
       }
 
-      
+
       if (winningCells.length >= 5) return winningCells;
     }
     return null;
   },
-  /*Sound/Effect Triggers: Determining which "Toang" sounds to play.
-  getSoundTrigger: (event, context = {}) => {
+  /*Sound/Effect Triggers: Determining which "Toang" sounds to play.*/
+  getSoundTrigger: (event) => {
     const sounds = {
-      MOVE: '/assets/sounds/place-mark.mp3',
-      WIN: '/assets/sounds/victory-cheer.mp3',
-      TOANG: '/assets/sounds/toang-break.mp3', // Played on loss or abort
-      DRAW: '/assets/sounds/draw-game.mp3'
+      MOVE: '/assets/sounds/Click.wav',
+      GAMEOVER: '/assets/sounds/GameOver.wav',
     };
 
     return sounds[event] || null;
   },
-  */
-   //Initialize a board  (Default 10x10) 
+
+  //Initialize a board  (Default 10x10) 
   createEmptyBoard: (size) => {
     return Array(size).fill(null).map(() => Array(size).fill(null));
   }

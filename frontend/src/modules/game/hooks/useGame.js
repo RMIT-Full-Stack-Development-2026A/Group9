@@ -21,6 +21,14 @@ export const useGame = (initialSize) => {
   const [winningLine, setWinningLine] = useState([]); 
   const [gameStatus, setGameStatus] = useState('active');
 
+  const playSound = (event) => {
+    const soundPath = GameService.getSoundTrigger(event)
+    if (soundPath) {
+      const audio = new Audio(soundPath);
+      audio.play().catch(err => console.error("Audio playback failed:", err));
+    }
+  };
+
   const startGame = (startsFirst) => {
     setGrid(GameService.createEmptyBoard(initialSize));
     setIsP1Turn(startsFirst === 'X'); // 
@@ -31,7 +39,7 @@ export const useGame = (initialSize) => {
 
   const makeMove = (row, col) => {
     if (grid[row][col] || winner || gameStatus === 'aborted') return;
-
+    playSound("MOVE");
     const currentPlayer = isP1Turn ? 'X' : 'O';
     const newGrid = grid.map(r => [...r]);
     newGrid[row][col] = currentPlayer;
@@ -43,6 +51,7 @@ export const useGame = (initialSize) => {
       setWinner(currentPlayer);
       setWinningLine(winResult); 
       setGameStatus('won');
+      playSound("GAMEOVER");
     } else {
       setIsP1Turn(!isP1Turn);
     }

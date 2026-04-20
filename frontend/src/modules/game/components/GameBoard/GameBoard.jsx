@@ -13,20 +13,34 @@
  */
 import { Cell } from "../Cell/Cell";
 
-export const Board = ({ grid, onMove, disabled }) => {
+export const Board = ({ grid, onMove, disabled, winningLine = [] , isP1Turn }) => {
+  const currentMark = isP1Turn ? 'X' : 'O';
   return (
-    <div className="game-board" style={{ 
-      gridTemplateColumns: `repeat(${grid.length}, 1fr)` 
-    }}>
+    <div 
+      className="game-board shadow-lg" 
+      style={{ 
+        gridTemplateColumns: `repeat(${grid.length}, 1fr)`,
+        aspectRatio: "1 / 1" 
+      }}
+    >
       {grid.map((row, rowIndex) => 
-        row.map((cellValue, colIndex) => (
-          <Cell 
-            key={`${rowIndex}-${colIndex}`}
-            value={cellValue}
-            onClick={() => onMove(rowIndex, colIndex)}
-            disabled={disabled}
-          />
-        ))
+        row.map((cellValue, colIndex) => {
+          // Check if this specific cell is part of the winning 5-mark line
+          const isWinningCell = winningLine.some(
+            (coord) => coord.r === rowIndex && coord.c === colIndex
+          );
+
+          return (
+            <Cell 
+              key={`${rowIndex}-${colIndex}`}
+              value={cellValue}
+              onClick={() => onMove(rowIndex, colIndex)}
+              disabled={disabled}
+              isHighlight={isWinningCell} 
+              currentMark={currentMark}
+            />
+          );
+        })
       )}
     </div>
   );

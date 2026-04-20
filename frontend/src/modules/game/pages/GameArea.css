@@ -19,8 +19,14 @@
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
+  position: relative;
 }
-
+.game-cell:not(:disabled):hover::before {
+  content: attr(data-hover);
+  position: absolute;
+  opacity: 0.3; 
+  font-weight: bold;
+}
 .game-cell:hover:not(:disabled) {
   background: #f8f9fa;
   cursor: pointer;
@@ -28,4 +34,27 @@
 
 .game-cell.occupied {
   cursor: default;
+}
+.winner-cell {
+  background-color: #ffc107 !important; /* Gold/Yellow for victory */
+  animation: win-pulse 1s infinite;
+  z-index: 2;
+}
+.game-cell[data-hover="X"]:hover::before {
+  color: #dc3545; /* Bootstrap danger red */
+}
+
+.game-cell[data-hover="O"]:hover::before {
+  color: #0d6efd; /* Bootstrap primary blue */
+}
+
+/* Hide the ghost if the cell already has a real value */
+.game-cell.occupied:hover::before {
+  content: "";
+}
+
+@keyframes win-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }

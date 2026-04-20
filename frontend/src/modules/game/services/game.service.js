@@ -13,6 +13,7 @@
  * 4. Sound/Effect Triggers: Determining which "Toang" sounds to play.
  */
 
+
 export const GameService = {
   //Win Detection: Validating the 5-in-a-row logic 
   checkWinner: (grid, row, col, player, boardSize) => {
@@ -24,29 +25,28 @@ export const GameService = {
     ];
 
     for (let { r: dr, c: dc } of directions) {
-      let count = 1;
+      let winningCells = [{ r: row, c: col }];
 
-      // Check forward direction
+      // Check forward
       for (let i = 1; i < 5; i++) {
-        const nr = row + dr * i;
-        const nc = col + dc * i;
+        const nr = row + dr * i, nc = col + dc * i;
         if (nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize && grid[nr][nc] === player) {
-          count++;
+          winningCells.push({ r: nr, c: nc });
         } else break;
       }
 
-      // Check backward direction
+      // Check backward
       for (let i = 1; i < 5; i++) {
-        const nr = row - dr * i;
-        const nc = col - dc * i;
+        const nr = row - dr * i, nc = col - dc * i;
         if (nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize && grid[nr][nc] === player) {
-          count++;
+          winningCells.push({ r: nr, c: nc });
         } else break;
       }
 
-      if (count >= 5) return true;
+      
+      if (winningCells.length >= 5) return winningCells;
     }
-    return false;
+    return null;
   },
   /*Sound/Effect Triggers: Determining which "Toang" sounds to play.
   getSoundTrigger: (event, context = {}) => {
@@ -61,7 +61,7 @@ export const GameService = {
   },
   */
    //Initialize a board  (Default 10x10) 
-  createEmptyBoard: (size = 10) => {
+  createEmptyBoard: (size) => {
     return Array(size).fill(null).map(() => Array(size).fill(null));
   }
 };

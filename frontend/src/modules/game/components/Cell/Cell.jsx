@@ -12,14 +12,18 @@
  * 3. Event Bubbling: Passing clicks back up to the GameBoard.
  * 4. Conditional Styling: Highlighting if the cell is part of a winning line.
  */
-export const Cell = ({ value, onClick, disabled }) => {
+export const Cell = ({ value, onClick, disabled, isHighlight,currentMark }) => {
   return (
     <button 
-      className={`game-cell ${value ? 'occupied' : ''}`}
+      className={`game-cell ${isHighlight ? 'winner-cell' : ''} ${value ? 'occupied' : ''}`}
       onClick={onClick}
       disabled={disabled || !!value}
+      aria-label={value ? `Marked ${value}` : "Empty cell"}
+      data-hover={!value ? currentMark : ''}
     >
-      {value}
+      <span className={value === 'X' ? 'text-danger' : 'text-primary'}>
+        {value}
+      </span>
     </button>
   );
 };

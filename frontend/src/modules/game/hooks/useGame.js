@@ -14,38 +14,41 @@
  */
 import { useState } from 'react';
 import { GameService } from '../services/game.service';
-export const useGame = (initialSize = 10, p1Mark = 'X', p2Mark = 'O') => {
+export const useGame = (initialSize) => {
   const [grid, setGrid] = useState(GameService.createEmptyBoard(initialSize));
   const [isP1Turn, setIsP1Turn] = useState(true);
   const [winner, setWinner] = useState(null);
-  const [gameStatus, setGameStatus] = useState('active')
-//Preventing moves on occupied cells or out of turn.
+  const [winningLine, setWinningLine] = useState([]); 
+  const [gameStatus, setGameStatus] = useState('active');
+
+  const startGame = (startsFirst) => {
+    setGrid(GameService.createEmptyBoard(initialSize));
+    setIsP1Turn(startsFirst === 'X'); // 
+    setWinner(null);
+    setWinningLine([]);
+    setGameStatus('active');
+  };
+
   const makeMove = (row, col) => {
     if (grid[row][col] || winner || gameStatus === 'aborted') return;
-//Keeping track of the board, current turn, and history.
-    const currentPlayer = isP1Turn ? p1Mark : p2Mark;
+
+    const currentPlayer = isP1Turn ? 'X' : 'O';
     const newGrid = grid.map(r => [...r]);
     newGrid[row][col] = currentPlayer;
-    
     setGrid(newGrid);
-//Win Detection: Running the algorithm to check for 5-in-a-row.
-    if (GameService.checkWinner(newGrid, row, col, currentPlayer, initialSize)) {
+
+    const winResult = GameService.checkWinner(newGrid, row, col, currentPlayer, initialSize);
+    
+    if (winResult) {
       setWinner(currentPlayer);
+      setWinningLine(winResult); 
       setGameStatus('won');
     } else {
       setIsP1Turn(!isP1Turn);
     }
   };
-  const abortGame = () => {
-    setGameStatus('aborted');
-  };
 
-  return {
-    grid,
-    isP1Turn,
-    winner,
-    gameStatus,
-    makeMove,
-    abortGame
-  };
+  const abortGame = () => setGameStatus('aborted');
+
+  return { grid, isP1Turn, winner, winningLine, gameStatus, makeMove, abortGame, startGame };
 };

@@ -16,8 +16,9 @@ const moveSchema = new mongoose.Schema(
 		},
 		marker: {
 			type: String,
-			enum: ["X", "O"],
 			required: true,
+			trim: true,
+			maxlength: 8,
 		},
 		position: {
 			type: String,

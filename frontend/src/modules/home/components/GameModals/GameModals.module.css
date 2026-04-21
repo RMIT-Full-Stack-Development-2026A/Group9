@@ -1,0 +1,82 @@
+.modalContent {
+  background: none;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  min-width: 350px;
+  max-height: 600px;
+  height: 600px;
+  box-sizing: border-box;
+  padding: 24px 24px 0 24px;
+  overflow-y: auto;
+  justify-content: flex-start;
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.label {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.input {
+  background: #19223a;
+  border: 1px solid #06b6d4;
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+.markerRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.markerBtn {
+  background: #19223a;
+  border: 2px solid #222b44;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border 0.2s;
+}
+.markerSelected {
+  background: #222b44;
+  border: 2px solid #06b6d4;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.markerSelected2 {
+  background: #222b44;
+  border: 2px solid #a855f7;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.startBtn {
+  background: #06b6d4;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 12px 0;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.startBtn:hover {
+  background: #0891b2;
+}

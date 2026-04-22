@@ -22,12 +22,14 @@ export default function registerGameSocketHandlers(io, socket) {
 
         socket.join(roomId);
 
-        // Notify the second player joined
-        socket.to(roomId).emit("game:playerJoined", {
-            message: "A second player has joined. The game can start!",
-            playerId: socket.user.id,
-            timestamp: new Date().toISOString(),
-        });
+        // Notify everyone in the room only when a second player actually joins.
+        if (numClients >= 1) {
+            io.to(roomId).emit("game:playerJoined", {
+                message: "A second player has joined. The game can start!",
+                playerId: socket.user.id,
+                timestamp: new Date().toISOString(),
+            });
+        }
 		
 		if (!gameStates[roomId]) {
             gameStates[roomId] = {
@@ -109,4 +111,4 @@ export default function registerGameSocketHandlers(io, socket) {
 	});
 }
 
-const gameState = {}; 
+const gameStates = {}; 

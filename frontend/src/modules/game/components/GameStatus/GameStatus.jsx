@@ -1,13 +1,18 @@
-/**
- * ============================================================================
- * GAME STATUS COMPONENT (The Match Info Bar)
- * ============================================================================
- * Location: src/modules/game/components/GameStatus.jsx
- * Purpose: This component provides the real-time context of the match. It 
- * tells the player whose turn it is, if they won, or if the match is a draw.
- * * Key Responsibilities:
- * 1. Turn Indication: Highlighting the active player (X or O).
- * 2. Result Messaging: Displaying "You Win!", "You Lose!", or "Draw!".
- * 3. Player Identity: Showing usernames and avatars next to their symbols.
- * 4. Match State: Displaying 'Waiting for opponent' during matchmaking.
- */
+import React from "react";
+
+export default function GameStatus({ opponentJoined, gameStarted, playerMark }) {
+	const label = !opponentJoined
+		? "Waiting for a second player"
+		: !gameStarted
+			? "Choose a mark to begin"
+			: `You are playing as ${playerMark || "?"}`;
+
+	return (
+		<div style={{ marginBottom: "16px", padding: "16px 18px", borderRadius: "16px", background: "linear-gradient(135deg, #111827, #1f2937)", color: "#f8fafc" }}>
+			<div style={{ fontSize: "0.8rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#94a3b8", marginBottom: "6px" }}>
+				Arena Status
+			</div>
+			<div style={{ fontSize: "1.05rem", fontWeight: 700 }}>{label}</div>
+		</div>
+	);
+}

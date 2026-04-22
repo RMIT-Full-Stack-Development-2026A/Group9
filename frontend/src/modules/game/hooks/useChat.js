@@ -15,6 +15,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { io } from "socket.io-client";
+import { SOCKET_BASE_URL } from "../../../config/api.config.js";
 
 export const useChat = (roomId, token) => {
     // 1. Use a Ref instead of state for the socket instance
@@ -26,7 +27,7 @@ export const useChat = (roomId, token) => {
         if (!roomId || !token) return;
 
         // 2. Initialize the external system (Socket)
-        const socket = io(import.meta.env.REACT_APP_SOCKET_URL || "http://localhost:5000", {
+        const socket = io(SOCKET_BASE_URL, {
             auth: { token },
         });
 

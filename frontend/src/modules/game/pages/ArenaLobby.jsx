@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useArena } from "../modules/game/hooks/useArena";
+import { useArena } from "../hooks/useArena.js";
 
 export default function ArenaLobby() {
     const navigate = useNavigate();

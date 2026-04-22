@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
+import { SOCKET_BASE_URL } from "../../../config/api.config.js";
 
 export const useArena = (token) => {
     const socketRef = useRef(null);
@@ -9,7 +10,7 @@ export const useArena = (token) => {
         if (!token) return;
 
         // Connect specifically to get lobby data
-        const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:5000", {
+        const socket = io(SOCKET_BASE_URL, {
             auth: { token },
         });
         socketRef.current = socket;

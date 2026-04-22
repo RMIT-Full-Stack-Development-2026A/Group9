@@ -18,6 +18,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../shared/ui/ProtectedRoute.jsx";
 
 import Admin from "../modules/admin/pages/Admin.jsx";
+import ArenaLobby from "../modules/game/pages/ArenaLobby.jsx";
 import GameArena from "../modules/game/pages/GameArena.jsx";
 import Home from "../modules/home/pages/Home.jsx";
 import Leaderboard from "../modules/leaderboard/pages/Leaderboard.jsx";
@@ -27,6 +28,8 @@ import Profile from "../modules/profile/pages/Profile.jsx";
 import Registration from "../modules/auth/pages/Registration.jsx";
 
 function Router() {
+	const allowGuestArena = import.meta.env.DEV || import.meta.env.VITE_ALLOW_GUEST_ARENA === "true";
+
 	return (
 		<Routes>
 			<Route path="/" element={<Home />} />
@@ -36,9 +39,25 @@ function Router() {
 			<Route
 				path="/game"
 				element={
-					<ProtectedRoute>
+					allowGuestArena ? (
+						<ArenaLobby />
+					) : (
+						<ProtectedRoute>
+							<ArenaLobby />
+						</ProtectedRoute>
+					)
+				}
+			/>
+			<Route
+				path="/game/:gameId"
+				element={
+					allowGuestArena ? (
 						<GameArena />
-					</ProtectedRoute>
+					) : (
+						<ProtectedRoute>
+							<GameArena />
+						</ProtectedRoute>
+					)
 				}
 			/>
 			<Route

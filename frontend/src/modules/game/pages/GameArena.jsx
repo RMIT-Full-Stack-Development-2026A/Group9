@@ -13,15 +13,16 @@
 
 import React from "react";
 import { useParams } from "react-router-dom";
-import GameBoard from "../modules/game/components/GameBoard/GameBoard";
-import ChatBox from "../modules/game/components/ChatBox/Board"; // Your ChatBox container
-import GameStatus from "../modules/game/components/GameStatus/GameStatus";
-import { useMultiplayer } from "../modules/game/hooks/useMultiplayer";
-import { useChat } from "../modules/game/hooks/useChat";
+import GameBoard from "../components/GameBoard/GameBoard.jsx";
+import ChatBox from "../components/ChatBox/Board.jsx";
+import GameStatus from "../components/GameStatus/GameStatus.jsx";
+import { useMultiplayer } from "../hooks/useMultiplayer.js";
+import { useChat } from "../hooks/useChat.js";
 
 export default function GameArena() {
     const { gameId } = useParams();
     const token = localStorage.getItem("token");
+    const roomId = gameId || "";
 	
 
     // Real-time Game Logic (Requirement 4.3.1)
@@ -33,22 +34,26 @@ export default function GameArena() {
         gameStarted, 
         playerMark, 
         chooseMark 
-    } = useMultiplayer(gameId, token);
+    } = useMultiplayer(roomId, token);
     
     // Real-time Chat Logic (Requirement 4.3.2)
     const { 
         messages, 
         sendMessage, 
         chatError 
-    } = useChat(gameId, token);
+    } = useChat(roomId, token);
+
+	if (!gameId) {
+		return <div className="error-page">Missing game room id.</div>;
+	}
 
     if (error === "Room is full") {
         return <div className="error-page">This arena is full! Only 2 players allowed.</div>;
     }
 
     return (
-        <div className="arena-container" style={{ display: 'flex', gap: '20px' }}>
-            <div className="game-section">
+        <div className="arena-container" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: '20px', alignItems: 'start' }}>
+            <div className="game-section" style={{ background: 'rgba(255,255,255,0.92)', borderRadius: '20px', padding: '20px', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.12)' }}>
                 {/* Status component can now display what mark the user is playing as */}
                 <GameStatus 
                     opponentJoined={opponentJoined} 
@@ -93,7 +98,7 @@ export default function GameArena() {
                 )}
             </div>
 
-            <div className="chat-sidebar">
+            <div className="chat-sidebar" style={{ position: 'sticky', top: '20px' }}>
                 <ChatBox 
                     messages={messages} 
                     onSendMessage={sendMessage} 

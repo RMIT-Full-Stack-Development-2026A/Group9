@@ -15,6 +15,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { io } from "socket.io-client";
+import { SOCKET_BASE_URL } from "../../../config/api.config.js";
 
 export const useMultiplayer = (roomId, token) => {
     // 1. Use a Ref for the socket instance to avoid cascading renders
@@ -29,7 +30,7 @@ export const useMultiplayer = (roomId, token) => {
         if (!roomId || !token) return;
 
         // 2. Initialize the socket (The External System)
-        const socket = io(import.meta.env.REACT_APP_SOCKET_URL || "http://localhost:5000", {
+        const socket = io(SOCKET_BASE_URL, {
             auth: { token },
         });
 
@@ -53,20 +54,11 @@ export const useMultiplayer = (roomId, token) => {
         // You could also set whose turn it is here
         });
 
-        socket.on("game:move", ({ move }) => {
-            setBoard((prev) => {
-                const newBoard = [...prev];
-                newBoard[move.index] = move.mark;
-                return newBoard;
-            });
-
         socket.on("game:stateUpdate", (newState) => {
         // Both players receive the exact same board array from the server
             setBoard(newState.board);
         // You could also track whose turn it is here
         // setTurn(newState.nextTurn);
-            });
-
         });
 
         socket.on("game:start", (data) => {

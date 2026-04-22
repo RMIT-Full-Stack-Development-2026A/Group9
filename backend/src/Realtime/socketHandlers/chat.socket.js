@@ -9,6 +9,14 @@
 import { checkPremiumStatus } from "../../middlewares/auth.middleware.js";
 
 export default function registerChatSocketHandlers(io, socket) {
+    socket.on("chat:join", ({ roomId } = {}) => {
+        if (!roomId) {
+            return;
+        }
+
+        socket.join(roomId);
+    });
+
 	socket.on("chat:send", async ({ roomId, message } = {}) => {
 		if (!roomId || !message) {
 			return;
@@ -26,5 +34,13 @@ export default function registerChatSocketHandlers(io, socket) {
             message: String(message).trim(),
             timestamp: new Date().toISOString(),
         });
+    });
+
+    socket.on("chat:leave", ({ roomId } = {}) => {
+        if (!roomId) {
+            return;
+        }
+
+        socket.leave(roomId);
     });
 }

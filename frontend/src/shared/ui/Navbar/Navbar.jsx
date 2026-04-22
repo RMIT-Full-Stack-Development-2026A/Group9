@@ -22,7 +22,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 const NAV_LINKS = [
 	{ label: "Home", to: "/" },
 	{ label: "Lobby", to: "/lobby" },
-	{ label: "Profile", to: "/profile"},
+	{ label: "Profile", to: "/profile", state: { tab: "edit" } },
 ];
 
 const normalizeNavUser = (user) => {
@@ -101,6 +101,7 @@ export default function Navbar() {
 						key={item.label}
 						className={({ isActive }) => `mainNavLink${isActive ? " mainNavLink--active" : ""}`}
 						to={item.to}
+						state={item.state}
 					>
 						{item.label}
 					</NavLink>

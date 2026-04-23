@@ -40,10 +40,8 @@ export const useChat = (roomId, token) => {
             setMessages((prev) => [...prev, msg]);
         });
 
-        // Handle Requirement 4.3.2 (Premium Check Errors)
         socket.on("chat:error", (err) => {
-            setChatError(err.message);
-            // Clear error after 5 seconds to improve UX
+            setChatError(err?.message || "Chat error");
             setTimeout(() => setChatError(null), 5000);
         });
 

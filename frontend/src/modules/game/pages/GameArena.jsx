@@ -10,6 +10,7 @@
  * 2. Room Initialization: Extracting the 'gameId' from the URL.
  * 3. Error Boundary: Showing a "Game Not Found" state if the ID is invalid.
  */
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import CustomizationModal from '../components/CustomizationModal';
 import GameBoard from '../components/GameBoard/GameBoard';
@@ -21,7 +22,9 @@ const O_MARKERS = ['O', '👾', '💧', '🛡️', '💠', '🖤'];
 
 export default function GameArena() {
     const [isConfiguring, setIsConfiguring] = useState(true);
-    const [xIsNext, setXIsNext] = useState(true); // Tracks turns
+    const [xIsNext, setXIsNext] = useState(true);
+    const [winnerMessage, setWinnerMessage] = useState(null);
+    const navigate = useNavigate();
     const [matchData, setMatchData] = useState({
         size: 10,
         style: 'neon',
@@ -47,15 +50,17 @@ export default function GameArena() {
     };
 
     const handleCellClick = (index) => {
-        //prevent double clicking on cells, determine which players turn, updates score board
+        //prevents double clicking on cells
         if (matchData.boardState[index]) return;
 
         const currentPlayer = xIsNext ? 'X' : 'O';
-        
         const displayMarker = xIsNext ? MARKERS[matchData.markerIndex] : O_MARKERS[matchData.markerIndex];
 
         const newBoard = [...matchData.boardState];
         newBoard[index] = displayMarker; 
+
+        //checks for win locally
+        const isWin = checkWin(newBoard, index, matchData.size);
 
         setMatchData(prev => ({
             ...prev,
@@ -70,7 +75,50 @@ export default function GameArena() {
             ]
         }));
 
+        if (isWin) {
+            const winnerName = xIsNext ? "Player 1" : "Player 2";
+            setWinnerMessage(`${winnerName} wins!`);
+            compileMatchRecord(`${winnerName} Victory`); 
+            return; 
+        }
+
         setXIsNext(!xIsNext);
+    };
+
+    const checkWin = (board, lastIndex, size) => {
+        const marker = board[lastIndex];
+        const row = Math.floor(lastIndex / size);
+        const col = lastIndex % size;
+
+        //check win directions
+        const directions = [
+            [0, 1],//horizontal
+            [1, 0],//vetical
+            [1, 1],// down-right
+            [1, -1]//down-left
+        ];
+
+        for (const [dr, dc] of directions) {
+            let count = 1;
+
+            //checks forward and backward for each direction
+            for (const sign of [1, -1]) {
+                for (let i = 1; i < 5; i++) {
+                    const r = row + dr * i * sign;
+                    const c = col + dc * i * sign;
+                    const checkIndex = r * size + c;
+
+                    if (r >= 0 && r < size && c >= 0 && c < size && board[checkIndex] === marker) {
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (count >= 5) return true;
+        }
+        return false;
     };
 
     if (isConfiguring) {
@@ -159,6 +207,43 @@ export default function GameArena() {
                     </div>
                 </aside>
             </div>
+            {/*win pop up*/}
+            {winnerMessage && (
+                <div className="victory-modal-overlay">
+                    <div className="victory-modal-content">
+                        <h2 className="victory-title">MATCH OVER</h2>
+                        <p className="victory-message">{winnerMessage}</p>
+                        
+                        <div className="victory-actions">
+                            <button className="play-again-btn" onClick={() => {
+                                setWinnerMessage(null);
+
+                                //show match customization screen
+                                setIsConfiguring(true);
+
+                                //reset match
+                                setMatchData({
+                                    size: 10,
+                                    style: 'neon',
+                                    markerIndex: 0,
+                                    startTime: null,
+                                    boardState: [],
+                                    moveHistory: []
+                                });
+                            }}>
+                                Play Again
+                            </button>
+                            
+                            <button className="exit-btn" onClick={() => {
+                                //go to landing page
+                                navigate('/');
+                            }}>
+                                Main Menu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

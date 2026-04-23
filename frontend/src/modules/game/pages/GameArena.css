@@ -181,3 +181,88 @@
 .room-link:hover {
     text-decoration: underline;
 }
+
+/*win pop up*/
+.victory-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 15, 30, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.victory-modal-content {
+    background: #111a2e;
+    border: 2px solid #00d2ff;
+    border-radius: 16px;
+    padding: 40px 60px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.3), inset 0 0 20px rgba(0, 210, 255, 0.1);
+    animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.victory-title {
+    color: #00d2ff;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.victory-message {
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.victory-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.play-again-btn, .exit-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.play-again-btn {
+    background: #00d2ff;
+    color: #000;
+    border: none;
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+}
+
+.play-again-btn:hover {
+    background: #33dbff;
+    box-shadow: 0 0 25px rgba(0, 210, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.exit-btn {
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid #3a4b70;
+}
+
+.exit-btn:hover {
+    border-color: #ff4757;
+    color: #ff4757;
+    background: rgba(255, 71, 87, 0.1);
+}
+
+/*animation for win pop up*/
+@keyframes modalPop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}

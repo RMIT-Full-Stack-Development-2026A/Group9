@@ -1,11 +1,11 @@
 import React from "react";
-import LocalGameBoard from "../components/LocalGameBoard.jsx";
+import GameBoard from "../components/GameBoard/GameBoard.jsx";
 
 export default function AIGameArena({ settings, onAbort, onGameEnd }) {
   // Thin page: pass settings down, keep AI orchestration in hooks/components.
   return (
     <div>
-      <LocalGameBoard
+      <GameBoard
         {...settings}
         onAbort={onAbort}
         onGameEnd={onGameEnd}

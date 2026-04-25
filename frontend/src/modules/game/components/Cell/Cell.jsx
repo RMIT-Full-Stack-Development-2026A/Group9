@@ -16,10 +16,11 @@
 import React from 'react';
 import styles from './Cell.module.css';
 
-export default function Cell({ value, onClick }) {
+export default function Cell({ value, onClick, className }) {
     return (
         <button 
-            className={styles['game-cell']} 
+            //combine cell module styles with ones passed from gameboard
+            className={`${styles['game-cell'] || ''} ${className || ''}`} 
             onClick={onClick}
             disabled={!!value}
         >

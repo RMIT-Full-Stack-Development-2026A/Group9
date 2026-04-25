@@ -22,20 +22,24 @@ export default function GameBoard({ size, styleType, markerIndex, boardState, on
         display: 'grid',
         gridTemplateColumns: `repeat(${size}, 1fr)`,
         width: '100%',
-        height: '100%',
+        maxWidth: '500px',
+        aspectRatio: '1 / 1',
+        margin: '0 auto',
         gap: '1px',
-        background: '#242f4d',
-        border: '2px solid #242f4d',
     };
 
+    //look for selected theme style in the module.css file
+    const boardClass = `${styles['game-board']} ${styles[`${styleType}-style`] || ''}`;
+
     return (
-        <div className={`game-board ${styleType}-theme`} style={gridStyle}>
+        <div className={boardClass} style={gridStyle}>
             {boardState.map((cellValue, index) => (
                 <Cell 
                     key={index} 
                     value={cellValue}
                     markerIndex={markerIndex}
                     onClick={() => onCellClick(index)}
+                    className={styles['game-cell']} 
                 />
             ))}
         </div>

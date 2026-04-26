@@ -40,6 +40,7 @@ const ProfileCard = ({ onUserUpdate }) => {
     loading: walletLoading,
     message: walletMessage,
     handleDeposit,
+    handleSubscribeWallet,
   } = usePayment();
 
   // Read tab from location.state (for navigation from Home)
@@ -109,6 +110,10 @@ const ProfileCard = ({ onUserUpdate }) => {
     if (gameType === 'Two Players') return 'Two Players';
     return 'Online Match';
   };
+
+  const isPremiumActive =
+    Boolean(wallet?.premiumUntil) &&
+    new Date(wallet.premiumUntil).getTime() > Date.now();
 
   return (
     <div className={styles.profilePage}>
@@ -375,16 +380,26 @@ const ProfileCard = ({ onUserUpdate }) => {
               </button>
             </div>
 
-            {wallet.premiumUntil && new Date(wallet.premiumUntil).getTime() > Date.now() ? (
+            {isPremiumActive ? (
               <div className={styles.premiumStatusBar}>
                 <i className="bi bi-crown" style={{ marginRight: 6 }}></i>
                 Premium Active until {new Date(wallet.premiumUntil).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
               </div>
             ) : (
-              <div className={styles.premiumStatusBarExpired}>
-                <i className="bi bi-crown" style={{ marginRight: 6 }}></i>
-                Premium Active until &mdash;
-              </div>
+              <>
+                <p className={styles.premiumCostText}>
+                  Premium costs: <strong>$10 / month</strong>
+                </p>
+                <button
+                  type="button"
+                  className={styles.subscribeWalletBtn}
+                  onClick={handleSubscribeWallet}
+                  disabled={walletLoading}
+                >
+                  <i className="bi bi-gem" style={{ marginRight: 6 }}></i>
+                  {walletLoading ? "Subscribing..." : "Subscribe with Wallet ($10)"}
+                </button>
+              </>
             )}
           </div>
         )}

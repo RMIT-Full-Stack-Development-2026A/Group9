@@ -1,6 +1,5 @@
-import * as billingService from '../services/billing.service.js';
+import * as billingService from "../services/billing.service.js";
 
-// Example: Expose a public function for other modules
-export const createInvoice = (userId, amount, details) => {
-	return billingService.createInvoice(userId, amount, details);
-};
+export const getWallet = (userId) => billingService.getWallet(userId);
+
+export const getTransactions = (userId) => billingService.getTransactions(userId);

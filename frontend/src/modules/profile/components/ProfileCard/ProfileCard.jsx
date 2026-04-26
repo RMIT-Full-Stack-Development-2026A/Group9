@@ -382,7 +382,7 @@ const ProfileCard = ({ onUserUpdate }) => {
 
             {isPremiumActive ? (
               <div className={styles.premiumStatusBar}>
-                <i className="bi bi-crown" style={{ marginRight: 6 }}></i>
+                <i className="bi bi-gem" style={{ marginRight: 6 }}></i> 
                 Premium Active until {new Date(wallet.premiumUntil).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
               </div>
             ) : (

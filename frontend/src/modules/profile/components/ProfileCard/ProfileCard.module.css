@@ -404,6 +404,42 @@
   opacity: 0.7;
 }
 
+.premiumCostText {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin: -4px 0 14px;
+}
+
+.premiumCostText strong {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.subscribeWalletBtn {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  display: block;
+  padding: 14px 24px;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.subscribeWalletBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.subscribeWalletBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .walletPlaceholder { color: var(--text-muted); font-size: 15px; }
 
 @media (max-width: 640px) {

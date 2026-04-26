@@ -178,14 +178,24 @@ export async function handleStripeWebhook(rawBody, signature) {
 
 	if (event.type === "checkout.session.completed") {
 		const session = event.data.object;
+		const sessionId = session.id;
 		const userId = session.metadata?.userId;
-		console.log(`[WEBHOOK DEBUG] checkout.session.completed for userId: ${userId}`);
+		console.log(`[WEBHOOK DEBUG] checkout.session.completed for userId: ${userId}, sessionId: ${sessionId}`);
 		if (!userId) return;
 
 		const currentPremium = await billingRepo.getPremiumUntil(userId);
 		const newPremiumUntil = computeNewPremiumUntil(currentPremium);
 		await billingRepo.setPremiumUntil(userId, newPremiumUntil);
 		console.log(`[WEBHOOK DEBUG] Premium set until: ${newPremiumUntil.toISOString()}`);
+
+		// Mark matching pending Stripe transaction as completed
+		const pendingTx = await billingRepo.findLatestPendingSubscriptionBySessionId(sessionId);
+		if (pendingTx?._id) {
+			await billingRepo.updateTransactionStatus(pendingTx._id, "completed");
+			console.log(`[WEBHOOK DEBUG] Transaction ${pendingTx._id} marked completed`);
+		} else {
+			console.warn(`[WEBHOOK DEBUG] No pending transaction found for Stripe session ${sessionId}`);
+		}
 
 		// Send email notification
 		const account = await userRepo.findById(userId);

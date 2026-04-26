@@ -30,12 +30,12 @@ export default function Input({
 	error = false,
 	errorMessage = "",
 	required = false,
-	containerClassName = "loginFieldGroup",
-	labelClassName = "loginLabel",
-	labelErrorClassName = "loginLabelError",
-	inputClassName = "loginInput",
-	inputErrorClassName = "loginInputError",
-	errorClassName = "loginFieldError",
+	containerClassName = "ttInputFieldGroup",
+	labelClassName = "ttInputLabel",
+	labelErrorClassName = "ttInputLabelError",
+	inputClassName = "ttInputControl",
+	inputErrorClassName = "ttInputControlError",
+	errorClassName = "ttInputError",
 	...props
 }) {
 	const hasError = Boolean(error);

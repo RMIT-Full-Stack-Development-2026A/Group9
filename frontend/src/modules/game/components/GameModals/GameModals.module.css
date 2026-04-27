@@ -6,8 +6,6 @@
   flex-direction: column;
   gap: 0px;
   min-width: 350px;
-  max-height: calc(100vh - 160px);
-  height: auto;
   box-sizing: border-box;
   padding: var(--space-md) var(--space-md) var(--space-sm) var(--space-md);
   overflow-y: auto;

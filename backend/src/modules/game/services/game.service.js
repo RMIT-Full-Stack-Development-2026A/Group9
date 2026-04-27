@@ -1,16 +1,18 @@
-/**
- * ============================================================================
- * GAME SERVICE FILE PURPOSE
- * ============================================================================
- * Purpose: This layer contains Game business logic and use-case rules.
- * It should coordinate DTO input, engine decisions, and repository persistence
- * without handling HTTP concerns directly.
- *
- * Current State: Intentionally left as a placeholder for the Game feature
- * assignee to implement.
- *
- * Teammate guidance:
- * 1) Keep all gameplay rules and flow validation in this layer.
- * 2) Call engine utilities for board logic and repository for data writes.
- * 3) Throw domain/service errors for controllers to translate to HTTP.
- */
+import { checkWinLine, isDraw } from "../engine/gameEngine.js";
+
+// Validates a move and returns the new board, winner, and draw state
+export function applyMove({ board, size, idx, marker }) {
+  if (board[idx] !== null && board[idx] !== undefined) {
+    throw new Error("Cell already occupied");
+  }
+  const newBoard = [...board];
+  newBoard[idx] = marker;
+  const winLine = checkWinLine(newBoard, size, marker);
+  const draw = !winLine && isDraw(newBoard);
+  return {
+    board: newBoard,
+    winLine,
+    winner: winLine ? marker : null,
+    draw,
+  };
+}

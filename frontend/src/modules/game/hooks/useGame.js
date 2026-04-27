@@ -1,14 +1,113 @@
-/**
- * ============================================================================
- * USE GAME HOOK (The Engine)
- * ============================================================================
- * Location: src/modules/game/hooks/useGame.js
- * Purpose: This hook manages the local state of a match and orchestrates
- * the game logic. It bridges the gap between the UI components (Board, Status)
- * and the backend (via WebSockets or Services).
- * * Key Responsibilities:
- * 1. State Management: Keeping track of the board, current turn, and history.
- * 2. Move Validation: Preventing moves on occupied cells or out of turn.
- * 3. Win Detection: Running the algorithm to check for 3-in-a-row.
- * 4. Sync: (Future) Handling Socket.io events to keep two players in sync.
- */
+import { useState } from 'react';
+import { createSession, makeAIMove, makeMove } from '../services/game.api.js';
+
+// useGame hook: wires up backend session and move logic
+export function useGame(initialSessionData) {
+	const [session, setSession] = useState(null);
+	const [board, setBoard] = useState([]);
+	const [turn, setTurn] = useState('player1'); // 'player1' | 'player2'
+	const [winner, setWinner] = useState(null);
+	const [winLine, setWinLine] = useState(null);
+	const [draw, setDraw] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
+
+	// Start a new session
+	async function startSession(sessionData = initialSessionData) {
+		console.log("startSession called with:", sessionData);
+		setLoading(true);
+		setError(null);
+		try {
+			const res = await createSession(sessionData);
+			setSession(res.data.session);
+			setBoard(res.data.session.board);
+			setTurn(sessionData?.firstPlayer === "Player 2" ? "player2" : "player1");
+			setWinner(null);
+			setWinLine(null);
+			setDraw(false);
+		} catch (err) {
+			setError(
+				err?.response?.data?.message ||
+					err?.response?.data?.error ||
+					err.message ||
+					"Failed to create session"
+			);
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	// Make a move
+	async function playMove(idx, marker, playerId = "player1") {
+		if (!session) return;
+		setLoading(true);
+		setError(null);
+		try {
+			const res = await makeMove({
+				sessionId: session._id,
+				idx,
+				marker,
+				playerId,
+			});
+			setBoard(res.data.board);
+			setWinner(res.data.winner);
+			setWinLine(res.data.winLine || null);
+			setDraw(res.data.draw);
+			setTurn((prev) => (prev === "player1" ? "player2" : "player1"));
+		} catch (err) {
+			setError(
+				err?.response?.data?.message ||
+					err?.response?.data?.error ||
+					err.message ||
+					"Failed to make move"
+			);
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	// Ask backend to compute + apply AI move
+	async function playAIMove(lastPlayerMoveIdx, marker, aiLevel) {
+		if (!session) return null;
+		setLoading(true);
+		setError(null);
+		try {
+			const res = await makeAIMove({
+				sessionId: session._id,
+				lastPlayerMoveIdx,
+				marker,
+				aiLevel,
+			});
+			setBoard(res.data.board);
+			setWinner(res.data.winner);
+			setWinLine(res.data.winLine || null);
+			setDraw(res.data.draw);
+			setTurn((prev) => (prev === "player1" ? "player2" : "player1"));
+			return res.data;
+		} catch (err) {
+			setError(
+				err?.response?.data?.message ||
+					err?.response?.data?.error ||
+					err.message ||
+					"Failed to make AI move"
+			);
+			return null;
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	return {
+		session,
+		board,
+		turn,
+		winner,
+		winLine,
+		draw,
+		loading,
+		error,
+		startSession,
+		playMove,
+		playAIMove,
+	};
+}

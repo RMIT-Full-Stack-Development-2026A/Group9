@@ -1,8 +1,61 @@
-/**
- * ============================================================================
- * GAME BOARD STYLES (The Grid Layout)
- * ============================================================================
- * Location: src/modules/game/components/GameBoard.module.css
- * Purpose: This handles the 10x10(or 15x15) grid layout and the "Toang" visual style. 
- * It uses CSS Grid for a perfectly responsive Tic-Tac-Toe board.
- */
+
+.board {
+  display: grid;
+  gap: 2px;
+  background: #101828;
+  border: 2px solid #06b6d4;
+  margin: 24px 0;
+}
+.cell {
+  background: #19223a;
+  border: 1px solid #06b6d4;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cellWin {
+  background: #a855f7;
+  color: #fff;
+}
+.playerInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+.active {
+  font-weight: bold;
+  color: #06b6d4;
+}
+.result {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 12px 0;
+  color: #a855f7;
+}
+.abortBtn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 24px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.abortBtn:hover {
+  background: #b91c1c;
+}

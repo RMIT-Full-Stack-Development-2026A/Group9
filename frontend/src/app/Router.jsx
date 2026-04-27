@@ -14,13 +14,15 @@
  * 4. Fallback Logic: Handles 404 (Not Found) errors gracefully.
  */
 
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import ProtectedRoute from "../shared/ui/ProtectedRoute.jsx";
 import Navbar from "../shared/ui/Navbar/Navbar.jsx";
 
 import AdminDashboard from "../modules/admin/components/AdminDashboard/AdminDashboard.jsx";
-import GameArena from "../modules/game/pages/GameArena.jsx";
+import GameArena from "../modules/game/pages/GameLobby.jsx";
+import LocalGameArena from "../modules/game/pages/LocalGameArena.jsx";
 import Home from "../modules/home/pages/Home.jsx";
+import AIGameArena from "../modules/game/pages/AIGameArena.jsx";
 import Leaderboard from "../modules/leaderboard/pages/Leaderboard.jsx";
 import Login from "../modules/auth/pages/Login.jsx";
 import Payment from "../modules/payment/pages/Payment.jsx";
@@ -64,6 +66,14 @@ function Router() {
 				<Route path="/game" element={<Navigate to="/lobby" replace />} />
 				<Route path="/arena" element={<Navigate to="/lobby" replace />} />
 				<Route
+					path="/local-arena"
+					element={<LocalGameArenaWrapper />}
+				/>
+				<Route
+					path="/ai-arena"
+					element={<AIGameArenaWrapper />}
+				/>
+				<Route
 					path="/leaderboard"
 					element={
 						<ProtectedRoute requirePremium>
@@ -105,6 +115,30 @@ function Router() {
 			</Route>
 		</Routes>
 	);
+}
+
+// Wrapper to extract settings from location.state
+function LocalGameArenaWrapper() {
+	const location = useLocation();
+	const navigate = useNavigate();
+	const settings = location.state?.settings;
+	if (!settings) {
+		// If no settings, redirect to home
+		navigate("/", { replace: true });
+		return null;
+	}
+	return <LocalGameArena settings={settings} onAbort={() => navigate("/", { replace: true })} />;
+}
+
+function AIGameArenaWrapper() {
+	const location = useLocation();
+	const navigate = useNavigate();
+	const settings = location.state?.settings;
+	if (!settings) {
+		navigate("/", { replace: true });
+		return null;
+	}
+	return <AIGameArena settings={settings} onAbort={() => navigate("/", { replace: true })} />;
 }
 
 export default Router;

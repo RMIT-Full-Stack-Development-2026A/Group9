@@ -16,27 +16,36 @@
 import styles from "./HomeContent.module.css";
 import { useHome } from "../../hooks/useHome.js";
 import Button from "../../../../shared/ui/Button/Button.jsx";
-import { useContext } from "react";
+
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../../app/providers/AuthProvider.jsx";
 import { useNavigate } from "react-router-dom";
+import LocalGameModal from "../../../game/components/GameModals/LocalGameModal.jsx";
+import AIGameModal from "../../../game/components/GameModals/AIGameModal.jsx";
 
 export default function Home() {
-        const { welcome, showRankings } = useHome();
-        const welcomeClass = styles[`welcomeLine--${welcome.type}`] || "";
-        const { isAuthenticated } = useContext(AuthContext) || {};
-        const navigate = useNavigate();
+const { welcome, showRankings } = useHome();
+    const welcomeClass = styles[`welcomeLine--${welcome.type}`] || "";
+    const { isAuthenticated } = useContext(AuthContext) || {};
+    const navigate = useNavigate();
+    const [showLocalModal, setShowLocalModal] = useState(false);
+    const [showAIModal, setShowAIModal] = useState(false);
 
-        // Handler for guest users
-        const requireAuth = (callback) => (e) => {
-            if (!isAuthenticated) {
-                e.preventDefault();
-                navigate("/login");
-                return;
-            }
-            if (callback) callback(e);
-        };
+    // Handler for guest users
+    const requireAuth = (callback) => (e) => {
+        if (!isAuthenticated) {
+            e.preventDefault();
+            navigate("/login");
+            return;
+        }
+        if (callback) callback(e);
+    };
+
+    const handleLocalGameClick = requireAuth(() => setShowLocalModal(true));
+    const handleAIGameClick = requireAuth(() => setShowAIModal(true));
 
     return (
+        <>
         <main className={styles.container}>
         <section>
             <p className={`${styles.welcomeLine} ${welcomeClass}`}>
@@ -53,22 +62,20 @@ export default function Home() {
         </section>
 
         <section className={`${styles.modeRow} ${styles.row1}`}>
-            <button className={styles.btn1} onClick={requireAuth()}>
+            <button className={styles.btn1} onClick={handleLocalGameClick}>
                 <span className={styles.Model_icon}>
                     <i className="bi bi-display" style={{ fontSize: 32, color: "#06B6D4" }}></i>
                 </span>
                 <span className={`${styles.Model_name} fw-bold`}>Local 2‑Player<br/></span>
                 <span className={styles.Model_desc}>Play against a friend on the same device. Share the keyboard and battle it out.</span>
             </button>
-            
-            <button className={styles.btn1} onClick={requireAuth()}>
+            <button className={styles.btn1} onClick={handleAIGameClick}>
                 <span className={styles.Model_icon}>
                     <i className="bi bi-robot" style={{ fontSize: 32, color: "#8B5CF6" }}></i>
                 </span>
                 <span className={`${styles.Model_name} fw-bold`}>vs AI</span>
                 <span className={styles.Model_desc}>Test your strategy against our AI. Choose Easy, Medium, or Hard difficulty.</span>
             </button>
-
             <button className={styles.btn1} onClick={requireAuth()}>
                 <span className={styles.Model_icon}>
                     <i className="bi bi-globe2" style={{ fontSize: 32, color: "#06B6D4" }}></i>
@@ -120,6 +127,8 @@ export default function Home() {
             />
         </section>
     </main>
-    
+    <LocalGameModal open={showLocalModal} onClose={() => setShowLocalModal(false)} />
+    <AIGameModal open={showAIModal} onClose={() => setShowAIModal(false)} />
+        </>
   );
 }

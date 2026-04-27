@@ -6,16 +6,35 @@ const gameSessionSchema = new mongoose.Schema(
 			type: Number,
 			index: true,
 		},
-		players: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "UserAccount",
-			},
-		],
+		// Ultimo-strict schema:
+		// - player1: registered user who started the session
+		// - player2: optional (online matches)
+		// - player2Name: display name for local guest or AI bot
+		player1: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserAccount",
+			required: true,
+		},
+		player2: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserAccount",
+			default: null,
+		},
+		player2Name: {
+			type: String,
+			default: "",
+			trim: true,
+		},
 		winner: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "UserAccount",
 			default: null,
+		},
+		winnerMarker: {
+			type: String,
+			default: null,
+			trim: true,
+			maxlength: 8,
 		},
 		result: {
 			type: String,
@@ -32,28 +51,22 @@ const gameSessionSchema = new mongoose.Schema(
 		},
 		board: {
 			type: [String],
-			default: Array(9).fill(null),
+			default: [],
 		},
 		boardSize: {
 			type: Number,
-			default: 3,
-			min: 3,
-			max: 3,
+			default: 10,
+			min: 10,
+			max: 15,
+			validate: {
+				validator: (v) => [10, 15].includes(v),
+				message: "Invalid board size",
+			},
 		},
 		gameType: {
 			type: String,
 			enum: ["classic", "ai", "multiplayer"],
 			default: "classic",
-		},
-		botName: {
-			type: String,
-			default: "",
-			trim: true,
-		},
-		localPlayer2Name: {
-			type: String,
-			default: "",
-			trim: true,
 		},
 	},
 	{

@@ -1,6 +1,10 @@
+// Game interface for service usage
 import * as gameService from '../services/game.service.js';
+import * as gameRepository from '../repositories/game.repository.js';
 
-// Example: Expose a public function for other modules
-export const getGameHistoryForUser = (userId, query) => {
-	return gameService.getGameHistoryForUser(userId, query);
+export const GameInterface = {
+	createSession: gameRepository.createSession,
+	getSessionById: gameRepository.getSessionById,
+	applyMove: gameService.applyMove,
+	appendMove: gameRepository.appendMove,
 };

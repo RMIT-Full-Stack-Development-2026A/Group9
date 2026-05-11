@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { createSession, makeAIMove, makeMove } from '../services/game.api.js';
+import { abortSession, createSession, makeAIMove, makeMove } from '../services/game.api.js';
+import { buildSessionPayload, normalizeBackendGameType } from '../services/game.service.js';
 
 // useGame hook: wires up backend session and move logic
 export function useGame(initialSessionData) {
@@ -18,7 +19,8 @@ export function useGame(initialSessionData) {
 		setLoading(true);
 		setError(null);
 		try {
-			const res = await createSession(sessionData);
+			const payload = buildSessionPayload(sessionData);
+			const res = await createSession(payload);
 			setSession(res.data.session);
 			setBoard(res.data.session.board);
 			setTurn(sessionData?.firstPlayer === "Player 2" ? "player2" : "player1");
@@ -26,6 +28,7 @@ export function useGame(initialSessionData) {
 			setWinLine(null);
 			setDraw(false);
 		} catch (err) {
+			console.error("[useGame] createSession failed:", err?.response?.data || err);
 			setError(
 				err?.response?.data?.message ||
 					err?.response?.data?.error ||
@@ -39,7 +42,7 @@ export function useGame(initialSessionData) {
 
 	// Make a move
 	async function playMove(idx, marker, playerId = "player1") {
-		if (!session) return;
+		if (!session || winner || draw || loading) return;
 		setLoading(true);
 		setError(null);
 		try {
@@ -97,6 +100,31 @@ export function useGame(initialSessionData) {
 		}
 	}
 
+	// Abort the current session on the backend
+	async function abortCurrentSession() {
+		if (!session) return null;
+		setLoading(true);
+		setError(null);
+		try {
+			const res = await abortSession({ sessionId: session._id });
+			setSession(res.data.session || session);
+			setWinner(null);
+			setWinLine(null);
+			setDraw(false);
+			return res.data;
+		} catch (err) {
+			setError(
+				err?.response?.data?.message ||
+					err?.response?.data?.error ||
+					err.message ||
+					"Failed to abort session"
+			);
+			return null;
+		} finally {
+			setLoading(false);
+		}
+	}
+
 	return {
 		session,
 		board,
@@ -109,5 +137,6 @@ export function useGame(initialSessionData) {
 		startSession,
 		playMove,
 		playAIMove,
+		abortCurrentSession,
 	};
 }

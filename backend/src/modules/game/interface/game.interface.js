@@ -7,4 +7,5 @@ export const GameInterface = {
 	getSessionById: gameRepository.getSessionById,
 	applyMove: gameService.applyMove,
 	appendMove: gameRepository.appendMove,
+	abortSession: gameRepository.abortSession,
 };

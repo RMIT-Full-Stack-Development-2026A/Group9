@@ -39,3 +39,16 @@ export async function appendMove(sessionId, board, moveResult, moveData, updateE
 	}
 	return await GameSession.findByIdAndUpdate(sessionId, update, { new: true });
 }
+
+export async function abortSession(sessionId) {
+	return await GameSession.findByIdAndUpdate(
+		sessionId,
+		{
+			result: 'aborted',
+			winner: null,
+			winnerMarker: null,
+			endTime: new Date(),
+		},
+		{ new: true }
+	);
+}

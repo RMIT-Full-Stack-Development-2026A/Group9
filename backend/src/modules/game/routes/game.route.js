@@ -15,4 +15,6 @@ router.post("/sessions/move", authenticate, gameController.makeMove);
 
 router.post("/sessions/ai-move", authenticate, gameController.makeAIMove);
 
+router.post("/sessions/abort", authenticate, gameController.abortSession);
+
 export default router;

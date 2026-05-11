@@ -34,6 +34,13 @@ export function validateMoveDTO(body) {
 	return { sessionId, idx, marker };
 }
 
+// DTO for aborting a session
+export function validateAbortSessionDTO(body) {
+	const { sessionId } = body;
+	if (!sessionId) throw new Error('sessionId required');
+	return { sessionId };
+}
+
 // DTO for requesting an AI move
 export function validateAIMoveDTO(body) {
 	const { sessionId, lastPlayerMoveIdx, marker, aiLevel } = body;

@@ -105,6 +105,12 @@ const ProfileCard = ({ onUserUpdate }) => {
     return <i className="bi bi-globe2" title="Online Match" />;
   };
 
+  const getGameIconTone = (gameType) => {
+    if (gameType === 'Single Player') return styles.sessionIconAi;
+    if (gameType === 'Two Players') return styles.sessionIconLocal;
+    return styles.sessionIconOnline;
+  };
+
   const getGameTypeShort = (gameType) => {
     if (gameType === 'Single Player') return 'Single Player';
     if (gameType === 'Two Players') return 'Two Players';
@@ -283,7 +289,7 @@ const ProfileCard = ({ onUserUpdate }) => {
               <select name="gameType" value={filters.gameType} onChange={handleFilterChange}>
                 <option value="">All Types</option>
                 <option value="single">Single Player</option>
-                <option value="local">Two Players</option>
+                <option value="local">Two Player</option>
                 <option value="online">Online Match</option>
               </select>
               <select name="result" value={filters.result} onChange={handleFilterChange}>
@@ -333,7 +339,9 @@ const ProfileCard = ({ onUserUpdate }) => {
               <div className={styles.sessionList}>
                 {gameHistory.map((session) => (
                   <div className={styles.sessionCard} key={session._id}>
-                    <div className={styles.sessionIcon}>{getGameIcon(session.gameType)}</div>
+                    <div className={`${styles.sessionIcon} ${getGameIconTone(session.gameType)}`}>
+                      {getGameIcon(session.gameType)}
+                    </div>
                     <div className={styles.sessionInfo}>
                       <div className={styles.sessionTop}>
                         <span className={styles.sessionOpponent}>vs {session.opponent}</span>

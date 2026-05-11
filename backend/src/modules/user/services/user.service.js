@@ -111,6 +111,7 @@ export const updateAvatar = async (userId, avatarPath) => {
 };
 
 export const getGameHistory = async (userId, query) => {
+	const userObjectId = new mongoose.Types.ObjectId(userId);
 	const {
 		search,
 		gameType,
@@ -121,17 +122,28 @@ export const getGameHistory = async (userId, query) => {
 	} = query;
 
 	const filter = {
-		players: new mongoose.Types.ObjectId(userId),
+		$or: [{ player1: userObjectId }, { player2: userObjectId }],
 	};
 
-	if (gameType) filter.gameType = gameType;
+	if (gameType) {
+		const normalizedGameType = {
+			single: "ai",
+			local: "classic",
+			online: "multiplayer",
+		}[gameType] || gameType;
+		filter.gameType = normalizedGameType;
+	}
 
 	if (result === "win") {
-		filter.result = "win";
-		filter.winner = new mongoose.Types.ObjectId(userId);
+		filter.$or = [
+			{ player1: userObjectId, result: "player1_win" },
+			{ player2: userObjectId, result: "player2_win" },
+		];
 	} else if (result === "lose") {
-		filter.result = "win";
-		filter.winner = { $ne: new mongoose.Types.ObjectId(userId) };
+		filter.$or = [
+			{ player1: userObjectId, result: "player2_win" },
+			{ player2: userObjectId, result: "player1_win" },
+		];
 	} else if (result === "draw" || result === "aborted") {
 		filter.result = result;
 	}
@@ -149,7 +161,8 @@ export const getGameHistory = async (userId, query) => {
 	const sort = { startTime: sortOrder === "asc" ? 1 : -1 };
 
 	let sessions = await GameSession.find(filter)
-		.populate("players", "username")
+		.populate("player1", "username")
+		.populate("player2", "username")
 		.populate("winner", "username")
 		.sort(sort)
 		.lean();
@@ -170,11 +183,10 @@ export const getGameHistory = async (userId, query) => {
 
 	return sessions.map((session) => {
 		let userResult;
-		if (session.result === "win") {
-			userResult =
-				session.winner && session.winner._id.toString() === userId
-					? "Win"
-					: "Lose";
+		if (session.result === "player1_win") {
+			userResult = String(session.player1?._id || session.player1 || "") === userId ? "Win" : "Lose";
+		} else if (session.result === "player2_win") {
+			userResult = String(session.player2?._id || session.player2 || "") === userId ? "Win" : "Lose";
 		} else if (session.result === "draw") {
 			userResult = "Draw";
 		} else {
@@ -182,17 +194,16 @@ export const getGameHistory = async (userId, query) => {
 		}
 
 		const opponent =
-			session.gameType === "single"
-				? session.botName || "AI Bot"
-				: session.players
-						.filter((p) => p._id.toString() !== userId)
-						.map((p) => p.username)
-						.join(", ") || "Unknown";
+			session.gameType === "ai"
+				? session.player2Name || session.botName || "AI Bot"
+				: String(session.player1?._id || session.player1 || "") === userId
+					? session.player2?.username || session.player2Name || "Unknown"
+					: session.player1?.username || "Unknown";
 
 		const gameTypeLabels = {
-			single: "Single Player",
-			local: "Two Players",
-			online: "Online Match",
+			classic: "Two Players",
+			ai: "Single Player",
+			multiplayer: "Online Match",
 		};
 
 		return {
@@ -203,7 +214,6 @@ export const getGameHistory = async (userId, query) => {
 			gameType: gameTypeLabels[session.gameType] || session.gameType,
 			result: userResult,
 			opponent,
-			players: session.players.map((p) => p.username),
 		};
 	});
 };

@@ -1,61 +1,409 @@
-
-.board {
+.game-board {
   display: grid;
-  gap: 2px;
-  background: #101828;
-  border: 2px solid #06b6d4;
-  margin: 24px 0;
+  gap: 1px;
+  background: linear-gradient(180deg, #51607e 0%, #2e3953 100%);
+  border: 2px solid #51607e;
+  margin: 20px auto 40px;
+  max-width: 85vh;
+  aspect-ratio: 1 / 1;
+  position: relative;
 }
-.cell {
-  background: #19223a;
-  border: 1px solid #06b6d4;
-  width: 36px;
-  height: 36px;
+
+.game-board.retro-style::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.08),
+      rgba(0, 0, 0, 0.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02),
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  opacity: 0.4;
+  z-index: 1;
+  animation: screenNoise 0.4s linear infinite;
+}
+
+.game-cell {
+  aspect-ratio: 1;
+  background: #131c31;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.cellWin {
-  background: #a855f7;
-  color: #fff;
-}
-.playerInfo {
-  display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 8px;
-}
-.avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  margin-right: 4px;
-}
-.active {
-  font-weight: bold;
-  color: #06b6d4;
-}
-.result {
   font-size: 1.2rem;
-  font-weight: bold;
-  margin: 12px 0;
-  color: #a855f7;
-}
-.abortBtn {
-  background: #ef4444;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
-  padding: 10px 24px;
-  margin-top: 12px;
   cursor: pointer;
-  transition: background 0.2s;
 }
-.abortBtn:hover {
-  background: #b91c1c;
+
+/*retro arcade (CRT) theme*/
+.game-board.retro-style {
+  background:
+    radial-gradient(
+      ellipse 90% 100% at 50% 100%,
+      rgba(0, 255, 65, 0.08),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse at 50% 50%,
+      transparent 30%,
+      rgba(0, 0, 0, 0.3) 100%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.25) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    linear-gradient(180deg, #0a1120 0%, #050810 100%);
+  border: 4px solid #00ff41;
+  box-shadow:
+    inset 0 0 40px rgba(0, 255, 65, 0.15),
+    inset 0 0 80px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(0, 255, 65, 0.3),
+    0 0 60px rgba(0, 255, 65, 0.15);
+  animation:
+    crtFlicker 0.12s infinite,
+    crtGlow 4s ease-in-out infinite;
+  filter: contrast(1.1) brightness(1.05);
+  text-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+}
+
+.game-cell.retro-style {
+  border: 1px solid;
+  border-color: #00ff41;
+  background:
+    linear-gradient(135deg, rgba(0, 255, 65, 0.05) 0%, transparent 100%),
+    rgba(10, 17, 32, 0.9);
+  color: #00ff41;
+  text-shadow:
+    0 0 10px #00ff41,
+    0 0 20px rgba(0, 255, 65, 0.6),
+    2px 0 0 rgba(255, 0, 0, 0.2),
+    -2px 0 0 rgba(0, 0, 255, 0.2);
+  filter: brightness(1.15) saturate(1.3);
+  transition: all 0.08s ease;
+  box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.game-cell.retro-style:hover {
+  background:
+    linear-gradient(135deg, rgba(0, 255, 65, 0.15) 0%, transparent 100%),
+    rgba(0, 255, 65, 0.2);
+  border-color: #00ff41;
+  box-shadow:
+    inset 0 0 10px rgba(0, 255, 65, 0.1),
+    0 0 16px rgba(0, 255, 65, 0.5);
+  text-shadow:
+    0 0 14px #00ff41,
+    0 0 28px rgba(0, 255, 65, 0.7),
+    3px 0 0 rgba(255, 0, 0, 0.3),
+    -3px 0 0 rgba(0, 0, 255, 0.3);
+  filter: brightness(1.25) saturate(1.4)
+    drop-shadow(0 0 8px rgba(0, 255, 65, 0.4));
+}
+
+/*deep space nebula theme (space style)*/
+.game-board.space-style {
+  background:
+    radial-gradient(
+      120% 90% at 8% 14%,
+      rgba(56, 189, 248, 0.22),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 18% 24%,
+      rgba(124, 58, 237, 0.34),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 76% 68%,
+      rgba(59, 130, 246, 0.28),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 54% 38%,
+      rgba(192, 132, 252, 0.2),
+      transparent 36%
+    ),
+    linear-gradient(
+      112deg,
+      rgba(236, 72, 153, 0.09) 0%,
+      transparent 40%,
+      rgba(59, 130, 246, 0.08) 72%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, #030712 0%, #0b1020 52%, #020617 100%);
+  border: 2px solid rgba(226, 232, 240, 0.36);
+  box-shadow:
+    inset 0 0 44px rgba(148, 163, 184, 0.2),
+    inset 0 0 78px rgba(37, 99, 235, 0.14),
+    0 0 36px rgba(59, 130, 246, 0.24),
+    0 0 70px rgba(124, 58, 237, 0.2);
+  overflow: hidden;
+  animation:
+    nebulaDrift 20s ease-in-out infinite alternate,
+    nebulaPulse 8s ease-in-out infinite;
+}
+
+.game-board.space-style::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(
+      circle at 8% 8%,
+      rgba(255, 255, 255, 0.95) 0 1.3px,
+      transparent 2.4px
+    ),
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(255, 255, 255, 0.85) 0 1px,
+      transparent 1.8px
+    ),
+    radial-gradient(
+      circle at 28% 72%,
+      rgba(255, 255, 255, 0.7) 0 1px,
+      transparent 1.8px
+    ),
+    radial-gradient(
+      circle at 62% 22%,
+      rgba(255, 255, 255, 0.75) 0 1px,
+      transparent 1.8px
+    ),
+    radial-gradient(
+      circle at 86% 64%,
+      rgba(255, 255, 255, 0.8) 0 1px,
+      transparent 1.8px
+    ),
+    radial-gradient(
+      circle at 44% 84%,
+      rgba(255, 255, 255, 0.7) 0 1px,
+      transparent 1.8px
+    ),
+    radial-gradient(
+      circle at 72% 44%,
+      rgba(255, 255, 255, 0.65) 0 1px,
+      transparent 1.8px
+    ),
+    radial-gradient(
+      circle at 91% 18%,
+      rgba(255, 255, 255, 0.84) 0 1.2px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 36% 54%,
+      rgba(255, 255, 255, 0.76) 0 1px,
+      transparent 1.9px
+    ),
+    radial-gradient(
+      circle at 68% 86%,
+      rgba(255, 255, 255, 0.88) 0 1px,
+      transparent 2px
+    );
+  opacity: 0.76;
+  animation: starTwinkle 4.8s ease-in-out infinite;
+}
+
+.game-board.space-style::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(circle at center, transparent 48%, rgba(2, 6, 23, 0.68) 100%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.02) 0%, rgba(2, 6, 23, 0.24) 100%);
+}
+
+.game-cell.space-style {
+  position: relative;
+  z-index: 2;
+  border: 1px solid rgba(226, 232, 240, 0.32);
+  background:
+    linear-gradient(135deg, rgba(148, 163, 184, 0.06) 0%, transparent 46%),
+    rgba(9, 14, 28, 0.34);
+  box-shadow:
+    0 0 10px rgba(148, 163, 184, 0.16),
+    inset 0 0 7px rgba(15, 23, 42, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.game-cell.space-style::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 0 8px rgba(191, 219, 254, 0.9),
+    0 0 16px rgba(167, 139, 250, 0.68),
+    0 0 24px rgba(125, 211, 252, 0.4);
+  opacity: 0.96;
+}
+
+.game-cell.space-style:hover {
+  background:
+    linear-gradient(135deg, rgba(125, 211, 252, 0.12) 0%, transparent 46%),
+    rgba(15, 23, 42, 0.56);
+  border-color: rgba(248, 250, 252, 0.58);
+  box-shadow:
+    0 0 18px rgba(191, 219, 254, 0.28),
+    inset 0 0 14px rgba(59, 130, 246, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/*CRT scanline and flicker animations*/
+@keyframes crtFlicker {
+  0%,
+  100% {
+    filter: brightness(1.05) contrast(1.1);
+    opacity: 1;
+  }
+  50% {
+    filter: brightness(0.98) contrast(1.08);
+    opacity: 0.99;
+  }
+}
+
+@keyframes crtGlow {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 40px rgba(0, 255, 65, 0.15),
+      inset 0 0 80px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(0, 255, 65, 0.3),
+      0 0 60px rgba(0, 255, 65, 0.15);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 50px rgba(0, 255, 65, 0.22),
+      inset 0 0 80px rgba(0, 0, 0, 0.4),
+      0 0 40px rgba(0, 255, 65, 0.4),
+      0 0 80px rgba(0, 255, 65, 0.2);
+  }
+}
+
+@keyframes screenNoise {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes crtGlitch {
+  0% {
+    text-shadow:
+      2px 0 0 rgba(255, 0, 0, 0.2),
+      -2px 0 0 rgba(0, 0, 255, 0.2);
+  }
+  25% {
+    text-shadow:
+      3px 0 0 rgba(255, 0, 0, 0.25),
+      -3px 0 0 rgba(0, 0, 255, 0.25);
+  }
+  50% {
+    text-shadow:
+      1px 0 0 rgba(255, 0, 0, 0.15),
+      -1px 0 0 rgba(0, 0, 255, 0.15);
+  }
+  75% {
+    text-shadow:
+      2px 0 0 rgba(255, 0, 0, 0.2),
+      -2px 0 0 rgba(0, 0, 255, 0.2);
+  }
+  100% {
+    text-shadow:
+      0 0 0 rgba(255, 0, 0, 0),
+      0 0 0 rgba(0, 0, 255, 0);
+  }
+}
+
+@keyframes nebulaDrift {
+  0% {
+    background-position:
+      0% 0%,
+      0% 0%,
+      100% 100%,
+      50% 50%,
+      0% 0%,
+      0% 0%;
+  }
+  100% {
+    background-position:
+      6% 2%,
+      8% 4%,
+      94% 92%,
+      56% 46%,
+      3% 0%,
+      0% 0%;
+  }
+}
+
+@keyframes starTwinkle {
+  0%,
+  100% {
+    opacity: 0.52;
+    transform: translateZ(0) scale(1);
+  }
+  40% {
+    opacity: 0.94;
+    transform: translateZ(0) scale(1.012);
+  }
+  70% {
+    opacity: 0.66;
+    transform: translateZ(0) scale(0.996);
+  }
+}
+
+@keyframes nebulaPulse {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 44px rgba(148, 163, 184, 0.2),
+      inset 0 0 78px rgba(37, 99, 235, 0.14),
+      0 0 36px rgba(59, 130, 246, 0.24),
+      0 0 70px rgba(124, 58, 237, 0.2);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 52px rgba(148, 163, 184, 0.26),
+      inset 0 0 88px rgba(37, 99, 235, 0.2),
+      0 0 46px rgba(59, 130, 246, 0.3),
+      0 0 90px rgba(124, 58, 237, 0.28);
+  }
+}
+
+/*dark theme*/
+.game-cell.dark-style {
+  background: #121826;
+  border: 1px solid #3b4b6a;
 }

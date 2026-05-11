@@ -1,5 +1,5 @@
 import { GameInterface } from "../interface/game.interface.js";
-import { validateAIMoveDTO, validateMoveDTO, validateSessionDTO } from '../dto/game.dto.js';
+import { validateAbortSessionDTO, validateAIMoveDTO, validateMoveDTO, validateSessionDTO } from '../dto/game.dto.js';
 import { getEasyAIMove } from "../ai/easyAI.js";
 import { getMediumAIMove } from "../ai/mediumAI.js";
 import { getHardAIMove } from "../ai/hardAI.js";
@@ -98,6 +98,28 @@ export async function makeAIMove(req, res) {
 		if (moveResult.winner) updateExtra.result = "player2_win";
 		await GameInterface.appendMove(session._id, moveResult.board, moveResult, moveData, updateExtra);
 		res.status(200).json({ success: true, idx: aiIdx, ...moveResult });
+	} catch (err) {
+		res.status(400).json({ success: false, message: err.message });
+	}
+}
+
+// Abort a game session without recording a winner or loser
+export async function abortSession(req, res) {
+	try {
+		const dto = validateAbortSessionDTO(req.body);
+		const session = await GameInterface.getSessionById(dto.sessionId);
+		if (!session) throw new Error('Session not found');
+		if (session.result && session.result !== 'aborted') throw new Error('Game already finished');
+
+		const userId = String(req.user?.id || '');
+		const player1Id = String(session.player1?._id || session.player1 || '');
+		const player2Id = String(session.player2?._id || session.player2 || '');
+		if (userId && userId !== player1Id && userId !== player2Id) {
+			throw new Error('Not allowed to abort this session');
+		}
+
+		const updatedSession = await GameInterface.abortSession(session._id);
+		res.status(200).json({ success: true, session: updatedSession });
 	} catch (err) {
 		res.status(400).json({ success: false, message: err.message });
 	}

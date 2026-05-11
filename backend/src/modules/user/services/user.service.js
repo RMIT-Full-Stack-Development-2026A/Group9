@@ -122,7 +122,10 @@ export const getGameHistory = async (userId, query) => {
 	} = query;
 
 	const filter = {
-		$or: [{ player1: userObjectId }, { player2: userObjectId }],
+		$or: [
+			{ player1: userObjectId },
+			{ player2: userObjectId },
+		],
 	};
 
 	if (gameType) {
@@ -170,12 +173,20 @@ export const getGameHistory = async (userId, query) => {
 	if (search) {
 		const searchLower = search.toLowerCase();
 		sessions = sessions.filter((session) => {
-			const otherPlayers = session.players.filter(
-				(p) => p._id.toString() !== userId
-			);
-			if (otherPlayers.some((p) => p.username.toLowerCase().includes(searchLower)))
+			// New schema: check player1 and player2
+			let otherPlayers = [];
+			if (session.player1 && String(session.player1?._id || session.player1) !== userId) {
+				otherPlayers.push(session.player1);
+			}
+			if (session.player2 && String(session.player2?._id || session.player2) !== userId) {
+				otherPlayers.push(session.player2);
+			}
+			
+			if (otherPlayers.some((p) => p.username?.toLowerCase().includes(searchLower)))
 				return true;
 			if (session.botName && session.botName.toLowerCase().includes(searchLower))
+				return true;
+			if (session.player2Name && session.player2Name.toLowerCase().includes(searchLower))
 				return true;
 			return false;
 		});
@@ -183,22 +194,33 @@ export const getGameHistory = async (userId, query) => {
 
 	return sessions.map((session) => {
 		let userResult;
+		
+		// Handle new schema (player1_win/player2_win/draw/aborted)
 		if (session.result === "player1_win") {
 			userResult = String(session.player1?._id || session.player1 || "") === userId ? "Win" : "Lose";
 		} else if (session.result === "player2_win") {
 			userResult = String(session.player2?._id || session.player2 || "") === userId ? "Win" : "Lose";
 		} else if (session.result === "draw") {
 			userResult = "Draw";
-		} else {
+		} else if (session.result === "aborted") {
 			userResult = "Aborted";
+		} else {
+			userResult = "Aborted"; // Default fallback
 		}
 
-		const opponent =
-			session.gameType === "ai"
-				? session.player2Name || session.botName || "AI Bot"
-				: String(session.player1?._id || session.player1 || "") === userId
-					? session.player2?.username || session.player2Name || "Unknown"
-					: session.player1?.username || "Unknown";
+		// Determine opponent: new schema (player1/player2)
+		let opponent = "Unknown";
+		if (session.gameType === "ai" || session.gameType === "single") {
+			opponent = session.player2Name || session.botName || "AI Bot";
+		} else {
+			// Multiplayer: use player1 and player2
+			const userId_str = String(session.player1?._id || session.player1 || "");
+			if (userId_str === userId) {
+				opponent = session.player2?.username || session.player2Name || "Unknown";
+			} else {
+				opponent = session.player1?.username || "Unknown";
+			}
+		}
 
 		const gameTypeLabels = {
 			classic: "Two Players",

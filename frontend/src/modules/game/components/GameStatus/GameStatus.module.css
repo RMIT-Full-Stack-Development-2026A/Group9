@@ -1,9 +1,96 @@
-/**
- * ============================================================================
- * GAME STATUS STYLES (The Match HUD)
- * ============================================================================
- * Location: src/modules/game/components/GameStatus.module.css
- * Purpose: This provides the "Heads-Up Display" (HUD) for the match. It 
- * uses a flexbox layout to sandwich the game messages between the two 
- * player profile cards.
- */
+
+.match-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3px;
+    padding: 5px 0;
+    background: radial-gradient(circle at center, #16203d 0%, #0b0f1a 100%);
+}
+
+.board-wrapper {
+    height: 65vh;
+    width: 65vh;
+    aspect-ratio: 1 / 1;
+}
+
+.player-dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 25px;
+    margin-top: 25px;
+    background: rgba(17, 26, 46, 0.6);
+    padding: 15px 30px;
+    border-radius: 12px;
+    border: 1px solid #1f2b47;
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    width: 190px;
+    justify-content: space-between;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.player-card.active-turn {
+    opacity: 1;
+    background: rgba(0, 210, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+    border-color: rgba(0, 210, 255, 0.5);
+}
+
+.player-avatar {
+    width: 65px;
+    height: 65px;
+    background: #1e2945;
+    border: 2px solid #3a4b70;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+    overflow: hidden;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-width: 0;
+}
+
+.player-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-marker {
+    font-size: 0.9rem;
+    line-height: 1;
+    color: #94a3b8;
+}
+
+.marker-display {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.vs-badge {
+    font-weight: 800;
+    color: #4a5d85;
+}

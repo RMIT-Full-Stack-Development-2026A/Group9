@@ -28,3 +28,8 @@ export function makeMove(moveData) {
 export function makeAIMove(aiMoveData) {
 	return api.post('/api/game/sessions/ai-move', aiMoveData);
 }
+
+// Abort an active game session
+export function abortSession(abortData) {
+	return api.post('/api/game/sessions/abort', abortData);
+}

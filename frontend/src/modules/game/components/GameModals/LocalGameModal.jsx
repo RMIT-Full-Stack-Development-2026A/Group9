@@ -2,16 +2,35 @@
 import React, { useState, useContext } from "react";
 import SimpleModal from "../../../../shared/ui/SimpleModal.jsx";
 import styles from "./GameModals.module.css";
-
-
-
-
-
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../../app/providers/AuthProvider.jsx";
 
 export default function LocalGameModal({ open, onClose }) {
   const { user } = useContext(AuthContext) || {};
+
+  const normalizeAuthUser = (raw) => {
+    if (!raw || typeof raw !== "object") return null;
+    let candidate = raw;
+    if (candidate.data && typeof candidate.data === "object") {
+      candidate = candidate.data;
+    }
+    if (candidate.user && typeof candidate.user === "object") {
+      candidate = candidate.user;
+    }
+    if (candidate.account && typeof candidate.account === "object") {
+      const account = candidate.account;
+      const profile = candidate.profile && typeof candidate.profile === "object" ? candidate.profile : {};
+      return {
+        ...account,
+        avatar: profile.avatar || account.avatar || "",
+      };
+    }
+    return candidate;
+  };
+  
+  const currentUser = normalizeAuthUser(user);
+  const player1DisplayName =
+    currentUser?.username || currentUser?.name || currentUser?.email || "Player 1";
   const [player2, setPlayer2] = useState("");
   const [boardSize, setBoardSize] = useState("10x10");
   const [boardStyle, setBoardStyle] = useState("Classic");
@@ -22,11 +41,13 @@ export default function LocalGameModal({ open, onClose }) {
   const navigate = useNavigate();
 
   const markerOptions = ["X", "O", "⭐", "🔥", "💎", "🌙"];
-  const boardStyles = ["Classic", "Neon", "Minimal"];
+  const boardStyles = ["Classic", "Retro", "Space"];
   const boardSizes = ["10x10", "15x15"];
   const firstOptions = ["Player 1", "Player 2"];
 
   const bothPicked = marker1 && marker2 && marker1 !== marker2;
+
+  
 
   // Turn-based, but allow changing as long as not picking the same icon
   const handleMarkerClick = (opt) => {
@@ -47,17 +68,17 @@ export default function LocalGameModal({ open, onClose }) {
     if (!bothPicked || !player2) return;
     // Prepare settings for LocalGameArena with player2 as null and localPlayer2Name set
     const settings = {
+      // backend expects 'classic' for local/classic matches
+      gameType: 'local',
       player1: {
-        id: user?._id || null, // Use null if not logged in
-        name: "Player 1",
+        id: currentUser?._id || currentUser?.id || null, // Use null if not logged in
+        name: player1DisplayName,
         marker: marker1,
-        avatar: "/avatars/avatar1.png", // You can customize
       },
       player2: {
         id: null, // Always null for guest/local
         name: player2,
         marker: marker2,
-        avatar: "/avatars/avatar2.png", // You can customize
       },
       boardSize: boardSize === "10x10" ? 10 : 15,
       boardStyle,

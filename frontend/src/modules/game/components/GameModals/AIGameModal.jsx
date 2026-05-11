@@ -16,13 +16,13 @@ export default function AIGameModal({ open, onClose }) {
   const markerOptions = ["X", "O", "⭐", "🔥", "💎", "🌙"];
   // Map AI names to difficulty
   const aiLevels = [
-    { value: "Easy", label: "Jeremy (Easy)" },
-    { value: "Medium", label: "Bot (Medium)" },
-    { value: "Hard", label: "HAL 9000 (Hard)" },
+    { value: "Easy", label: "JohnShelby (Easy)" },
+    { value: "Medium", label: "ArthurShelby (Medium)" },
+    { value: "Hard", label: "ThomasShelby (Hard)" },
   ];
   const firstOptions = ["ME", "AI"];
   const boardSizes = ["10x10", "15x15"];
-  const boardStyles = ["Classic", "Neon", "Minimal"];
+  const boardStyles = ["Classic", "Retro", "Space"];
 
   // When player picks a marker, AI picks a random different one
   const handleMarkerClick = (opt) => {
@@ -35,6 +35,8 @@ export default function AIGameModal({ open, onClose }) {
   const handleStartGame = () => {
     if (!marker || !aiMarker) return;
     const settings = {
+      // mark this as an AI session for backend/logic
+      gameType: 'ai',
       player1: {
         name: "You",
         marker: marker,

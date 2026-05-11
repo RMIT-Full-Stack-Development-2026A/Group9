@@ -1,113 +1,36 @@
-import React, { useEffect, useState } from "react";
-import styles from "./GameBoard.module.css";
-import { useGame } from "../../hooks/useGame.js";
-import useAI from "../../hooks/useAI.js";
 
-function GameBoard({
-	player1,
-	player2,
-	boardSize,
-	boardStyle,
-	firstPlayer,
-	onAbort,
-	onGameEnd,
-	aiLevel,
-}) {
-	const [lastPlayerMoveIdx, setLastPlayerMoveIdx] = useState(null);
+import React from 'react';
+import Cell from '../Cell/Cell';
+import styles from './GameBoard.module.css';
 
-	const sessionData = {
-		gameType: aiLevel ? "ai" : "classic",
-		boardSize,
-		player2Name: player2.name,
-		firstPlayer,
-	};
+export default function GameBoard({ size, styleType, markerIndex, boardState, onCellClick, winningLine, isLocked }) {
+    //supports both 10x10 and 15x15
+    const gridStyle = {
+        display: 'grid',
+        gridTemplateColumns: `repeat(${size}, 1fr)`,
+        width: '100%',
+        maxWidth: '500px',
+        aspectRatio: '1 / 1',
+        margin: '0 auto',
+        gap: '1px',
+    };
 
-	const {
-		session,
-		board,
-		turn,
-		winner,
-		winLine,
-		draw,
-		loading,
-		error,
-		startSession,
-		playMove,
-		playAIMove,
-	} = useGame(sessionData);
+    //look for selected theme style in the module.css file
+    const boardClass = `${styles['game-board']} ${styles[`${styleType}-style`] || ''}`;
 
-	useEffect(() => {
-		startSession(sessionData);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useAI({
-		enabled: Boolean(aiLevel),
-		session,
-		turn,
-		winner,
-		draw,
-		loading,
-		board,
-		lastPlayerMoveIdx,
-		aiMarker: player2.marker,
-		aiLevel,
-		onAIMove: playAIMove,
-	});
-
-	function handleCellClick(idx) {
-		if (loading || winner || !session || board[idx]) return;
-		if (aiLevel && turn === "player2") return;
-
-		let marker;
-		let playerId;
-		if (turn === "player1") {
-			marker = player1.marker;
-			playerId = player1.id || "player1";
-		} else {
-			marker = player2.marker;
-			playerId = player2.id || "player2";
-		}
-		if (playerId === "player1") setLastPlayerMoveIdx(idx);
-		playMove(idx, marker, playerId);
-	}
-
-	return (
-		<div>
-			<div className={styles.playerInfo}>
-				<span className={turn === "player1" ? styles.active : undefined}>
-					<img src={player1.avatar} alt="avatar" className={styles.avatar} /> {player1.name} ({player1.marker})
-				</span>
-				<span>vs</span>
-				<span className={turn === "player2" ? styles.active : undefined}>
-					<img src={player2.avatar} alt="avatar" className={styles.avatar} /> {player2.name} ({player2.marker})
-				</span>
-			</div>
-			<div className={`${styles.board} board-style-${boardStyle}`} style={{ gridTemplateColumns: `repeat(${boardSize}, 1fr)` }}>
-				{Array(boardSize)
-					.fill(0)
-					.map((_, row) =>
-						Array(boardSize)
-							.fill(0)
-							.map((_, col) => {
-								const idx = row * boardSize + col;
-								return (
-									<div
-										key={idx}
-										className={`${styles.cell} ${winLine?.includes(idx) ? styles.cellWin : ""}`}
-										onClick={() => handleCellClick(idx)}
-									>
-										{board && board[idx]}
-									</div>
-								);
-							})
-					)}
-			</div>
-			{winner && <div className={styles.result}>{winner === "draw" ? "Draw!" : `${winner} wins!`}</div>}
-			{error && <div className={styles.result} style={{ color: "red" }}>{error}</div>}
-			<button className={styles.abortBtn} onClick={onAbort}>Abort</button>
-		</div>
-	);
+    return (
+        <div className={boardClass} style={gridStyle}>
+            {(boardState || []).map((cellValue, index) => (
+                <Cell
+                    key={index}
+                    value={cellValue}
+                    markerIndex={markerIndex}
+                    onClick={() => onCellClick(index)}
+                    className={styles['game-cell']}
+                    isWinningCell={Array.isArray(winningLine) && winningLine.includes(index)}
+                    isLocked={isLocked}
+                />
+            ))}
+        </div>
+    );
 }
-
-export default GameBoard;

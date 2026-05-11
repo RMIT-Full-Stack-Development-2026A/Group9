@@ -75,6 +75,12 @@ const gameSessionSchema = new mongoose.Schema(
 	}
 );
 
+// Prevent duplicate sessions: same player, same opponent, same start time (within 1 second)
+gameSessionSchema.index(
+	{ player1: 1, player2: 1, player2Name: 1, startTime: 1 },
+	{ unique: true, sparse: true }
+);
+
 const GameSession =
 	mongoose.models.GameSession || mongoose.model("GameSession", gameSessionSchema);
 

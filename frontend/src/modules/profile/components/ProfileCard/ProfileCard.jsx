@@ -350,7 +350,7 @@ const ProfileCard = ({ onUserUpdate }) => {
                       <div className={styles.sessionMeta}>
                         <span className={styles.metaDot}>●</span>
                         <span>{getGameTypeShort(session.gameType)}</span>
-                        <span className={styles.metaSep}>{session.boardSize || '15'}x{session.boardSize || '15'}</span>
+                        <span className={styles.metaSep}>{session.boardSize || '10'}x{session.boardSize || '10'}</span>
                         <span className={styles.metaSep}>{formatDate(session.startTime)}</span>
                       </div>
                     </div>

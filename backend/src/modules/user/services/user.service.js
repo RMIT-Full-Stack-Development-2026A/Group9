@@ -233,6 +233,7 @@ export const getGameHistory = async (userId, query) => {
 			sessionNumber: session.sessionNumber,
 			startTime: session.startTime,
 			endTime: session.endTime,
+			boardSize: session.boardSize || 10,
 			gameType: gameTypeLabels[session.gameType] || session.gameType,
 			result: userResult,
 			opponent,

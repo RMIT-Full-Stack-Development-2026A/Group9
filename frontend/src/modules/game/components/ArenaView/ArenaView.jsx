@@ -86,6 +86,7 @@ export default function ArenaView({
                     player1={{ name: player1Name, marker: p1Marker }}
                     player2={{ name: player2Name, marker: p2Marker }}
                     isOfflineMatch={matchDisplay.isOfflineMatch}
+                    gameType={gameType}
                     onPlayAgain={onPlayAgain}
                     onExit={onExit}
                 />

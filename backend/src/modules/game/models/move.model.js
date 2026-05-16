@@ -20,7 +20,7 @@ const moveSchema = new mongoose.Schema(
 			trim: true,
 			maxlength: 8,
 		},
-		position: {
+		notation: {
 			type: String,
 			required: true,
 			trim: true,

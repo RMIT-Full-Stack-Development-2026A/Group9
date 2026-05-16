@@ -3,6 +3,7 @@ import { validateAbortSessionDTO, validateAIMoveDTO, validateMoveDTO, validateSe
 import { getEasyAIMove } from "../ai/easyAI.js";
 import { getMediumAIMove } from "../ai/mediumAI.js";
 import { getHardAIMove } from "../ai/hardAI.js";
+import { toAlgebraicNotation } from "../services/game.service.js";
 
 // Create a new game session
 export async function createSession(req, res) {
@@ -34,10 +35,11 @@ export async function makeMove(req, res) {
 		const moveNumber = board.filter(cell => cell !== null && cell !== undefined).length + 1;
 		const row = Math.floor(dto.idx / boardSize);
 		const col = dto.idx % boardSize;
+		const notation = toAlgebraicNotation(row, col, boardSize);
 		const moveData = {
 			playerId: dto.playerId || 'player1', // fallback if not provided
 			marker: dto.marker,
-			position: `${row},${col}`,
+			notation,
 			row,
 			col,
 			moveNumber,
@@ -85,10 +87,11 @@ export async function makeAIMove(req, res) {
 		const moveNumber = board.filter((cell) => cell !== null && cell !== undefined).length + 1;
 		const row = Math.floor(aiIdx / boardSize);
 		const col = aiIdx % boardSize;
+		const notation = toAlgebraicNotation(row, col, boardSize);
 		const moveData = {
 			playerId: "ai",
 			marker: dto.marker,
-			position: `${row},${col}`,
+			notation,
 			row,
 			col,
 			moveNumber,
@@ -120,6 +123,50 @@ export async function abortSession(req, res) {
 
 		const updatedSession = await GameInterface.abortSession(session._id);
 		res.status(200).json({ success: true, session: updatedSession });
+	} catch (err) {
+		res.status(400).json({ success: false, message: err.message });
+	}
+}
+
+// Get replay data (premium only) for a finished or in-progress session
+export async function getSessionReplay(req, res) {
+	try {
+		const { sessionId } = req.params;
+		const session = await GameInterface.getSessionById(sessionId);
+		if (!session) throw new Error('Session not found');
+
+		const userId = String(req.user?.id || '');
+		const player1Id = String(session.player1?._id || session.player1 || '');
+		const player2Id = String(session.player2?._id || session.player2 || '');
+		if (userId && userId !== player1Id && userId !== player2Id) {
+			throw new Error('Not allowed to access this replay');
+		}
+
+		const boardSize = session.boardSize || 10;
+		const moves = await GameInterface.getMovesBySessionId(session._id);
+		const replayMoves = moves.map((move) => ({
+			_id: move._id,
+			moveNumber: move.moveNumber,
+			playerId: move.playerId,
+			marker: move.marker,
+			row: move.row,
+			col: move.col,
+			notation: move.notation,
+			playedAt: move.createdAt || null,
+		}));
+
+		res.status(200).json({
+			success: true,
+			session: {
+				_id: session._id,
+				boardSize,
+				gameType: session.gameType,
+				result: session.result,
+				startTime: session.startTime,
+				endTime: session.endTime,
+			},
+			moves: replayMoves,
+		});
 	} catch (err) {
 		res.status(400).json({ success: false, message: err.message });
 	}

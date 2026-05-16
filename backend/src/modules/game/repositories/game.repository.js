@@ -19,7 +19,7 @@ export async function appendMove(sessionId, board, moveResult, moveData, updateE
 		sessionId,
 		playerId: moveData.playerId,
 		marker: moveData.marker,
-		position: moveData.position,
+		notation: moveData.notation,
 		row: moveData.row,
 		col: moveData.col,
 		moveNumber: moveData.moveNumber,
@@ -51,4 +51,10 @@ export async function abortSession(sessionId) {
 		},
 		{ new: true }
 	);
+}
+
+export async function getMovesBySessionId(sessionId) {
+	return await Move.find({ sessionId })
+		.sort({ moveNumber: 1, createdAt: 1 })
+		.lean();
 }

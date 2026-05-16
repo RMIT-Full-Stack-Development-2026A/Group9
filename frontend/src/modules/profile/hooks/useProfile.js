@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useContext } from "react";
 import { AuthContext } from "../../../app/providers/AuthProvider.jsx";
 import * as profileService from "../services/profile.service.js";
 import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "../../../config/api.config.js";
+import { useReplay } from "./useReplay.js";
 
 export const useProfile = (onUserUpdate) => {
   const authContext = useContext(AuthContext);
@@ -41,6 +42,8 @@ export const useProfile = (onUserUpdate) => {
     setMessage({ text, type });
     setTimeout(() => setMessage({ text: "", type: "" }), 4000);
   };
+
+  const replay = useReplay(showMessage);
 
   const syncUser = useCallback(
     (nextUser) => {
@@ -230,5 +233,6 @@ export const useProfile = (onUserUpdate) => {
     handleFilterChange,
     toggleSortOrder,
     clearFilters,
+    ...replay,
   };
 };

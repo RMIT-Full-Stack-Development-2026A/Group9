@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as gameController from "../controllers/game.controller.js";
-import { authenticate } from "../../../middlewares/auth.middleware.js";
+import { authenticate, requirePremium } from "../../../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -16,5 +16,7 @@ router.post("/sessions/move", authenticate, gameController.makeMove);
 router.post("/sessions/ai-move", authenticate, gameController.makeAIMove);
 
 router.post("/sessions/abort", authenticate, gameController.abortSession);
+
+router.get("/sessions/:sessionId/replay", authenticate, requirePremium, gameController.getSessionReplay);
 
 export default router;

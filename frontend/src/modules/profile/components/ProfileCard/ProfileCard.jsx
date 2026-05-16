@@ -7,6 +7,7 @@ import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
 import { COUNTRIES } from "../../../../shared/constants/countries.js";
 import Button from '../../../../shared/ui/Button/Button.jsx';
 import Input from '../../../../shared/ui/Input/Input.jsx';
+import ReplayModal from '../ReplayModal/ReplayModal.jsx';
 
 const ProfileCard = ({ onUserUpdate }) => {
 
@@ -31,6 +32,19 @@ const ProfileCard = ({ onUserUpdate }) => {
     handleFilterChange,
     toggleSortOrder,
     clearFilters,
+    replayOpen,
+    replayLoading,
+    replaySession,
+    replayMoves,
+    replayIndex,
+    replayPlaying,
+    openReplay,
+    closeReplay,
+    stepReplayForward,
+    stepReplayBackward,
+    jumpReplayStart,
+    jumpReplayEnd,
+    toggleReplayPlayback,
   } = useProfile(onUserUpdate);
 
   const {
@@ -120,6 +134,11 @@ const ProfileCard = ({ onUserUpdate }) => {
   const isPremiumActive =
     Boolean(wallet?.premiumUntil) &&
     new Date(wallet.premiumUntil).getTime() > Date.now();
+
+  const isAbortedSession = (session) => {
+    const result = String(session?.result || session?.status || "").trim().toLowerCase();
+    return result === 'aborted';
+  };
 
   return (
     <div className={styles.profilePage}>
@@ -354,13 +373,36 @@ const ProfileCard = ({ onUserUpdate }) => {
                         <span className={styles.metaSep}>{formatDate(session.startTime)}</span>
                       </div>
                     </div>
-                    <Button className={styles.replayBtn} type="button">▷ Replay</Button>
+                    {!isAbortedSession(session) && (
+                      <Button
+                        className={styles.replayBtn}
+                        type="button"
+                        onClick={() => openReplay(session, isPremiumActive)}
+                        disabled={replayLoading}
+                      >
+                        ▷ Replay
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>
             )}
           </div>
         )}
+
+        <ReplayModal
+          open={replayOpen}
+          session={replaySession}
+          moves={replayMoves}
+          replayIndex={replayIndex}
+          replayPlaying={replayPlaying}
+          onClose={closeReplay}
+          onJumpStart={jumpReplayStart}
+          onStepBack={stepReplayBackward}
+          onTogglePlay={toggleReplayPlayback}
+          onStepForward={stepReplayForward}
+          onJumpEnd={jumpReplayEnd}
+        />
 
         {activeTab === 'wallet' && (
           <div className={styles.walletPanel}>

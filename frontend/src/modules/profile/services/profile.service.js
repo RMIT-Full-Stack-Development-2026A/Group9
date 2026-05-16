@@ -28,3 +28,6 @@ export const uploadAvatar = (formData) =>
 
 export const getGameHistory = (params) =>
   http.get("/api/users/game-history", { params });
+
+export const getSessionReplay = (sessionId) =>
+  http.get(`/api/game/sessions/${sessionId}/replay`);

@@ -59,7 +59,6 @@ export const adminService = {
         if (!user) {
             throw new AppError("User not found", 404);
         }
-        // Toggle isActive instead of isDeactivated
         const newStatus = !user.isActive;
         const updatedUser = await adminRepository.updateUserActiveStatus(targetUserId, newStatus);
         await adminRepository.createActionLog({

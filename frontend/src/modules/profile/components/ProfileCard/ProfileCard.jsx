@@ -28,10 +28,11 @@ const ProfileCard = ({ onUserUpdate }) => {
     handleFormChange,
     handleUpdateProfile,
     handleAvatarUpload,
-    handleSearchSubmit,
+    handleSearchInputChange,
     handleFilterChange,
     toggleSortOrder,
     clearFilters,
+    getSessionToken,
     replayOpen,
     replayLoading,
     replaySession,
@@ -131,6 +132,8 @@ const ProfileCard = ({ onUserUpdate }) => {
     return 'Online Match';
   };
 
+  const getSessionTokenLabel = (session) => getSessionToken(session);
+
   const isPremiumActive =
     Boolean(wallet?.premiumUntil) &&
     new Date(wallet.premiumUntil).getTime() > Date.now();
@@ -138,6 +141,24 @@ const ProfileCard = ({ onUserUpdate }) => {
   const isAbortedSession = (session) => {
     const result = String(session?.result || session?.status || "").trim().toLowerCase();
     return result === 'aborted';
+  };
+
+  const getBadgeText = (session) => {
+    const gameType = session?.gameType || '';
+    const result = String(session?.result || "").trim();
+    
+    // For local multiplayer (Two Players), dynamically determine the winner
+    if (getGameTypeShort(gameType) === 'Two Players') {
+      if (result.toLowerCase() === 'win') {
+        return 'P1 Win';
+      } else if (result.toLowerCase() === 'lose') {
+        return 'P2 Win';
+      }
+      // For Draw and Aborted, keep as-is
+    }
+    
+    // For all other game types, return the result as-is
+    return result;
   };
 
   return (
@@ -278,30 +299,28 @@ const ProfileCard = ({ onUserUpdate }) => {
         {activeTab === 'history' && (
 
           <div className={styles.historyPanel}>
-            {/* First row: search input and button */}
-            <div className={styles.searchRow}>
+            {/* First row: live search input */}
+            <form
+              className={styles.searchRow}
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
               <div className={styles.searchInputWrapper}>
                 <span className={styles.searchIcon}>
                   <i className="bi bi-search"></i>
                 </span>
                 <input
-                  type="text"
-                  placeholder="Search by opponent name..."
+                  type="search"
+                  placeholder="Search by session ID or player name..."
                   value={searchInput}
-                  onChange={e => setSearchInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSearchSubmit()}
+                  onChange={e => handleSearchInputChange(e.target.value)}
                   className={styles.searchInput}
+                  enterKeyHint="search"
                 />
               </div>
-              <Button
-                className={styles.searchBtn}
-                type="button"
-                onClick={handleSearchSubmit}
-                color="var(--cyan)"
-              >
-                Search
-              </Button>
-            </div>
+              <div className={styles.searchHint}>Search updates instantly as you type.</div>
+            </form>
 
             {/* Second row: filters and actions */}
             <div className={styles.filtersRow}>
@@ -364,13 +383,14 @@ const ProfileCard = ({ onUserUpdate }) => {
                     <div className={styles.sessionInfo}>
                       <div className={styles.sessionTop}>
                         <span className={styles.sessionOpponent}>vs {session.opponent}</span>
-                        <span className={`${styles.resultBadge} ${styles[session.result.toLowerCase()]}`}>{session.result}</span>
+                        <span className={`${styles.resultBadge} ${styles[session.result.toLowerCase()]}`}>{getBadgeText(session)}</span>
                       </div>
                       <div className={styles.sessionMeta}>
-                        <span className={styles.metaDot}>●</span>
+                        <span className={styles.sessionToken}>{getSessionTokenLabel(session)}</span>
                         <span>{getGameTypeShort(session.gameType)}</span>
                         <span className={styles.metaSep}>{session.boardSize || '10'}x{session.boardSize || '10'}</span>
                         <span className={styles.metaSep}>{formatDate(session.startTime)}</span>
+                        <span className={styles.metaSep}>{session.endTime ? formatDate(session.endTime) : 'In progress'}</span>
                       </div>
                     </div>
                     {!isAbortedSession(session) && (

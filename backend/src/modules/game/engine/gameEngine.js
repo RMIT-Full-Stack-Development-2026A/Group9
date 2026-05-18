@@ -50,8 +50,7 @@ export function getEasyAIMove(board, boardSize, lastPlayerMoveIdx) {
 		return empties[Math.floor(Math.random() * empties.length)];
 	}
 	const directions = [
-		[0, 1], [1, 0], [0, -1], [-1, 0], // 4 orthogonal
-		[1, 1], [1, -1], [-1, 1], [-1, -1] // 4 diagonal
+		[0, 1], [1, 0], [0, -1], [-1, 0] // 4 orthogonal only (immediately adjacent)
 	];
 	const row = Math.floor(lastPlayerMoveIdx / boardSize);
 	const col = lastPlayerMoveIdx % boardSize;
@@ -172,6 +171,101 @@ function countForkThreat(board, size, idx, marker) {
 	return openThreeDirs;
 }
 
+function detectCrossingForkThreats(board, size, marker) {
+	// Detect fork formations: find positions that block critical opponent threat lines
+	// A fork exists when opponent can create multiple unblockable winning threats
+	const empties = [];
+	const dirs = [
+		[0, 1],   // horizontal
+		[1, 0],   // vertical
+		[1, 1],   // diagonal \
+		[1, -1],  // diagonal /
+	];
+
+	for (let i = 0; i < board.length; i++) {
+		if (isEmptyCell(board[i])) empties.push(i);
+	}
+
+	// For each empty cell, evaluate how critical it is for blocking opponent's attack
+	const criticalPositions = [];
+
+	for (const idx of empties) {
+		const r0 = Math.floor(idx / size);
+		const c0 = idx % size;
+		let threatScore = 0;
+		const threatsBlockedInDirs = [];
+
+		// Check all 4 directions from this position
+		for (let dirIdx = 0; dirIdx < dirs.length; dirIdx++) {
+			const [dr, dc] = dirs[dirIdx];
+
+			// Count opponent pieces to the left
+			let left = 0;
+			let rr = r0 - dr;
+			let cc = c0 - dc;
+			while (inBounds(size, rr, cc) && board[rr * size + cc] === marker) {
+				left++;
+				rr -= dr;
+				cc -= dc;
+			}
+			const leftOpen = inBounds(size, rr, cc) && isEmptyCell(board[rr * size + cc]);
+
+			// Count opponent pieces to the right
+			let right = 0;
+			rr = r0 + dr;
+			cc = c0 + dc;
+			while (inBounds(size, rr, cc) && board[rr * size + cc] === marker) {
+				right++;
+				rr += dr;
+				cc += dc;
+			}
+			const rightOpen = inBounds(size, rr, cc) && isEmptyCell(board[rr * size + cc]);
+
+			const len = left + 1 + right;
+			const openEnds = (leftOpen ? 1 : 0) + (rightOpen ? 1 : 0);
+
+			// This position is critical if it blocks a strong threat
+			// Prioritize: open-4 (3 in a row with both ends open) and open-3 (2 in a row with both ends open)
+			if (len === 4 && openEnds === 2) {
+				threatScore += 1000; // Critical: open-4
+				threatsBlockedInDirs.push(dirIdx);
+			} else if (len === 3 && openEnds === 2) {
+				threatScore += 100; // High priority: open-3
+				threatsBlockedInDirs.push(dirIdx);
+			} else if (len === 2 && openEnds === 2) {
+				threatScore += 50; // Medium priority: two pieces with room to expand
+				threatsBlockedInDirs.push(dirIdx);
+			}
+		}
+
+		// Fork bonus: if this position blocks threats in multiple non-parallel directions
+		if (threatsBlockedInDirs.length >= 2) {
+			const uniqueDirs = new Set(threatsBlockedInDirs);
+			if (uniqueDirs.size >= 2) {
+				threatScore *= 5; // Major boost for blocking multiple threat axes
+			}
+		}
+
+		if (threatScore > 0) {
+			criticalPositions.push({
+				position: idx,
+				threatScore,
+				directionsCovered: threatsBlockedInDirs.length,
+			});
+		}
+	}
+
+	// Sort by threat score (highest first)
+	criticalPositions.sort((a, b) => b.threatScore - a.threatScore);
+	return criticalPositions;
+}
+
+function findBestForkBlockingMove(board, size, forkThreats) {
+	// Simply return the highest-scored threat position
+	if (forkThreats.length === 0) return null;
+	return forkThreats[0].position;
+}
+
 function chooseCenterishMove(board, size) {
 	const center = Math.floor(size / 2);
 	const candidates = [];
@@ -195,8 +289,8 @@ export function getMediumAIMove(board, size, lastPlayerMoveIdx, aiMarker, player
 	// 1) Win now
 	// 2) Block opponent win
 	// 3) Block opponent open-4 (two-ended)
-	// 4) Block opponent open-3 (two-ended)
-	// 5) Block fork (two open-threes)
+	// 4) Block opponent fork (crossing open-three lines)
+	// 5) Block opponent open-3 (two-ended)
 	// 6) Otherwise: choose best extending move, fallback easy
 
 	const empties = [];
@@ -230,17 +324,32 @@ export function getMediumAIMove(board, size, lastPlayerMoveIdx, aiMarker, player
 		if (win) return idx;
 	}
 
-	// Threat heuristics
+	// Threat heuristics - detect fork formations
 	let bestBlockOpenFour = null;
 	let bestBlockOpenThree = null;
 	let bestBlockFork = null;
 
-	for (const idx of empties) {
-		const a = analyzePlacement(board, size, idx, inferredPlayerMarker);
-		if (a.openFour) bestBlockOpenFour = idx;
-		if (!bestBlockOpenThree && a.openThree) bestBlockOpenThree = idx;
-		const forkCount = countForkThreat(board, size, idx, inferredPlayerMarker);
-		if (forkCount >= 2) bestBlockFork = idx;
+	// Detect critical fork threat positions (includes open-4, open-3, and multi-directional threats)
+	const forkThreats = detectCrossingForkThreats(board, size, inferredPlayerMarker);
+	if (forkThreats.length > 0) {
+		// Check if the top threat is a critical multi-directional fork (blocks 2+ directions)
+		const topThreat = forkThreats[0];
+		if (topThreat.directionsCovered >= 2 || topThreat.threatScore >= 100) {
+			bestBlockFork = topThreat.position;
+		}
+	}
+
+	// Fallback: check traditional open-4 and open-3
+	if (!bestBlockFork) {
+		for (const idx of empties) {
+			const a = analyzePlacement(board, size, idx, inferredPlayerMarker);
+			if (a.openFour) {
+				bestBlockOpenFour = idx;
+			}
+			if (!bestBlockOpenThree && a.openThree) {
+				bestBlockOpenThree = idx;
+			}
+		}
 	}
 
 	if (bestBlockOpenFour != null) return bestBlockOpenFour;
@@ -294,15 +403,29 @@ export function getHardAIMove(board, size, lastPlayerMoveIdx, aiMarker, playerMa
 	}
 
 	// 3) Keep all defensive requirements from Medium (open-4/open-3/fork blocking)
+	// Use improved fork detection
+	const forkThreats = detectCrossingForkThreats(board, size, inferredPlayerMarker);
 	let hasMediumThreat = false;
-	for (const idx of empties) {
-		const threat = analyzePlacement(board, size, idx, inferredPlayerMarker);
-		const forkThreat = countForkThreat(board, size, idx, inferredPlayerMarker);
-		if (threat.openFour || threat.openThree || forkThreat >= 2) {
+	
+	if (forkThreats.length > 0) {
+		// If there's a critical multi-directional threat, treat it as urgent
+		const topThreat = forkThreats[0];
+		if (topThreat.directionsCovered >= 2 || topThreat.threatScore >= 100) {
 			hasMediumThreat = true;
-			break;
 		}
 	}
+	
+	if (!hasMediumThreat) {
+		for (const idx of empties) {
+			const threat = analyzePlacement(board, size, idx, inferredPlayerMarker);
+			const forkThreat = countForkThreat(board, size, idx, inferredPlayerMarker);
+			if (threat.openFour || threat.openThree || forkThreat >= 2) {
+				hasMediumThreat = true;
+				break;
+			}
+		}
+	}
+	
 	if (hasMediumThreat) {
 		return getMediumAIMove(board, size, lastPlayerMoveIdx, aiMarker, inferredPlayerMarker);
 	}

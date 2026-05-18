@@ -72,7 +72,7 @@ export function buildMatchDisplayData(matchData = {}) {
 		isOfflineMatch,
 		gameTypeLabel: getGameTypeLabel(gameType),
 		roomLabel: getRoomLabel(gameType, matchData),
-		player1BadgeLabel: isOfflineMatch ? 'P1' : getPlayerInitial(matchData?.player1Name, 'P1'),
-		player2BadgeLabel: isOfflineMatch ? 'P2' : getPlayerInitial(matchData?.player2Name, 'P2'),
+		player1BadgeLabel: getPlayerInitial(matchData?.player1Name, 'P1'),
+		player2BadgeLabel: getPlayerInitial(matchData?.player2Name, 'P2'),
 	};
 }

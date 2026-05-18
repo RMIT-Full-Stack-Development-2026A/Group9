@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { AuthContext } from '../../../app/providers/AuthProvider';
 import ArenaView from '../components/ArenaView/ArenaView';
 import { useGame } from '../hooks/useGame';
 import useAI from '../hooks/useAI';
@@ -7,6 +8,7 @@ import useAI from '../hooks/useAI';
 export default function AIGameArena() {
 	const navigate = useNavigate();
 	const location = useLocation();
+	const { user } = useContext(AuthContext);
 	const settings = location.state?.settings;
 	const [lastPlayerMoveIdx, setLastPlayerMoveIdx] = useState(null);
 	const sessionStartedRef = useRef(false); // Prevent double session creation
@@ -60,8 +62,8 @@ export default function AIGameArena() {
 		style: settings?.boardStyle?.toLowerCase() || 'classic',
 		gameType: 'ai',
 		isOfflineMatch: true,
-		player1Name: 'Me',
-		player2Name: 'AI',
+		player1Name: user?.username || user?.name || 'Player 1',
+		player2Name: settings?.player2?.name || 'AI',
 		player1Avatar: null,
 		player2Avatar: null,
 		winningLine: Array.isArray(winLine) ? winLine : [],

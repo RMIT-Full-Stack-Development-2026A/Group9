@@ -5,6 +5,7 @@ import authRoutes from "./modules/auth/routes/auth.route.js";
 import userRoutes from "./modules/user/routes/user.route.js";
 import registerAdminModule from "./modules/admin/index.js";
 import gameRoutes from "./modules/game/routes/game.route.js";
+import multiplayerRoutes from "./modules/multiplayer/routes/multiplayer.route.js";
 import AppError from "./shared/errors/AppError.js";
 import registerBillingModule from "./modules/billing/index.js";
 
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/game", gameRoutes);
+app.use("/api/multiplayer", multiplayerRoutes);
 
 // Register admin module routes
 registerAdminModule(app);

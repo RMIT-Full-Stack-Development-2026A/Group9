@@ -21,3 +21,8 @@ export const togglePlayerStatus = async (...args) => {
 	const user = await adminService.togglePlayerStatus(...args);
 	return adminDto.toPlayerResponse(user);
 };
+
+export const closeRoom = async (...args) => {
+	const room = await adminService.closeRoom(...args);
+	return adminDto.toRoomResponse(room);
+};

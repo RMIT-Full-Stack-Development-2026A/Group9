@@ -1,19 +1,29 @@
 
 import { useState } from "react";
+import { adminService } from "../../services/admin.service";
 import styles from './RoomTable.module.css';
 
 const RoomTable = ({ curRooms, setRooms }) => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(null);
+
+    const close = async (roomId) => {
+        try {
+            setLoading(roomId);
+            await adminService.closeRoom(roomId);
+            const updateRooms = curRooms.filter(r => r._id !== roomId);
+            setRooms(updateRooms);
+        } catch (err) {
+            alert("Failed to close room: " + (err.message || "Unknown error"));
+        } finally {
+            setLoading(null);
+        }
+    };
 
     const filteredRooms = curRooms.filter(r => (
-        r.roomNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.player1.toLowerCase().includes(searchQuery.toLowerCase())
+        (r.roomNumber && r.roomNumber.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (r.player1 && r.player1.toLowerCase().includes(searchQuery.toLowerCase()))
     ));
-
-    const close = (roomNum) => {
-        const updateRooms = curRooms.filter(r => r.roomNumber !== roomNum);
-        setRooms(updateRooms);
-    };
 
     return (
         <div className={styles.roomCard}>
@@ -41,25 +51,21 @@ const RoomTable = ({ curRooms, setRooms }) => {
                             <th>Player 1</th>
                             <th>Player 2</th>
                             <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Duration</th>
                             <th>Status</th>
                             <th className={styles.roomTableThLast}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredRooms.map(r => (
-                            <tr key={r.roomNumber}>
+                            <tr key={r._id || r.roomNumber}>
                                 <td className={styles.roomTableCellFirst}>{r.roomNumber}</td>
                                 <td>{r.player1}</td>
-                                <td>{r.player2}</td>
-                                <td>{r.startTime}</td>
-                                <td>{r.endTime}</td>
-                                <td>{r.duration}</td>
+                                <td>{r.player2 || "Waiting..."}</td>
+                                <td>{r.startTime ? new Date(r.startTime).toLocaleString() : "—"}</td>
                                 <td>
                                     <span>
-                                        <span className={styles.statusDot + ' ' + (r.status === 'Active' ? styles.statusActive : styles.statusInactive)}></span>
-                                        {r.status === 'Active' ? (
+                                        <span className={styles.statusDot + ' ' + (r.status === 'playing' ? styles.statusActive : styles.statusInactive)}></span>
+                                        {r.status === 'playing' ? (
                                             <span className={styles.statusTextActive}>Active</span>
                                         ) : (
                                             <span className={styles.statusTextInactive}>{r.status}</span>
@@ -69,9 +75,10 @@ const RoomTable = ({ curRooms, setRooms }) => {
                                 <td>
                                     <button
                                         className={styles.actionBtn + ' ' + styles.close}
-                                        onClick={() => close(r.roomNumber)}
+                                        onClick={() => close(r._id)}
+                                        disabled={loading === r._id}
                                     >
-                                        Close
+                                        {loading === r._id ? "Closing..." : "Close"}
                                     </button>
                                 </td>
                             </tr>

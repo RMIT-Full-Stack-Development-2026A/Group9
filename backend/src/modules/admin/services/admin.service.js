@@ -77,13 +77,12 @@ export const adminService = {
         if (!room) {
             throw new AppError("Room not found", 404);
         }
-        if (room.status === "CLOSED") {
+        if (room.status === "cancelled" || room.status === "finished") {
             throw new AppError("Room is already closed", 400);
         }
 
-        const closedRoom = await adminRepository.updateRoomStatus(roomId, "CLOSED");
+        const closedRoom = await adminRepository.updateRoomStatus(roomId, "cancelled");
 
-       
         await adminRepository.createActionLog({
             adminId,
             actionType: "CLOSE_ROOM",
@@ -91,6 +90,6 @@ export const adminService = {
             metadata: { reason: "Force closed by admin" }
         });
 
-        return adminDto.toRoomResponse(closedRoom);
+        return closedRoom;
     }
 };

@@ -65,10 +65,10 @@ export const togglePlayerStatus = async (req, res, next) => {
 
 export const closeRoom = async (req, res, next) => {
     try {
-        const adminId = req.user.id; 
+        const adminId = req.user.id;
         const roomId = req.params.roomId;
 
-        const closedRoom = await adminService.closeRoom(adminId, roomId);
+        const closedRoom = await adminInterface.closeRoom(adminId, roomId);
 
         return res.status(200).json({
             success: true,

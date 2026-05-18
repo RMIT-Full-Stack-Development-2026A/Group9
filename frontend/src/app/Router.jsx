@@ -21,8 +21,9 @@ import Navbar from "../shared/ui/Navbar/Navbar.jsx";
 import AdminDashboard from "../modules/admin/components/AdminDashboard/AdminDashboard.jsx";
 import GameArena from "../modules/game/pages/GameLobby.jsx";
 import LocalGameArena from "../modules/game/pages/LocalGameArena.jsx";
-import Home from "../modules/home/pages/Home.jsx";
 import AIGameArena from "../modules/game/pages/AIGameArena.jsx";
+import OnlineGameArena from "../modules/game/pages/OnlineGameArena.jsx";
+import Home from "../modules/home/pages/Home.jsx";
 import Leaderboard from "../modules/leaderboard/pages/Leaderboard.jsx";
 import Login from "../modules/auth/pages/Login.jsx";
 import Payment from "../modules/payment/pages/Payment.jsx";
@@ -72,6 +73,14 @@ function Router() {
 				<Route
 					path="/ai-arena"
 					element={<AIGameArenaWrapper />}
+				/>
+				<Route
+					path="/online-arena"
+					element={
+						<ProtectedRoute>
+							<OnlineGameArenaWrapper />
+						</ProtectedRoute>
+					}
 				/>
 				<Route
 					path="/leaderboard"
@@ -139,6 +148,14 @@ function AIGameArenaWrapper() {
 		return null;
 	}
 	return <AIGameArena settings={settings} onAbort={() => navigate("/", { replace: true })} />;
+}
+
+function OnlineGameArenaWrapper() {
+	const location = useLocation();
+	if (!location.state?.settings) {
+		return <Navigate to="/lobby" replace />;
+	}
+	return <OnlineGameArena />;
 }
 
 export default Router;

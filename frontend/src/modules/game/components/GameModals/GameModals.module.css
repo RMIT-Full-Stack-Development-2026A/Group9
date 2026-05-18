@@ -558,3 +558,217 @@
   60% { transform: translateX(-1px); }
   80% { transform: translateX(1px); }
 }
+
+/* Online Game Modal Styles */
+.tabsContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-primary);
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  color: #64748b;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tabButton:hover {
+  color: var(--color-text);
+}
+
+.activeTab {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.markerGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.markerOption {
+  background: var(--color-surface);
+  border: 2px solid var(--color-surface-2);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--color-text);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.markerOption:hover {
+  border-color: var(--color-primary);
+}
+
+.selectedMarker {
+  background: var(--color-surface-2);
+  border-color: var(--color-primary);
+}
+
+.startButton {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+
+.startButton:hover:not(:disabled) {
+  background: #0ea5d9;
+}
+
+.startButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.roomsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.roomsHeader h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.1rem;
+}
+
+.refreshButton {
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: var(--color-surface-2);
+}
+
+.refreshButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loadingMessage {
+  text-align: center;
+  color: #64748b;
+  padding: 20px;
+}
+
+.errorMessage {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.emptyMessage {
+  text-align: center;
+  color: #64748b;
+  padding: 20px;
+  font-style: italic;
+}
+
+.roomsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.roomCard {
+  background: var(--color-surface);
+  border: 2px solid var(--color-surface-2);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.roomCard:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-2);
+}
+
+.selectedRoom {
+  border-color: var(--color-primary);
+  background: var(--color-surface-2);
+}
+
+.roomCardContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.roomInfo {
+  flex: 1;
+}
+
+.roomInfo h4 {
+  margin: 0 0 5px 0;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.boardSizeTag {
+  background: var(--color-primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.joinButton {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.joinButton:hover:not(:disabled) {
+  background: #0ea5d9;
+}
+
+.joinButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

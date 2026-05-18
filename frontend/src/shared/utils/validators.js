@@ -123,5 +123,32 @@ export function validateLogin({ identifier, password }) {
 export const isValidUsername = (value) => typeof value === "string" && /^[A-Za-z0-9_-]+$/.test(value);
 // Basic validators for frontend use
 export const isEmpty = (value) => value === undefined || value === null || String(value).trim() === "";
-export const isEmail = (value) => typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
-export const isStrongPassword = (value) => typeof value === "string" && value.length >= 8;
+
+// Email: one '@', at least one '.' after '@', <255 chars, no spaces/prohibited chars
+export const isEmail = (value) => {
+	if (typeof value !== "string") return false;
+	const email = value.trim();
+	if (email.length > 254) return false;
+	const EMAIL_PROHIBITED_CHARS = /[\s,;:<>()[\]{}|\\/]/;
+	if (EMAIL_PROHIBITED_CHARS.test(email)) return false;
+	const STRICT_EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+	if (!STRICT_EMAIL_REGEX.test(email)) return false;
+	if ((email.match(/@/g) || []).length !== 1) return false;
+	const atIdx = email.indexOf('@');
+	if (atIdx === -1 || email.indexOf('.', atIdx) === -1) return false;
+	return true;
+};
+
+// Password: min 8 chars, 1 number, 1 special char, 1 uppercase
+export const isStrongPassword = (value) => {
+	if (typeof value !== "string") return false;
+	const UPPERCASE_REGEX = /[A-Z]/;
+	const NUMBER_REGEX = /\d/;
+	const SPECIAL_CHAR_REGEX = /[^A-Za-z0-9]/;
+	return (
+		value.length >= 8 &&
+		UPPERCASE_REGEX.test(value) &&
+		NUMBER_REGEX.test(value) &&
+		SPECIAL_CHAR_REGEX.test(value)
+	);
+};

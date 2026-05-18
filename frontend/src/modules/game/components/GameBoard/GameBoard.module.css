@@ -1,12 +1,81 @@
+.boardContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 85vh;
+  margin: 20px auto 60px;
+  aspect-ratio: auto;
+}
+
+/* Top axis labels (column letters: a-j or a-o) */
+.xAxis {
+  display: grid;
+  gap: 1px;
+  padding: 8px 0 4px 0;
+  margin: 0 0 0 40px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #a0aec0;
+  text-align: center;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+}
+
+.xAxis.xAxis-retro-style {
+  color: #00ff41;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+  background: rgba(10, 17, 32, 0.4);
+}
+
+.xAxis.xAxis-space-style {
+  color: #cbd5e1;
+  text-shadow: 0 0 6px rgba(148, 163, 184, 0.3);
+  background: rgba(9, 14, 28, 0.2);
+}
+
+/* Left axis labels (row numbers: 1-10 or 1-15) */
+.yAxis {
+  display: grid;
+  width: 40px;
+  gap: 1px;
+  padding: 0 8px 0 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #a0aec0;
+  text-align: center;
+  justify-items: center;
+  align-items: center;
+  align-self: stretch;
+}
+
+.yAxis.yAxis-retro-style {
+  color: #00ff41;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+  background: rgba(10, 17, 32, 0.4);
+}
+
+.yAxis.yAxis-space-style {
+  color: #cbd5e1;
+  text-shadow: 0 0 6px rgba(148, 163, 184, 0.3);
+  background: rgba(9, 14, 28, 0.2);
+}
+
+/* Wrapper for side axis and grid */
+.gridAndYAxis {
+  display: flex;
+  gap: 1px;
+  align-items: stretch;
+}
+
 .game-board {
   display: grid;
   gap: 1px;
   background: linear-gradient(180deg, #51607e 0%, #2e3953 100%);
   border: 2px solid #51607e;
-  margin: 20px auto 40px;
-  max-width: 85vh;
+  flex: 1;
   aspect-ratio: 1 / 1;
   position: relative;
+  width: 100%;
 }
 
 .game-board.retro-style::before {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useEffect, useCallback, useContext, useMemo } from "react";
 import { AuthContext } from "../../../app/providers/AuthProvider.jsx";
 import * as profileService from "../services/profile.service.js";
 import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "../../../config/api.config.js";
@@ -92,7 +92,6 @@ export const useProfile = (onUserUpdate) => {
     try {
       setHistoryLoading(true);
       const params = { ...filters };
-      if (search) params.search = search;
       Object.keys(params).forEach((key) => {
         if (!params[key]) delete params[key];
       });
@@ -103,7 +102,7 @@ export const useProfile = (onUserUpdate) => {
     } finally {
       setHistoryLoading(false);
     }
-  }, [search, filters]);
+  }, [filters]);
 
   useEffect(() => {
     // If user exists, render immediately and fetch latest profile in background
@@ -186,8 +185,9 @@ export const useProfile = (onUserUpdate) => {
     }
   };
 
-  const handleSearchSubmit = () => {
-    setSearch(searchInput);
+  const handleSearchInputChange = (value) => {
+    setSearchInput(value);
+    setSearch(value);
   };
 
   const handleFilterChange = (e) => {
@@ -213,6 +213,23 @@ export const useProfile = (onUserUpdate) => {
     });
   };
 
+  const getSessionToken = useCallback((game = {}) => {
+    const id = String(game?._id || "").trim();
+    if (!id) return "";
+    return `#${id.slice(-4).toUpperCase()}`;
+  }, []);
+
+  const filteredGameHistory = useMemo(() => {
+    const query = String(search || "").trim().toLowerCase();
+    if (!query) return gameHistory;
+
+    return gameHistory.filter((game) => {
+      const token = getSessionToken(game).toLowerCase();
+      const opponent = String(game?.opponent || "").toLowerCase();
+      return token.includes(query) || opponent.includes(query);
+    });
+  }, [gameHistory, search, getSessionToken]);
+
   return {
     user: authContext.user,
     loading,
@@ -221,7 +238,7 @@ export const useProfile = (onUserUpdate) => {
     formData,
     activeTab,
     setActiveTab,
-    gameHistory,
+    gameHistory: filteredGameHistory,
     historyLoading,
     searchInput,
     setSearchInput,
@@ -229,10 +246,11 @@ export const useProfile = (onUserUpdate) => {
     handleFormChange,
     handleUpdateProfile,
     handleAvatarUpload,
-    handleSearchSubmit,
+    handleSearchInputChange,
     handleFilterChange,
     toggleSortOrder,
     clearFilters,
+    getSessionToken,
     ...replay,
   };
 };

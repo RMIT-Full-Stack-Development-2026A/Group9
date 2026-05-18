@@ -55,7 +55,7 @@ export const togglePlayerStatus = async (req, res, next) => {
         const updatedPlayer = await adminInterface.togglePlayerStatus(adminId, targetUserId);
         return res.status(200).json({ 
             success: true, 
-            message: `User ${updatedPlayer.isDeactivated ? 'deactivated' : 'activated'} successfully`,
+            message: `User ${updatedPlayer.isActive ? 'activated' : 'deactivated'} successfully`,
             data: updatedPlayer
         });
     } catch (error) {

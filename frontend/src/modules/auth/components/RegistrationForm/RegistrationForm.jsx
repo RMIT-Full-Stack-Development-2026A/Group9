@@ -2,6 +2,7 @@ import { useRegistration } from '../../hooks/useRegistration';
 import { Link } from 'react-router-dom';
 import styles from './RegistrationForm.module.css';
 import { COUNTRIES } from "../../../../shared/constants/countries.js";
+import { isValidUsername, isEmail } from "../../../../shared/utils/validators.js";
 
 const ErrorIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>);
 const SuccessIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>);
@@ -19,6 +20,21 @@ const Registration = () => {
     showSuccess,
   } = useRegistration();
 
+  const pwd = formData.password || '';
+  const pwdChecks = {
+    length: pwd.length >= 8,
+    uppercase: /[A-Z]/.test(pwd),
+    number: /\d/.test(pwd),
+    special: /[^A-Za-z0-9]/.test(pwd),
+  };
+  const pwdScore = Object.values(pwdChecks).filter(Boolean).length;
+  const username = formData.username || '';
+  const usernameChecks = {
+    allowed: isValidUsername(username),
+    length: username.length >= 3,
+  };
+  const email = formData.email || '';
+  const emailValid = isEmail(email);
   return (
     <div className={styles.pageContainer}>
       {showSuccess && (
@@ -79,6 +95,24 @@ const Registration = () => {
             {getFieldError('username') ? (
               <div className={`${styles.validationMsg} ${styles.error}`}><ErrorIcon/> {getFieldError('username').cause}</div>
             ) : null}
+            <div className={styles.hintText}>
+              <div className={styles.validationMsg}>
+                {usernameChecks.length ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"></circle></svg>
+                )}
+                <span style={{marginLeft:8}}>At least 3 characters</span>
+              </div>
+              <div className={styles.validationMsg}>
+                {usernameChecks.allowed ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"></circle></svg>
+                )}
+                <span style={{marginLeft:8}}>Only letters, numbers, underscore or hyphen</span>
+              </div>
+            </div>
           </div>
 
           <div className={styles.formGroup}>
@@ -92,6 +126,17 @@ const Registration = () => {
             {getFieldError('email') ? (
               <div className={`${styles.validationMsg} ${styles.error}`}><ErrorIcon/> {getFieldError('email').cause}</div>
             )  : null}
+            <div className={styles.hintText}>
+              <div className={styles.validationMsg}>
+                {email === '' ? (
+                  <span style={{color:'var(--text-muted)'}}>We'll never share your email.</span>
+                ) : emailValid ? (
+                  <div className={`${styles.validationMsg} ${styles.success}`}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span style={{marginLeft:8}}>Valid email format</span></div>
+                ) : (
+                  <div className={`${styles.validationMsg} ${styles.error}`}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"></circle></svg><span style={{marginLeft:8}}>Enter a valid email (e.g. user@example.com)</span></div>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className={styles.formGroup}>
@@ -105,6 +150,43 @@ const Registration = () => {
             {getFieldError('password') ? (
               <div className={`${styles.validationMsg} ${styles.error}`}><ErrorIcon/> {getFieldError('password').cause}</div>
             ) : null}
+
+            <div className={styles.hintText}>
+              <div className={styles.validationMsg} style={{marginTop:'0.5rem'}}>
+                {pwdChecks.length ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"></circle></svg>
+                )}
+                <span style={{marginLeft:8}}>At least 8 characters</span>
+              </div>
+              <div className={styles.validationMsg}>
+                {pwdChecks.uppercase ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"></circle></svg>
+                )}
+                <span style={{marginLeft:8}}>One uppercase letter (A–Z)</span>
+              </div>
+              <div className={styles.validationMsg}>
+                {pwdChecks.number ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"></circle></svg>
+                )}
+                <span style={{marginLeft:8}}>One number (0–9)</span>
+              </div>
+              <div className={styles.validationMsg}>
+                {pwdChecks.special ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"></circle></svg>
+                )}
+                <span style={{marginLeft:8}}>One special character (e.g. $#@!)</span>
+              </div>
+
+              <div className={styles.strengthBar} style={{width: `${(pwdScore / 4) * 100}%`, background: pwdScore >= 3 ? 'var(--success)' : (pwdScore === 2 ? 'orange' : 'var(--error)') }} />
+            </div>
           </div>
 
           <div className={styles.formGroup}>

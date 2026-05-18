@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../../app/providers/AuthProvider.jsx";
-import { useMultiplayer } from "../../hooks/useMultiplayer.js";
-import { useChat } from "../../hooks/useChat.js";
-import ArenaView from "../../components/ArenaView/ArenaView.jsx";
+import { useAuth } from "../../../app/providers/useAuth.js";
+import { useMultiplayer } from "../hooks/useMultiplayer.js";
+import { useChat } from "../hooks/useChat.js";
+import ArenaView from "../components/ArenaView/ArenaView.jsx";
 import styles from "./ArenaPages.module.css";
 
 export default function OnlineGameArena() {
@@ -12,14 +12,9 @@ export default function OnlineGameArena() {
 	const { user } = useAuth();
 
 	const settings = location.state?.settings;
-
-	if (!settings) {
-		return (
-			<div className={styles.errorContainer}>
-				<p>Invalid game settings. Redirecting...</p>
-			</div>
-		);
-	}
+	const gameId = settings?.sessionId || settings?.roomId || null;
+	const [showChat, setShowChat] = useState(true);
+	const [chatInput, setChatInput] = useState("");
 
 	const {
 		board,
@@ -29,17 +24,22 @@ export default function OnlineGameArena() {
 		isConnected,
 		sendMove,
 		leaveGame,
-	} = useMultiplayer(settings.sessionId || settings.roomId, user?.id, "X");
+	} = useMultiplayer(gameId, user?.id, "X");
 
 	const { messages, sendMessage, error: chatError } = useChat(
 		null, // Socket will be provided by useMultiplayer
-		settings.sessionId || settings.roomId,
+		gameId,
 		user?.id,
-		settings.roomId
+		settings?.roomId
 	);
 
-	const [showChat, setShowChat] = useState(true);
-	const [chatInput, setChatInput] = useState("");
+	if (!settings) {
+		return (
+			<div className={styles.errorContainer}>
+				<p>Invalid game settings. Redirecting...</p>
+			</div>
+		);
+	}
 
 	const handleCellClick = (idx) => {
 		if (!isConnected || gameState.winner || gameState.draw) return;

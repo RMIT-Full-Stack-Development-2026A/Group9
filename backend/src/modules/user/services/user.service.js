@@ -210,8 +210,13 @@ export const getGameHistory = async (userId, query) => {
 
 		// Determine opponent: new schema (player1/player2)
 		let opponent = "Unknown";
+		let players = [];
 		if (session.gameType === "ai" || session.gameType === "single") {
 			opponent = session.player2Name || session.botName || "AI Bot";
+			players = [
+				{ role: "player1", name: session.player1?.username || "Unknown" },
+				{ role: "opponent", name: session.player2Name || session.botName || "AI Bot" },
+			];
 		} else {
 			// Multiplayer: use player1 and player2
 			const userId_str = String(session.player1?._id || session.player1 || "");
@@ -220,6 +225,10 @@ export const getGameHistory = async (userId, query) => {
 			} else {
 				opponent = session.player1?.username || "Unknown";
 			}
+			players = [
+				{ role: "player1", name: session.player1?.username || "Unknown" },
+				{ role: "player2", name: session.player2?.username || session.player2Name || "Unknown" },
+			];
 		}
 
 		const gameTypeLabels = {
@@ -237,6 +246,7 @@ export const getGameHistory = async (userId, query) => {
 			gameType: gameTypeLabels[session.gameType] || session.gameType,
 			result: userResult,
 			opponent,
+			players,
 		};
 	});
 };

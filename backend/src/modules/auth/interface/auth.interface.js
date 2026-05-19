@@ -18,3 +18,7 @@ export const getMyProfile = (userId) => {
 export const logout = (accessToken) => {
   return authService.logout(accessToken);
 };
+
+export const findActiveSession = (tokenHash) => {
+  return authService.findActiveSession(tokenHash);
+};

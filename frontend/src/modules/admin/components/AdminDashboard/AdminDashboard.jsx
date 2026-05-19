@@ -18,9 +18,7 @@
 import AdminNavBar from '../NavBar/AdminNavBar.jsx';
 import { Outlet } from 'react-router-dom';
 import PlayerTable from '../PlayerTable/PlayerTable.jsx';
-import RoomTable from '../RoomTable/RoomTable.jsx';
 import StatCard from '../StateCard/StateCard.jsx';
-import GameRoomStatCard from '../StateCard/GameRoomStatCard.jsx';
 import { useAdmin } from '../../hooks/useAdmin.js';
 import styles from './AdminDashboard.module.css';
 
@@ -31,8 +29,6 @@ export default function Admin() {
         setActiveTab,
         players,
         setPlayers,
-        rooms,
-        setRooms,
         metrics,
         loading,
         refreshDashboard
@@ -74,20 +70,9 @@ export default function Admin() {
                         <StatCard label="Inactive Accounts" value={metrics.inactiveAccounts} color="#f44336" bgColor="rgba(244, 67, 54, 0.12)" />
                     </div>
                 )}
-                {activeTab === 'rooms' && (
-                    <div className={styles.adminStatsRow}>
-                        <GameRoomStatCard label="Active Rooms" value={metrics.activeRooms} color="#fff" bgColor="rgba(30, 201, 167, 0.12)" />
-                        <GameRoomStatCard label="Total Players Online" value={metrics.totalPlayersOnline} color="#00d1ff" bgColor="rgba(0, 209, 255, 0.12)" />
-                        <GameRoomStatCard label="Avg. Session Time" value={metrics.avgSessionTime} color="#ff9800" bgColor="rgba(255, 152, 0, 0.12)" />
-                        <GameRoomStatCard label="Games Today" value={metrics.gamesToday} color="#bfc9db" bgColor="rgba(191, 201, 219, 0.12)" />
-                    </div>
-                )}
                 <main className={styles.adminMainContent}>
                     {activeTab === 'players' && (
                         <PlayerTable gamers={players} setgamers={setPlayers} refreshDashboard={refreshDashboard} />
-                    )}
-                    {activeTab === 'rooms' && (
-                        <RoomTable curRooms={rooms} setRooms={setRooms} />
                     )}
                     <Outlet />
                 </main>

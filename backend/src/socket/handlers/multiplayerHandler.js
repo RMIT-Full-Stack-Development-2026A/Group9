@@ -40,16 +40,32 @@ export function registerMultiplayerHandlers(io, socket) {
 		}
 	});
 
-	// ── Leave a game room ─────────────────────────────────────────────
+	// ── Leave / abort a game room ──────────────────────────────────────
 	socket.on("room:leave", async ({ roomId }) => {
 		try {
 			const targetRoom = roomId || socket.currentRoom;
-			socket.leave(`room:${targetRoom}`);
-			socket.to(`room:${targetRoom}`).emit("room:player-left", {
+			if (!targetRoom) return;
+
+			// Close the room on the backend
+			try {
+				await multiplayerService.closeRoom(targetRoom);
+			} catch {}
+
+			// Notify everyone still in the room to leave
+			io.to(`room:${targetRoom}`).emit("room:closed", {
 				roomId: targetRoom,
-				userId: socket.user.id,
 			});
-			console.log(`[Socket] User ${socket.user.id} left room ${targetRoom}`);
+
+			// Kick all sockets out of the room
+			const roomSockets = io.sockets.adapter.rooms.get(`room:${targetRoom}`);
+			if (roomSockets) {
+				for (const socketId of roomSockets) {
+					const s = io.sockets.sockets.get(socketId);
+					if (s) s.leave(`room:${targetRoom}`);
+				}
+			}
+
+			console.log(`[Socket] Room ${targetRoom} closed by user ${socket.user.id}`);
 		} catch (error) {
 			socket.emit("error", { message: error.message });
 		}

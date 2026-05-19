@@ -64,6 +64,7 @@ export function useOnlineGame() {
 		socket.off('game:over');
 		socket.off('room:player-joined');
 		socket.off('room:player-left');
+		socket.off('room:closed');
 		socket.off('error');
 
 		socket.on('connect', () => {
@@ -110,6 +111,11 @@ export function useOnlineGame() {
 
 		socket.on('room:player-left', () => {
 			setOpponentJoined(false);
+		});
+
+		socket.on('room:closed', () => {
+			disconnectSocket();
+			navigate('/multiplayer');
 		});
 
 		socket.on('error', (data) => {
@@ -203,7 +209,7 @@ export function useOnlineGame() {
 		});
 	}, [playerMarker]);
 
-	// ── Leave the game (no longer closes room for everyone) ──────────
+	// ── Abort the game (closes room for everyone) ─────────────────────
 	const abortGame = useCallback(() => {
 		const socket = getSocket();
 		if (socket && roomIdRef.current) {
@@ -213,13 +219,9 @@ export function useOnlineGame() {
 		navigate('/multiplayer');
 	}, [navigate]);
 
-	// ── Cleanup on unmount ────────────────────────────────────────────
+	// ── Cleanup on unmount (just disconnect, don't close room) ────────
 	useEffect(() => {
 		return () => {
-			const socket = getSocket();
-			if (socket && roomIdRef.current) {
-				socket.emit('room:leave', { roomId: roomIdRef.current });
-			}
 			disconnectSocket();
 		};
 	}, []);

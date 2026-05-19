@@ -42,16 +42,16 @@ function runEndEffect(type, setAnimateCrack) {
     return undefined;
 }
 
-export default function EndGameModal({ resultName, player1, player2, onPlayAgain, onExit, isOfflineMatch = false, gameType = '' }) {
+export default function EndGameModal({ resultName, player1, player2, onPlayAgain, onExit, isOfflineMatch = false, gameType = '', outcome }) {
     if (!resultName) return null;
 
     const normalizedGameType = String(gameType || '').toLowerCase();
     const isAIMatch = normalizedGameType === 'ai';
-    const isDraw = resultName === 'Draw';
-    // Determine if Player 1 (the main user) won
-    const isWin = resultName === player1?.name;
-    // Defeat applies to AI and online matches; local classic remains neutral (name wins).
-    const canShowDefeat = !isOfflineMatch || isAIMatch;
+    // outcome overrides name-based detection (needed for multiplayer where
+    // player1/p2 names swap depending on who is viewing the screen)
+    const isDraw = outcome === 'draw' || (!outcome && resultName === 'Draw');
+    const isWin = outcome ? outcome === 'win' : resultName === player1?.name;
+    const canShowDefeat = !isOfflineMatch || isAIMatch || outcome;
     const isDefeat = canShowDefeat && !isWin && !isDraw;
 
     const [animateCrack, setAnimateCrack] = useState(false);

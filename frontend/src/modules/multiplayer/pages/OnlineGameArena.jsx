@@ -112,6 +112,11 @@ export default function OnlineGameArena() {
 			? 'Draw'
 			: null;
 
+	// Explicit outcome for the current player: winner marker matches playerMarker → win
+	const outcome = winner
+		? (winner === playerMarker ? 'win' : 'loss')
+		: draw ? 'draw' : null;
+
 	const isMyTurn = turn === playerNumber;
 	const isLocked = loading || !connected || !opponentJoined || Boolean(winner) || draw || !isMyTurn;
 
@@ -140,6 +145,7 @@ export default function OnlineGameArena() {
 			xIsNext={turn === 'player1'}
 			resultName={resultName}
 			isLocked={isLocked}
+			outcome={outcome}
 			onCellClick={handleCellClick}
 			onAbort={abortGame}
 			onPlayAgain={() => navigate('/multiplayer')}

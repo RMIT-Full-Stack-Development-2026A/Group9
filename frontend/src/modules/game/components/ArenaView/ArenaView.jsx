@@ -14,6 +14,7 @@ export default function ArenaView({
     onPlayAgain,
     onExit,
     sidebarChildren,
+    outcome,
 }) {
     const [showEndGameModal, setShowEndGameModal] = useState(false);
 
@@ -89,6 +90,7 @@ export default function ArenaView({
                     player2={{ name: player2Name, marker: p2Marker }}
                     isOfflineMatch={matchDisplay.isOfflineMatch}
                     gameType={gameType}
+                    outcome={outcome}
                     onPlayAgain={onPlayAgain}
                     onExit={onExit}
                 />

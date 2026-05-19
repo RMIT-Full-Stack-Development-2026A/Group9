@@ -34,7 +34,7 @@ export default function OnlineGameArena() {
 		abortGame,
 	} = useOnlineGame();
 
-	const { messages, sendMessage, messagesEndRef } = useChat(room?._id);
+	const { messages, sendMessage, messagesEndRef } = useChat(room?._id, connected);
 
 	// If state was lost (e.g. page reload), redirect to lobby
 	useEffect(() => {

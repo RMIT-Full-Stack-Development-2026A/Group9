@@ -1,45 +1,30 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getSocket } from '../services/socket.service.js';
 
-export function useChat(roomId) {
+export function useChat(roomId, connected) {
 	const [messages, setMessages] = useState([]);
 	const messagesEndRef = useRef(null);
 
-	// Register chat:message listener when socket is ready
+	// Register chat:message listener once the socket is connected.
+	// We depend on `connected` because the socket doesn't exist
+	// yet when this hook first mounts — `connected` flips to true
+	// when the socket actually connects.
 	useEffect(() => {
-		const checkAndRegister = () => {
-			const socket = getSocket();
-			if (!socket || !socket.connected) return;
+		if (!connected) return;
 
-			const handler = (message) => {
-				setMessages((prev) => [...prev, message]);
-			};
+		const socket = getSocket();
+		if (!socket) return;
 
-			socket.on('chat:message', handler);
-
-			return () => {
-				socket.off('chat:message', handler);
-			};
+		const handler = (message) => {
+			setMessages((prev) => [...prev, message]);
 		};
 
-		const cleanup = checkAndRegister();
-
-		// Re-register on connect
-		const socket = getSocket();
-		if (socket) {
-			socket.on('connect', () => {
-				checkAndRegister();
-			});
-		}
+		socket.on('chat:message', handler);
 
 		return () => {
-			cleanup?.();
-			if (socket) {
-				socket.off('connect');
-				socket.off('chat:message');
-			}
+			socket.off('chat:message', handler);
 		};
-	}, []);
+	}, [connected]);
 
 	// Auto-scroll to bottom on new messages
 	useEffect(() => {
@@ -51,14 +36,13 @@ export function useChat(roomId) {
 		const socket = getSocket();
 		if (!socket) return;
 
-		// Show message locally immediately
-		const msg = {
+		// Show message locally immediately (optimistic)
+		setMessages((prev) => [...prev, {
 			userId: 'me',
 			username: 'You',
 			text: text.trim(),
 			timestamp: new Date().toISOString(),
-		};
-		setMessages((prev) => [...prev, msg]);
+		}]);
 
 		// Server broadcasts to the other player via socket.to()
 		socket.emit('chat:message', { text: text.trim() });

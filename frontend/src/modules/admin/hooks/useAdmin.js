@@ -18,8 +18,7 @@ import { adminService } from '../services/admin.service';
 export const useAdmin = () => {
     const [activeTab, setActiveTab] = useState('players');
     const [players, setPlayers] = useState([]);
-    const [rooms, setRooms] = useState([]);
-    const [metrics, setMetrics] = useState({ totalPlayers: 0, activeRooms: 0, serverLoad: '0%' });
+    const [metrics, setMetrics] = useState({ totalPlayers: 0, serverLoad: '0%' });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -29,24 +28,12 @@ export const useAdmin = () => {
     const fetchDashboardData = async (partial = false) => {
         if (!partial) setLoading(true);
         try {
-            if (partial) {
-                // Only update players and metrics for instant UI update
-                const [playersRes, metricsRes] = await Promise.all([
-                    adminService.getPlayers(),
-                    adminService.getMetrics()
-                ]);
-                setPlayers(playersRes.data.data);
-                setMetrics(metricsRes.data.data);
-            } else {
-                const [playersRes, roomsRes, metricsRes] = await Promise.all([
-                    adminService.getPlayers(),
-                    adminService.getRooms(),
-                    adminService.getMetrics()
-                ]);
-                setPlayers(playersRes.data.data);
-                setRooms(roomsRes.data.data);
-                setMetrics(metricsRes.data.data);
-            }
+            const [playersRes, metricsRes] = await Promise.all([
+                adminService.getPlayers(),
+                adminService.getMetrics()
+            ]);
+            setPlayers(playersRes.data.data);
+            setMetrics(metricsRes.data.data);
         } catch (error) {
             console.error("Connection failed:", error.response?.data?.message || error.message);
         } finally {
@@ -58,8 +45,6 @@ export const useAdmin = () => {
         setActiveTab,
         players,
         setPlayers, // Exported so PlayerTable can use it
-        rooms,
-        setRooms,   // Exported so RoomTable can use it
         metrics,
         loading,
         refreshDashboard: () => fetchDashboardData(true)

@@ -3,8 +3,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
 
 const icons = {
-    players: <i className="bi bi-people" style={{ fontSize: 20, color: '#9ca3af' }}></i>,
-    rooms: <i className="bi bi-diagram-3" style={{ fontSize: 20, color: '#9ca3af' }}></i>
+    players: <i className="bi bi-people" style={{ fontSize: 20, color: '#9ca3af' }}></i>
 };
 const Navbar = ({ activeTab, onTabChange }) => {
     // Listen for custom logout event from header button
@@ -27,13 +26,6 @@ const Navbar = ({ activeTab, onTabChange }) => {
                 >
                     <span style={{ display: 'flex', alignItems: 'center' }}>{icons.players}</span>
                     Player Management
-                </li>
-                <li
-                    className={activeTab === 'rooms' ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink}
-                    onClick={() => onTabChange('rooms')}
-                >
-                    <span style={{ display: 'flex', alignItems: 'center' }}>{icons.rooms}</span>
-                    Game Rooms
                 </li>
             </ul>
         </nav>

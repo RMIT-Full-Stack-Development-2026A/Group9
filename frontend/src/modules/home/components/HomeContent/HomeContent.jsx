@@ -24,7 +24,7 @@ import LocalGameModal from "../../../game/components/GameModals/LocalGameModal.j
 import AIGameModal from "../../../game/components/GameModals/AIGameModal.jsx";
 
 export default function Home() {
-const { welcome, showRankings } = useHome();
+    const { welcome, showRankings } = useHome();
     const welcomeClass = styles[`welcomeLine--${welcome.type}`] || "";
     const { isAuthenticated } = useContext(AuthContext) || {};
     const navigate = useNavigate();
@@ -79,7 +79,7 @@ const { welcome, showRankings } = useHome();
             
         </section>
 
-        <section className={`${styles.modeRow} ${styles.row2}`} style={{ justifyContent: 'center' }}>
+        <section className={`${styles.modeRow} ${styles.row2}`} style={{ justifyContent: 'center', gap: '16px' }}>
             <Button
                 className={`${styles.btn} text-white ${styles["actionBtn--purple"]}`}
                 color="#8b5cf6"
@@ -93,6 +93,21 @@ const { welcome, showRankings } = useHome();
                   navigate("/profile", { state: { tab: "history" } });
                 })}
             />
+            {!showRankings && (
+                <Button
+                    className={`${styles.btn} text-white ${styles["actionBtn--orange"]}`}
+                    color="var(--premium-orange)"
+                    icon={
+                        <span className="btn_icon">
+                            <i className="bi bi-gem"></i>
+                        </span>
+                    }
+                    text="Go Premium"
+                    onClick={requireAuth(() => {
+                      navigate("/payment");
+                    })}
+                />
+            )}
         </section>
     </main>
     <LocalGameModal open={showLocalModal} onClose={() => setShowLocalModal(false)} />

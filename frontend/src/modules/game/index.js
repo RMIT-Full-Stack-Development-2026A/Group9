@@ -19,8 +19,6 @@ export { default as MoveHistory } from "./components/MoveHistory/MoveHistory.jsx
 
 export { default as useGame } from "./hooks/useGame.js";
 export { default as useAI } from "./hooks/useAI.js";
-export { default as useChat } from "./hooks/useChat.js";
-export { default as useMultiplayer } from "./hooks/useMultiplayer.js";
 
 export * as gameService from "./services/game.service.js";
 export * as gameApi from "./services/game.api.js";

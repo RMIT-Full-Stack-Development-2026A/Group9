@@ -76,28 +76,10 @@ const { welcome, showRankings } = useHome();
                 <span className={`${styles.Model_name} fw-bold`}>vs AI</span>
                 <span className={styles.Model_desc}>Test your strategy against our AI. Choose Easy, Medium, or Hard difficulty.</span>
             </button>
-            <button className={styles.btn1} onClick={requireAuth()}>
-                <span className={styles.Model_icon}>
-                    <i className="bi bi-globe2" style={{ fontSize: 32, color: "#06B6D4" }}></i>
-                </span>
-                <span className={`${styles.Model_name} fw-bold`}>Online Match</span>
-                <span className={styles.Model_desc}>Create a room and challenge players worldwide in real-time.</span>
-            </button>
+            
         </section>
 
-        <section className={`${styles.modeRow} ${styles.row2}`}>
-            <Button
-                className={`${styles.btn} text-white ${styles["actionBtn--cyan"]}`}
-                color="#06b6d4"
-                icon={
-                    <span className="btn_icon">
-                        <i className="bi bi-people"></i>
-                    </span>
-                }
-                text="Browse Rooms"
-                onClick={requireAuth()}
-            />
-
+        <section className={`${styles.modeRow} ${styles.row2}`} style={{ justifyContent: 'center' }}>
             <Button
                 className={`${styles.btn} text-white ${styles["actionBtn--purple"]}`}
                 color="#8b5cf6"
@@ -109,20 +91,6 @@ const { welcome, showRankings } = useHome();
                 text="My History"
                 onClick={requireAuth(() => {
                   navigate("/profile", { state: { tab: "history" } });
-                })}
-            />
-
-            <Button
-                className={`${styles.btn} text-white ${showRankings ? styles["actionBtn--red"] : styles["actionBtn--orange"]}`}
-                color={showRankings ? "--color-danger" : "--premium-orange"}
-                icon={
-                    <span className="btn_icon">
-                        <i className={`bi ${showRankings ? "bi-trophy" : "bi-gem"}`}></i>
-                    </span>
-                }
-                text={showRankings ? "Rankings" : "Go Premium"}
-                onClick={requireAuth(() => {
-                  navigate(showRankings ? "/leaderboard" : "/payment");
                 })}
             />
         </section>

@@ -12,11 +12,6 @@ export const getPlayers = async (...args) => {
 	return players; // Already DTO formatted
 };
 
-export const getRooms = async (...args) => {
-	const rooms = await adminService.getRooms(...args);
-	return rooms; // Already DTO formatted
-};
-
 export const togglePlayerStatus = async (...args) => {
 	const user = await adminService.togglePlayerStatus(...args);
 	return adminDto.toPlayerResponse(user);

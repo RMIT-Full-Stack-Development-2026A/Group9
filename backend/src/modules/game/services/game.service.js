@@ -1,4 +1,13 @@
 import { checkWinLine, isDraw } from "../engine/gameEngine.js";
+import * as gameRepository from "../repositories/game.repository.js";
+
+// ── Repository delegates ───────────────────────────────────────────────
+export const createSession = (dto) => gameRepository.createSession(dto);
+export const getSessionById = (sessionId) => gameRepository.getSessionById(sessionId);
+export const appendMove = (sessionId, board, moveResult, moveData, updateExtra) =>
+  gameRepository.appendMove(sessionId, board, moveResult, moveData, updateExtra);
+export const abortSession = (sessionId) => gameRepository.abortSession(sessionId);
+export const getMovesBySessionId = (sessionId) => gameRepository.getMovesBySessionId(sessionId);
 
 // Validates a move and returns the new board, winner, and draw state
 export function applyMove({ board, size, idx, marker }) {

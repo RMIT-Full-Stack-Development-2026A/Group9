@@ -328,7 +328,6 @@ const ProfileCard = ({ onUserUpdate }) => {
                 <option value="">All Types</option>
                 <option value="single">Single Player</option>
                 <option value="local">Two Player</option>
-                <option value="online">Online Match</option>
               </select>
               <select name="result" value={filters.result} onChange={handleFilterChange}>
                 <option value="">All Results</option>

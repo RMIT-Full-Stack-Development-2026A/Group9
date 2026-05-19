@@ -159,11 +159,11 @@ export function useOnlineGame() {
 	}, [setupListeners]);
 
 	// ── Join an existing room ─────────────────────────────────────────
-	const joinExistingRoom = useCallback(async (roomId) => {
+	const joinExistingRoom = useCallback(async (roomId, chosenMarker) => {
 		setLoading(true);
 		setError(null);
 		try {
-			const response = await multiplayerApi.joinRoom(roomId);
+			const response = await multiplayerApi.joinRoom(roomId, chosenMarker);
 			const joinedRoom = response.data || response;
 
 			// If creator chose to go second, player 2 goes first

@@ -11,6 +11,7 @@ export default function OnlineGameArena() {
 	const settings = location.state?.settings;
 	const roomFromState = location.state?.room;
 	const action = location.state?.action;
+	const chosenMarker = location.state?.marker;
 	const initializedRef = useRef(false);
 	const redirectedRef = useRef(false);
 
@@ -56,7 +57,7 @@ export default function OnlineGameArena() {
 		const init = async () => {
 			try {
 				if (action === 'join' && roomFromState) {
-					await joinExistingRoom(roomFromState._id);
+					await joinExistingRoom(roomFromState._id, chosenMarker);
 				} else if (settings) {
 					await createAndJoinRoom(settings);
 				}

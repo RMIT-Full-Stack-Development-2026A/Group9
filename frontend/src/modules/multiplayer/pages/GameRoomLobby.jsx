@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../app/providers/AuthProvider.jsx';
 import RoomList from '../components/RoomList';
 import CreateRoomModal from '../components/CreateRoomModal';
+import JoinRoomModal from '../components/JoinRoomModal';
 import * as multiplayerApi from '../services/multiplayer.api.js';
 import styles from './GameRoomLobby.module.css';
 
@@ -14,6 +15,7 @@ export default function GameRoomLobby() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [joiningRoomId, setJoiningRoomId] = useState(null);
+	const [joinRoom, setJoinRoom] = useState(null);
 
 	const fetchRooms = React.useCallback(async () => {
 		try {
@@ -38,17 +40,9 @@ export default function GameRoomLobby() {
 		return () => clearInterval(interval);
 	}, [isAuthenticated, navigate, fetchRooms]);
 
-	const handleJoin = async (room) => {
+	const handleJoin = (room) => {
 		setJoiningRoomId(room._id);
-		try {
-			navigate(`/multiplayer/arena/${room._id}`, {
-				state: { room, action: 'join' },
-			});
-		} catch (err) {
-			setError(err.response?.data?.message || err.message);
-		} finally {
-			setJoiningRoomId(null);
-		}
+		setJoinRoom(room);
 	};
 
 	return (
@@ -73,6 +67,11 @@ export default function GameRoomLobby() {
 			/>
 
 			<CreateRoomModal open={showCreateModal} onClose={() => setShowCreateModal(false)} />
+			<JoinRoomModal
+				open={!!joinRoom}
+				onClose={() => { setJoinRoom(null); setJoiningRoomId(null); }}
+				room={joinRoom}
+			/>
 		</div>
 	);
 }

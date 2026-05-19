@@ -63,8 +63,6 @@ function Router() {
 						</ProtectedRoute>
 					}
 				/>
-				<Route path="/game" element={<Navigate to="/lobby" replace />} />
-				<Route path="/arena" element={<Navigate to="/lobby" replace />} />
 				<Route
 					path="/local-arena"
 					element={<LocalGameArenaWrapper />}
@@ -72,14 +70,6 @@ function Router() {
 				<Route
 					path="/ai-arena"
 					element={<AIGameArenaWrapper />}
-				/>
-				<Route
-					path="/leaderboard"
-					element={
-						<ProtectedRoute requirePremium>
-							<Leaderboard />
-						</ProtectedRoute>
-					}
 				/>
 				<Route
 					path="/payment"

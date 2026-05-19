@@ -25,7 +25,7 @@ export default function LocalGameArena() {
     // Start session with correct settings - only once
     useEffect(() => {
         if (!settings) {
-            navigate('/game-lobby');
+            navigate('/');
             return;
         }
         // Ensure player2Name is set for local games
@@ -77,7 +77,7 @@ export default function LocalGameArena() {
             isOfflineMatch={true}
             onAbort={async () => {
                 await abortCurrentSession();
-                navigate('/game-lobby');
+                navigate('/');
             }}
             onPlayAgain={() => {
                 sessionStartedRef.current = false; // Reset for next session

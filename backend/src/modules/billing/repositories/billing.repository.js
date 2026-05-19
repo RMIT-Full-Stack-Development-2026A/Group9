@@ -1,5 +1,5 @@
 import Transaction from "../models/transaction.model.js";
-import UserProfile from "../../user/models/userProfile.model.js";
+import * as userInterface from "../../user/interface/user.interface.js";
 
 // ── Transaction Queries ───────────────────────────────────────────────
 export const createTransaction = (data) =>
@@ -23,34 +23,13 @@ export const findLatestPendingSubscriptionBySessionId = (sessionId) =>
 export const findTransactionsByUser = (userId) =>
 	Transaction.find({ userId }).sort({ createdAt: -1 }).lean();
 
-// ── Wallet / Premium Queries ──────────────────────────────────────────
-export const getWalletBalance = async (userId) => {
-	const profile = await UserProfile.findById(userId).select("walletBalance").lean();
-	return profile?.walletBalance ?? 0;
-};
+// ── Wallet / Premium Queries (delegated to user module) ────────────────
+export const getWalletBalance = (userId) => userInterface.getWalletBalance(userId);
 
-export const addToWallet = (userId, amount) =>
-	UserProfile.findByIdAndUpdate(
-		userId,
-		{ $inc: { walletBalance: amount } },
-		{ returnDocument: "after", runValidators: true }
-	).lean();
+export const addToWallet = (userId, amount) => userInterface.addToWallet(userId, amount);
 
-export const deductFromWallet = (userId, amount) =>
-	UserProfile.findByIdAndUpdate(
-		userId,
-		{ $inc: { walletBalance: -amount } },
-		{ returnDocument: "after", runValidators: true }
-	).lean();
+export const deductFromWallet = (userId, amount) => userInterface.deductFromWallet(userId, amount);
 
-export const setPremiumUntil = (userId, date) =>
-	UserProfile.findByIdAndUpdate(
-		userId,
-		{ $set: { premiumUntil: date } },
-		{ returnDocument: "after", runValidators: true }
-	).lean();
+export const setPremiumUntil = (userId, date) => userInterface.setPremiumUntil(userId, date);
 
-export const getPremiumUntil = async (userId) => {
-	const profile = await UserProfile.findById(userId).select("premiumUntil").lean();
-	return profile?.premiumUntil ?? null;
-};
+export const getPremiumUntil = (userId) => userInterface.getPremiumUntil(userId);

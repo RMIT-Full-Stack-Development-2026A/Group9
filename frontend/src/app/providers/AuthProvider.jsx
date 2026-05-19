@@ -1,5 +1,5 @@
 
-import { createContext, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { AUTH_USER_KEY, AUTH_TOKEN_KEY } from "../../config/api.config.js";
 import { api } from "../../services/api.js";
 
@@ -16,6 +16,31 @@ const readInitialUser = () => {
 
 export function AuthProvider({ children }) {
 	const [user, setUser] = useState(readInitialUser);
+
+	useEffect(() => {
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		if (!token) return;
+
+		const syncFreshUser = async () => {
+			try {
+				const response = await api.get("/api/users/profile");
+				const freshUser = response.data;
+				if (freshUser) {
+					setUser(freshUser);
+					localStorage.setItem(AUTH_USER_KEY, JSON.stringify(freshUser));
+				}
+			} catch (error) {
+				console.error("Failed to sync fresh user profile", error);
+				if (error.response?.status === 401) {
+					setUser(null);
+					localStorage.removeItem(AUTH_USER_KEY);
+					localStorage.removeItem(AUTH_TOKEN_KEY);
+				}
+			}
+		};
+
+		syncFreshUser();
+	}, []);
 
 	const login = (userData) => {
 		setUser(userData || null);

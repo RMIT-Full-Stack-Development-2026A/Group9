@@ -30,7 +30,7 @@ export default function AIGameArena() {
 	// Start session with correct settings - only once
 	useEffect(() => {
 		if (!settings) {
-			navigate('/game-lobby');
+			navigate('/');
 			return;
 		}
 		if (!session && !sessionStartedRef.current) {
@@ -96,7 +96,7 @@ export default function AIGameArena() {
 			isOfflineMatch={true}
 			onAbort={async () => {
 				await abortCurrentSession();
-				navigate('/game-lobby');
+				navigate('/');
 			}}
 			onPlayAgain={() => {
 				sessionStartedRef.current = false; // Reset for next session

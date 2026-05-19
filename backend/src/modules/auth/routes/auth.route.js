@@ -1,8 +1,5 @@
 import express from 'express';
 import multer from 'multer';
-import bcrypt from 'bcryptjs';
-import UserAccount from '../../user/models/user.model.js';
-import UserProfile from '../../user/models/userProfile.model.js';
 import { register, login } from '../controllers/auth.controller.js';
 import { uploadToCloudinary } from '../../../middlewares/upload.middleware.js';
 

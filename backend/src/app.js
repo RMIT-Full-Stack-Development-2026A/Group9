@@ -9,7 +9,6 @@ import AppError from "./shared/errors/AppError.js";
 import registerBillingModule from "./modules/billing/index.js";
 
 // Register Mongoose models so they are available globally
-import "./modules/multiplayer/models/gameRoom.model.js";
 import "./modules/user/models/user.model.js";
 
 const app = express();

@@ -37,7 +37,7 @@
 .headerIcon svg {
     width: 28px;
     height: 28px;
-    stroke: var(--accent, #06b6d4);
+    stroke: var(--accent, var(--cyan));
 }
 
 .iconCircle {
@@ -135,7 +135,7 @@
 .registerLinkSection {
     text-align: center;
     margin-top: 1.5rem;
-    color: #9ca3af;
+    color: var(--text);
     font-size: 0.9rem;
 }
 
@@ -156,7 +156,7 @@
 }
 
 .errorIcon {
-    color: #ef4444;
+    color: var(--red);
     font-size: 1.2rem;
     margin-top: 2px;
 }
@@ -167,7 +167,7 @@
 }
 
 .errorTitle {
-    color: #ef4444;
+    color: var(--red);
     font-size: 0.9rem;
     font-weight: 700;
     margin-bottom: 2px;

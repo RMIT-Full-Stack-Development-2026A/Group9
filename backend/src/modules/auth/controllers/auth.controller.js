@@ -1,5 +1,5 @@
 
-import { register as registerAuth, login as loginAuth, getMyProfile, logout as logoutAuth } from "../interface/auth.interface.js";
+import { register as registerAuth, login as loginAuth, getMyProfile, logout as logoutAuth } from "../services/auth.service.js";
 
 const getBearerToken = (authorizationHeader = "") => {
 	if (!authorizationHeader.startsWith("Bearer ")) {

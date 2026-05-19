@@ -31,10 +31,6 @@ export default function PaymentForm() {
 					<i className={`bi bi-check-circle-fill ${styles.featureCheck}`}></i>
 					Match replay with Pause / Resume / Forward / Backward
 				</div>
-				<div className={styles.featureItem}>
-					<i className={`bi bi-check-circle-fill ${styles.featureCheck}`}></i>
-					Advanced Ranking System <i className="bi bi-trophy" style={{ color: "var(--orange)" }}></i>
-				</div>
 			</div>
 
 			<div className={styles.paymentRow}>

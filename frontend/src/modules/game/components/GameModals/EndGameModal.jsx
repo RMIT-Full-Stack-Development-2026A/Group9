@@ -148,9 +148,11 @@ export default function EndGameModal({ resultName, player1, player2, onPlayAgain
 
                 {/* Action Buttons */}
                 <div className={styles.victoryActions}>
-                    <button className={styles.playAgainBtn} onClick={onPlayAgain}>
-                        <i className="bi bi-arrow-clockwise"></i> Play Again
-                    </button>
+                    {normalizedGameType !== 'multiplayer' && (
+                        <button className={styles.playAgainBtn} onClick={onPlayAgain}>
+                            <i className="bi bi-arrow-clockwise"></i> Play Again
+                        </button>
+                    )}
                     <button className={styles.goHomeBtn} onClick={onExit}>
                         <i className="bi bi-house"></i> Go Home
                     </button>

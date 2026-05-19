@@ -4,16 +4,11 @@ import mongoose from "mongoose";
 import AdminActionLog from "../models/adminActionLog.model.js";
 
 const getUserModel = () => mongoose.model("UserAccount");
-const getRoomModel = () => mongoose.model("GameRoom");
 
 export const adminRepository = {
    
     countTotalUsers: async () => {
         return await getUserModel().countDocuments({ role: "player" });
-    },
-
-    countActiveRooms: async () => {
-        return await getRoomModel().countDocuments({ status: { $ne: "CLOSED" } });
     },
 
     
@@ -66,34 +61,9 @@ export const adminRepository = {
     },
 
   
-    findAllRooms: async () => {
-        return await getRoomModel()
-            .find({ status: { $ne: "CLOSED" } })
-            .populate("player1 player2", "username") 
-            .sort({ createdAt: -1 })
-            .lean();
-    },
-
-    findRoomById: async (roomId) => {
-        return await getRoomModel().findById(roomId).lean();
-    },
-
-    updateRoomStatus: async (roomId, status) => {
-        return await getRoomModel().findByIdAndUpdate(
-            roomId,
-            { status },
-            { new: true }
-        ).lean();
-    },
-
-    
     createActionLog: async (logData) => {
         const log = new AdminActionLog(logData);
         return await log.save();
-    },
-
-    countActiveRooms: async () => {
-        return await getRoomModel().countDocuments({ status: { $ne: "CLOSED" } });
     },
 
     countActiveAccounts: async () => {

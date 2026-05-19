@@ -14,6 +14,8 @@ import AdminDashboard from "../modules/admin/components/AdminDashboard/AdminDash
 import LocalGameArena from "../modules/game/pages/LocalGameArena.jsx";
 import Home from "../modules/home/pages/Home.jsx";
 import AIGameArena from "../modules/game/pages/AIGameArena.jsx";
+import GameRoomLobby from "../modules/multiplayer/pages/GameRoomLobby.jsx";
+import OnlineGameArena from "../modules/multiplayer/pages/OnlineGameArena.jsx";
 import Login from "../modules/auth/pages/Login.jsx";
 import Payment from "../modules/payment/pages/Payment.jsx";
 import Profile from "../modules/profile/pages/Profile.jsx";
@@ -47,6 +49,8 @@ function Router() {
         <Route path="/register" element={<Registration />} />
         <Route path="/local-arena" element={<LocalGameArenaWrapper />} />
         <Route path="/ai-arena" element={<AIGameArenaWrapper />} />
+        <Route path="/multiplayer" element={<GameRoomLobby />} />
+        <Route path="/multiplayer/arena/:roomId" element={<OnlineGameArenaWrapper />} />
         <Route
           path="/payment"
           element={
@@ -115,6 +119,17 @@ function AIGameArenaWrapper() {
       onAbort={() => navigate("/", { replace: true })}
     />
   );
+}
+
+function OnlineGameArenaWrapper() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const state = location.state;
+  if (!state) {
+    navigate("/multiplayer", { replace: true });
+    return null;
+  }
+  return <OnlineGameArena />;
 }
 
 export default Router;

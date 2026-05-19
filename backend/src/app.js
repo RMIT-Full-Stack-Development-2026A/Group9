@@ -7,6 +7,7 @@ import registerAdminModule from "./modules/admin/index.js";
 import gameRoutes from "./modules/game/routes/game.route.js";
 import AppError from "./shared/errors/AppError.js";
 import registerBillingModule from "./modules/billing/index.js";
+import registerMultiplayerModule from "./modules/multiplayer/index.js";
 
 // Register Mongoose models so they are available globally
 import "./modules/user/models/user.model.js";
@@ -39,6 +40,9 @@ registerAdminModule(app);
 
 // Register billing module routes
 registerBillingModule(app);
+
+// Register multiplayer module routes
+registerMultiplayerModule(app);
 
 // test route
 app.get("/", (req, res) => {

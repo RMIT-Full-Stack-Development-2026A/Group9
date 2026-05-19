@@ -37,7 +37,7 @@ export async function appendMove(sessionId, board, moveResult, moveData, updateE
 		update.result = 'draw';
 		update.endTime = new Date();
 	}
-	return await GameSession.findByIdAndUpdate(sessionId, update, { new: true });
+	return await GameSession.findByIdAndUpdate(sessionId, update, { returnDocument: "after" });
 }
 
 export async function abortSession(sessionId) {
@@ -49,7 +49,7 @@ export async function abortSession(sessionId) {
 			winnerMarker: null,
 			endTime: new Date(),
 		},
-		{ new: true }
+		{ returnDocument: "after" }
 	);
 }
 

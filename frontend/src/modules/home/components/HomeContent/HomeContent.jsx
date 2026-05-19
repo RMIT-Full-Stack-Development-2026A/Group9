@@ -76,7 +76,14 @@ export default function Home() {
                 <span className={`${styles.Model_name} fw-bold`}>vs AI</span>
                 <span className={styles.Model_desc}>Test your strategy against our AI. Choose Easy, Medium, or Hard difficulty.</span>
             </button>
-            
+            <button className={styles.btn1} onClick={requireAuth(() => navigate('/multiplayer'))}>
+                <span className={styles.Model_icon}>
+                    <i className="bi bi-globe" style={{ fontSize: 32, color: "#10B981" }}></i>
+                </span>
+                <span className={`${styles.Model_name} fw-bold`}>Online Multiplayer</span>
+                <span className={styles.Model_desc}>Play against real opponents in real-time. Create or join a game room.</span>
+            </button>
+
         </section>
 
         <section className={`${styles.modeRow} ${styles.row2}`} style={{ justifyContent: 'center', gap: '16px' }}>

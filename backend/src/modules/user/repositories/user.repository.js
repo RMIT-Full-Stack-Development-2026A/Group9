@@ -38,13 +38,13 @@ export const getProfileById = async (userId) => {
 	return UserProfile.findById(userId).lean();
 };
 
-export const updateUser = (id, data) => UserAccount.findByIdAndUpdate(id, data, { new: true }).select("-password");
+export const updateUser = (id, data) => UserAccount.findByIdAndUpdate(id, data, { returnDocument: "after" }).select("-password");
 
 export const updateUserField = async (userId, updateData) => {
 	return UserAccount.findByIdAndUpdate(
 		userId,
 		{ $set: updateData },
-		{ new: true }
+		{ returnDocument: "after" }
 	);
 };
 

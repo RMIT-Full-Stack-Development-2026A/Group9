@@ -6,6 +6,19 @@ import GameSession from "../models/gameSession.model.js";
 // ── Repository delegates ───────────────────────────────────────────────
 export const createSession = (dto) => gameRepository.createSession(dto);
 export const getSessionById = (sessionId) => gameRepository.getSessionById(sessionId);
+
+export const createMultiplayerSession = async ({ player1, player2, boardSize }) => {
+	if (!player1 || !player2) throw new Error("Both players are required");
+	if (![10, 15].includes(boardSize)) throw new Error("Invalid board size");
+
+	return gameRepository.createSession({
+		player1,
+		player2,
+		boardSize,
+		gameType: "multiplayer",
+		player2Name: "",
+	});
+};
 export const appendMove = (sessionId, board, moveResult, moveData, updateExtra) =>
   gameRepository.appendMove(sessionId, board, moveResult, moveData, updateExtra);
 export const abortSession = (sessionId) => gameRepository.abortSession(sessionId);

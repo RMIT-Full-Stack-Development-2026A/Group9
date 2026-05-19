@@ -12,6 +12,10 @@ export const GameInterface = {
 
 // ── Cross-module operations (DTO-formatted) ─────────────────────────────
 
+export const createMultiplayerSession = async ({ player1, player2, boardSize }) => {
+	return gameService.createMultiplayerSession({ player1, player2, boardSize });
+};
+
 export const getGameHistory = async (userId, query) => {
 	const sessions = await gameService.getGameHistory(userId, query);
 

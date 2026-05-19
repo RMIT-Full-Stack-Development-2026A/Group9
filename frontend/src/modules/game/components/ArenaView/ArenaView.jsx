@@ -4,15 +4,16 @@ import EndGameModal from '../GameModals/EndGameModal';
 import { buildMatchDisplayData } from '../../services/game.service.js';
 import styles from "./ArenaView.module.css";
 
-export default function ArenaView({ 
-    matchData, 
-    xIsNext, 
-    resultName, 
+export default function ArenaView({
+    matchData,
+    xIsNext,
+    resultName,
     isLocked,
-    onCellClick, 
-    onAbort, 
-    onPlayAgain, 
-    onExit 
+    onCellClick,
+    onAbort,
+    onPlayAgain,
+    onExit,
+    sidebarChildren,
 }) {
     const [showEndGameModal, setShowEndGameModal] = useState(false);
 
@@ -77,6 +78,7 @@ export default function ArenaView({
                             </span>
                         </div>
                     </div>
+                    {sidebarChildren}
                 </aside>
             </div>
 

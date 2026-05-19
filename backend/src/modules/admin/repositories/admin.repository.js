@@ -37,7 +37,7 @@ export const adminRepository = {
         await getUserModel().findByIdAndUpdate(
             userId,
             { isActive },
-            { new: true }
+            { returnDocument: "after" }
         );
         // Ensure userId is an ObjectId
         const objectId = (typeof userId === 'string' || typeof userId === 'number') ? new mongoose.Types.ObjectId(userId) : userId;

@@ -27,8 +27,6 @@ router.use(authorizeRoles("admin"));
 
 router.get("/metrics", adminController.getMetrics);
 router.get("/players", adminController.getPlayers);
-router.get("/rooms", adminController.getRooms);
 router.put("/players/:id/toggle-status", adminController.togglePlayerStatus);
-router.delete("/rooms/:roomId", adminController.closeRoom);
 
 export default router;

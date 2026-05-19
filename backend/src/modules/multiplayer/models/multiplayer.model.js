@@ -45,6 +45,11 @@ const gameRoomSchema = new mongoose.Schema(
 			enum: ["X", "O", "⭐", "🔥", "💎", "🌙"],
 			default: null,
 		},
+		firstPlayer: {
+			type: String,
+			enum: ["player1", "player2"],
+			default: "player1",
+		},
 		sessionId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "GameSession",

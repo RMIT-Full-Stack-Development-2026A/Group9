@@ -2,13 +2,14 @@ import * as multiplayerRepository from "../repositories/multiplayer.repository.j
 import AppError from "../../../shared/errors/AppError.js";
 import * as gameInterface from "../../game/interface/game.interface.js";
 
-export const createRoom = async (userId, { boardSize = 10, marker = "X" }) => {
+export const createRoom = async (userId, { boardSize = 10, marker = "X", firstPlayer = "player1" }) => {
 	const roomNumber = await multiplayerRepository.generateRoomNumber();
 	const room = await multiplayerRepository.createRoom({
 		roomNumber,
 		player1: userId,
 		boardSize,
 		player1Marker: marker,
+		firstPlayer,
 		status: "waiting",
 	});
 	return multiplayerRepository.findRoomById(room._id);

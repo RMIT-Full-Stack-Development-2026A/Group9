@@ -11,10 +11,12 @@ export default function CreateRoomModal({ open, onClose }) {
 	const [boardSize, setBoardSize] = useState('10x10');
 	const [boardStyle, setBoardStyle] = useState('Classic');
 	const [marker, setMarker] = useState(null);
+	const [firstPlayer, setFirstPlayer] = useState('Me');
 
 	const markerOptions = ['X', 'O', '⭐', '🔥', '💎', '🌙'];
 	const boardStyles = ['Classic', 'Retro', 'Space'];
 	const boardSizes = ['10x10', '15x15'];
+	const firstOptions = ['Me', 'Opponent'];
 
 	const currentUser = user?.data || user?.user || user;
 	const playerName = currentUser?.username || currentUser?.email || 'Player';
@@ -25,6 +27,7 @@ export default function CreateRoomModal({ open, onClose }) {
 			boardStyle,
 			marker: marker || 'X',
 			player1Name: playerName,
+			firstPlayer,
 		};
 		onClose && onClose();
 		navigate('/multiplayer/arena/new', { state: { settings } });
@@ -67,6 +70,13 @@ export default function CreateRoomModal({ open, onClose }) {
 				<div style={{ marginTop: 8, textAlign: 'center', color: '#06B6D4', fontWeight: 500 }}>
 					{marker ? `Your marker: ${marker}` : 'Pick your marker'}
 				</div>
+
+				<label className={styles.label}>Who Goes First</label>
+				<select className={styles.input} value={firstPlayer} onChange={(e) => setFirstPlayer(e.target.value)}>
+					{firstOptions.map((opt) => (
+						<option key={opt} value={opt}>{opt}</option>
+					))}
+				</select>
 
 				<button className={styles.startBtn} onClick={handleCreate}>
 					Create Room

@@ -17,6 +17,7 @@ export const toRoomDTO = (room) => {
     boardSize: obj.boardSize,
     player1Marker: obj.player1Marker,
     player2Marker: obj.player2Marker,
+    firstPlayer: obj.firstPlayer || "player1",
     sessionId: obj.sessionId?.toString?.() || obj.sessionId || null,
     startTime: obj.startTime,
     endTime: obj.endTime,

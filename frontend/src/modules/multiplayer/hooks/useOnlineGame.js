@@ -128,9 +128,11 @@ export function useOnlineGame() {
 		setLoading(true);
 		setError(null);
 		try {
+			const firstPlayerServer = settings.firstPlayer === 'Opponent' ? 'player2' : 'player1';
 			const response = await multiplayerApi.createRoom({
 				boardSize: settings.boardSize,
 				marker: settings.marker,
+				firstPlayer: firstPlayerServer,
 			});
 			const createdRoom = response.data || response;
 			const size = createdRoom.boardSize || settings.boardSize || 10;
@@ -138,6 +140,7 @@ export function useOnlineGame() {
 			setRoom(createdRoom);
 			setPlayerMarker(createdRoom.player1Marker);
 			setPlayerNumber('player1');
+			setTurn(firstPlayerServer === 'player1' ? 'player1' : 'player2');
 			setBoard(Array(size * size).fill(null));
 			roomIdRef.current = createdRoom._id;
 
@@ -163,12 +166,16 @@ export function useOnlineGame() {
 			const response = await multiplayerApi.joinRoom(roomId);
 			const joinedRoom = response.data || response;
 
+			// If creator chose to go second, player 2 goes first
+			const creatorFirst = joinedRoom.firstPlayer || 'player1';
+			const initialTurn = creatorFirst === 'player1' ? 'player1' : 'player2';
+
 			setRoom(joinedRoom);
 			setSession({ _id: joinedRoom.sessionId, boardSize: joinedRoom.boardSize });
 			setBoard(Array(joinedRoom.boardSize * joinedRoom.boardSize).fill(null));
 			setPlayerMarker(joinedRoom.player2Marker);
 			setPlayerNumber('player2');
-			setTurn('player1');
+			setTurn(initialTurn);
 			setOpponentJoined(true);
 			roomIdRef.current = joinedRoom._id;
 

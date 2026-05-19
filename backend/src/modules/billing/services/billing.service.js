@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import nodemailer from "nodemailer";
 import AppError from "../../../shared/errors/AppError.js";
 import * as billingRepo from "../repositories/billing.repository.js";
-import * as userRepo from "../../user/repositories/user.repository.js";
+import * as userInterface from "../../user/interface/user.interface.js";
 import { BillingDto } from "../dto/billing.dto.js";
 
 const PREMIUM_PRICE = 10; // USD
@@ -109,7 +109,7 @@ export async function subscribeWithWallet(userId) {
 	});
 
 	// Send email notification (non-blocking)
-	const account = await userRepo.findById(userId);
+	const account = await userInterface.findUserById(userId);
 	if (account?.email) {
 		sendPaymentEmail(account.email, account.username);
 	}
@@ -125,7 +125,7 @@ export async function subscribeWithWallet(userId) {
 export async function createStripeCheckout(userId) {
 	const s = getStripe();
 
-	const account = await userRepo.findById(userId);
+	const account = await userInterface.findUserById(userId);
 	if (!account) throw new AppError("User not found", 404);
 
 	const session = await s.checkout.sessions.create({
@@ -198,7 +198,7 @@ export async function handleStripeWebhook(rawBody, signature) {
 		}
 
 		// Send email notification
-		const account = await userRepo.findById(userId);
+		const account = await userInterface.findUserById(userId);
 		if (account?.email) {
 			sendPaymentEmail(account.email, account.username);
 		}

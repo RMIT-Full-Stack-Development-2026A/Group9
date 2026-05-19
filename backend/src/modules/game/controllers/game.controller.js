@@ -1,16 +1,15 @@
-import { GameInterface } from "../interface/game.interface.js";
+import { applyMove, toAlgebraicNotation, createSession as createGameSession, getSessionById, appendMove, abortSession as abortGameSession, getMovesBySessionId } from "../services/game.service.js";
 import { validateAbortSessionDTO, validateAIMoveDTO, validateMoveDTO, validateSessionDTO } from '../dto/game.dto.js';
 import { getEasyAIMove } from "../ai/easyAI.js";
 import { getMediumAIMove } from "../ai/mediumAI.js";
 import { getHardAIMove } from "../ai/hardAI.js";
-import { toAlgebraicNotation } from "../services/game.service.js";
 
 // Create a new game session
 export async function createSession(req, res) {
 	try {
 		console.log('--- createSession controller called ---');
 		const dto = validateSessionDTO(req.body, req.user);
-		const session = await GameInterface.createSession(dto);
+		const session = await createGameSession(dto);
 		res.status(201).json({ success: true, session });
 	} catch (err) {
 		res.status(400).json({ success: false, message: err.message });
@@ -21,10 +20,10 @@ export async function createSession(req, res) {
 export async function makeMove(req, res) {
 	try {
 		const dto = validateMoveDTO(req.body);
-		const session = await GameInterface.getSessionById(dto.sessionId);
+		const session = await getSessionById(dto.sessionId);
 		if (!session) throw new Error('Session not found');
 		const { board, boardSize } = session;
-		const moveResult = GameInterface.applyMove({
+		const moveResult = applyMove({
 			board,
 			size: boardSize,
 			idx: dto.idx,
@@ -49,7 +48,7 @@ export async function makeMove(req, res) {
 		if (moveResult.winner) {
 			updateExtra.result = moveData.playerId === "player1" ? "player1_win" : "player2_win";
 		}
-		await GameInterface.appendMove(session._id, moveResult.board, moveResult, moveData, updateExtra);
+		await appendMove(session._id, moveResult.board, moveResult, moveData, updateExtra);
 		res.status(200).json({ success: true, ...moveResult });
 	} catch (err) {
 		res.status(400).json({ success: false, message: err.message });
@@ -60,7 +59,7 @@ export async function makeMove(req, res) {
 export async function makeAIMove(req, res) {
 	try {
 		const dto = validateAIMoveDTO(req.body);
-		const session = await GameInterface.getSessionById(dto.sessionId);
+		const session = await getSessionById(dto.sessionId);
 		if (!session) throw new Error("Session not found");
 		if (session.result) throw new Error("Game already finished");
 		if (session.gameType !== "ai") throw new Error("Not an AI session");
@@ -77,7 +76,7 @@ export async function makeAIMove(req, res) {
 		}
 		if (aiIdx == null) throw new Error("No valid AI move");
 
-		const moveResult = GameInterface.applyMove({
+		const moveResult = applyMove({
 			board,
 			size: boardSize,
 			idx: aiIdx,
@@ -99,7 +98,7 @@ export async function makeAIMove(req, res) {
 
 		const updateExtra = {};
 		if (moveResult.winner) updateExtra.result = "player2_win";
-		await GameInterface.appendMove(session._id, moveResult.board, moveResult, moveData, updateExtra);
+		await appendMove(session._id, moveResult.board, moveResult, moveData, updateExtra);
 		res.status(200).json({ success: true, idx: aiIdx, ...moveResult });
 	} catch (err) {
 		res.status(400).json({ success: false, message: err.message });
@@ -110,7 +109,7 @@ export async function makeAIMove(req, res) {
 export async function abortSession(req, res) {
 	try {
 		const dto = validateAbortSessionDTO(req.body);
-		const session = await GameInterface.getSessionById(dto.sessionId);
+		const session = await getSessionById(dto.sessionId);
 		if (!session) throw new Error('Session not found');
 		if (session.result && session.result !== 'aborted') throw new Error('Game already finished');
 
@@ -121,7 +120,7 @@ export async function abortSession(req, res) {
 			throw new Error('Not allowed to abort this session');
 		}
 
-		const updatedSession = await GameInterface.abortSession(session._id);
+		const updatedSession = await abortGameSession(session._id);
 		res.status(200).json({ success: true, session: updatedSession });
 	} catch (err) {
 		res.status(400).json({ success: false, message: err.message });
@@ -132,7 +131,7 @@ export async function abortSession(req, res) {
 export async function getSessionReplay(req, res) {
 	try {
 		const { sessionId } = req.params;
-		const session = await GameInterface.getSessionById(sessionId);
+		const session = await getSessionById(sessionId);
 		if (!session) throw new Error('Session not found');
 
 		const userId = String(req.user?.id || '');
@@ -143,7 +142,7 @@ export async function getSessionReplay(req, res) {
 		}
 
 		const boardSize = session.boardSize || 10;
-		const moves = await GameInterface.getMovesBySessionId(session._id);
+		const moves = await getMovesBySessionId(session._id);
 		const replayMoves = moves.map((move) => ({
 			_id: move._id,
 			moveNumber: move.moveNumber,

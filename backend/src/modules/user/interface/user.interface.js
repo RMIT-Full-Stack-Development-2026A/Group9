@@ -4,7 +4,8 @@ import {
 	createProfileDTO,
 } from '../dto/user.dto.js';
 
-// Expose public functions that return DTOs
+// ── Profile operations (DTO wrapped) ───────────────────────────────────
+
 export const getProfile = async (...args) => {
 	const user = await userService.getProfile(...args);
 	return createProfileDTO(user);
@@ -21,6 +22,32 @@ export const updateAvatar = async (...args) => {
 };
 
 export const getGameHistory = async (...args) => {
-	// Game history is likely an array of sessions, not a user
 	return userService.getGameHistory(...args);
 };
+
+// ── Auth-oriented operations ───────────────────────────────────────────
+// These return raw data (may include password) for auth module consumption.
+
+export const findUserByEmail = (email) => userService.findUserByEmail(email);
+
+export const findUserByIdentifier = (identifier, loginType) =>
+	userService.findUserByIdentifier(identifier, loginType);
+
+export const findUserById = (userId) => userService.findUserById(userId);
+
+export const createUser = (payload) => userService.createUser(payload);
+
+export const updateLoginMetadata = (userId, data) =>
+	userService.updateLoginMetadata(userId, data);
+
+// ── Wallet / Premium operations ────────────────────────────────────────
+
+export const getWalletBalance = (userId) => userService.getWalletBalance(userId);
+
+export const addToWallet = (userId, amount) => userService.addToWallet(userId, amount);
+
+export const deductFromWallet = (userId, amount) => userService.deductFromWallet(userId, amount);
+
+export const setPremiumUntil = (userId, date) => userService.setPremiumUntil(userId, date);
+
+export const getPremiumUntil = (userId) => userService.getPremiumUntil(userId);

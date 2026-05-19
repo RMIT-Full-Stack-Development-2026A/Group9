@@ -216,3 +216,7 @@ export const logout = async (accessToken) => {
 
 	return { loggedOut: true };
 };
+
+export const findActiveSession = async (tokenHash) => {
+	return authRepository.findActiveAuthSessionByTokenHash(tokenHash);
+};

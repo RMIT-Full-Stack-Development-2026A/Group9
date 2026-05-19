@@ -1,7 +1,9 @@
 .chatPanel {
 	display: flex;
 	flex-direction: column;
-	height: 280px;
+	flex: 1;
+	min-height: 200px;
+	margin-top: 12px;
 	background: var(--bg-card);
 	border: 1px solid var(--border);
 	border-radius: 12px;

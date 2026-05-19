@@ -2,18 +2,28 @@
 
 .arena-page {
     height: 100vh;
-    width: 100vw;
+    max-height: 100vh;
+    width: 100%;
+    max-width: 100%;
     background-color: #0b0f1a;
     display: flex;
     flex-direction: column;
-    overflow: hidden; 
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .arena-content {
     display: grid;
-    grid-template-columns: 1fr 380px; 
+    grid-template-columns: 1fr minmax(320px, 400px);
     height: 100vh;
+    max-height: 100vh;
     overflow: hidden;
+}
+
+.arena-content > :first-child {
+    overflow: hidden;
+    min-width: 0;
+    min-height: 0;
 }
 
 .arena-sidebar {
@@ -21,6 +31,7 @@
     border-left: 1px solid #1f2b47;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .sidebar-panel {

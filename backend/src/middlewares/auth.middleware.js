@@ -1,29 +1,7 @@
-/**
- * ============================================================================
- * AUTH MIDDLEWARE CONTRACT (Team Integration Boundary)
- * ============================================================================
- * Purpose: Provide a single, stable authentication/authorization contract for
- * all modules. Teammates should consume these exports as-is instead of writing
- * module-specific auth checks.
- *
- * Exported middlewares:
- * 1) authenticate   -> validates JWT + active AuthSession, sets req.user.
- * 2) authorizeRoles -> role-based access control for protected routes.
- * 3) requirePremium -> premium entitlement check based on premiumUntil.
- *
- * req.user contract set by authenticate:
- * {
- *   id: string,
- *   role: "player" | "admin" | string,
- *   email: string | undefined,
-	*   premiumUntil?: Date
- * }
- */
-
 import jwt from "jsonwebtoken";
 import AppError from "../shared/errors/AppError.js";
-import UserProfile from "../modules/user/models/userProfile.model.js";
-import AuthSession from "../modules/auth/models/authSession.model.js";
+import * as userInterface from "../modules/user/interface/user.interface.js";
+import * as authInterface from "../modules/auth/interface/auth.interface.js";
 import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";
 import * as tokenBlacklistService from "../shared/security/tokenBlacklist.service.js";
 
@@ -58,7 +36,7 @@ export const authenticate = async (req, res, next) => {
 	try {
 		const payload = jwt.verify(token, process.env.JWT_SECRET || "dev_jwt_secret");
 		const tokenHash = hashSessionToken(token);
-		const session = await AuthSession.findOne({ token: tokenHash, isRevoked: false }).lean();
+		const session = await authInterface.findActiveSession(tokenHash);
 		if (!session || new Date(session.expiresAt).getTime() <= Date.now()) {
 			return next(new AppError("Authentication session has expired", 401));
 		}
@@ -98,12 +76,12 @@ export const requirePremium = async (req, res, next) => {
 		return next(new AppError("Authentication required", 401));
 	}
 
-	const profile = await UserProfile.findById(req.user.id).select("premiumUntil").lean();
-	const hasPremium = isPremiumActive(profile?.premiumUntil);
+	const premiumUntil = await userInterface.getPremiumUntil(req.user.id);
+	const hasPremium = isPremiumActive(premiumUntil);
 	if (!hasPremium) {
 		return next(new AppError("Premium membership is required to access leaderboard", 403));
 	}
 
-	req.user.premiumUntil = profile?.premiumUntil || null;
+	req.user.premiumUntil = premiumUntil || null;
 	return next();
 };

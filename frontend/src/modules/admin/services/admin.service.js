@@ -23,15 +23,9 @@ export const adminService = {
     getPlayers: async () => {
         return await http.get('/api/admin/players');
     },
-    getRooms: async () => {
-        return await http.get('/api/admin/rooms');
-    },
 
     togglePlayerStatus: async (playerId) => {
         return await http.put(`/api/admin/players/${playerId}/toggle-status`);
-    },
-    closeRoom: async (roomNumber) => {
-        return await http.delete(`/api/admin/rooms/${roomNumber}`);
     },
 
     broadcastMessage: async (message) => {

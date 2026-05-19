@@ -1,10 +1,3 @@
-/**
- * ============================================================================
- * AUTH SESSION MODEL
- * ============================================================================
- * Purpose: Tracks issued auth sessions/tokens in Auth bounded context.
- * This allows token lifecycle control independent from UserAccount/Profile data.
- */
 
 import mongoose from "mongoose";
 

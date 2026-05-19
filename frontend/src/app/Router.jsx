@@ -11,7 +11,6 @@ import ProtectedRoute from "../shared/ui/ProtectedRoute.jsx";
 import Navbar from "../shared/ui/Navbar/Navbar.jsx";
 
 import AdminDashboard from "../modules/admin/components/AdminDashboard/AdminDashboard.jsx";
-import GameArena from "../modules/game/pages/GameLobby.jsx";
 import LocalGameArena from "../modules/game/pages/LocalGameArena.jsx";
 import Home from "../modules/home/pages/Home.jsx";
 import AIGameArena from "../modules/game/pages/AIGameArena.jsx";

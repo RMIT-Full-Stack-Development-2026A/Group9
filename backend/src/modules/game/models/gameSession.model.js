@@ -6,10 +6,6 @@ const gameSessionSchema = new mongoose.Schema(
 			type: Number,
 			index: true,
 		},
-		// Ultimo-strict schema:
-		// - player1: registered user who started the session
-		// - player2: optional (online matches)
-		// - player2Name: display name for local guest or AI bot
 		player1: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "UserAccount",

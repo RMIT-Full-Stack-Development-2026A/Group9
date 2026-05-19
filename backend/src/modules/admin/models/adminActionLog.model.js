@@ -1,14 +1,7 @@
-/**
- * ============================================================================
- * ADMIN ACTION LOG MODEL
- * ============================================================================
- * Purpose: Dedicated admin-bounded-context audit model. Keeps moderation/system
- * actions separate from User data while still referencing users/rooms.
- */
 
 import mongoose from "mongoose";
 
-const ACTION_TYPES = ["DEACTIVATE_USER", "ACTIVATE_USER", "CLOSE_ROOM"];
+const ACTION_TYPES = ["DEACTIVATE_USER", "ACTIVATE_USER"];
 
 const adminActionLogSchema = new mongoose.Schema(
   {
@@ -27,12 +20,6 @@ const adminActionLogSchema = new mongoose.Schema(
     targetUserId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserAccount",
-      default: null,
-      index: true,
-    },
-    targetRoomId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "GameRoom",
       default: null,
       index: true,
     },

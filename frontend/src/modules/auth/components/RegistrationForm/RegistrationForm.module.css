@@ -23,9 +23,9 @@
   --bg-input: #0f172a;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
-  --accent: #06b6d4;
+  --accent: var(--cyan);
   --accent-hover: #0891b2;
-  --error: #ef4444;
+  --error: var(--red);
   --success: #10b981;
   --border: #334155;
 }

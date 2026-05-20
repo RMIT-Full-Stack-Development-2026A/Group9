@@ -97,6 +97,8 @@ export const getGameHistory = async (userId, query = {}) => {
 				otherPlayers.push(session.player2);
 			}
 
+			if (session.sessionNumber != null && String(session.sessionNumber).includes(searchLower))
+				return true;
 			if (otherPlayers.some((p) => p.username?.toLowerCase().includes(searchLower)))
 				return true;
 			if (session.botName && session.botName.toLowerCase().includes(searchLower))

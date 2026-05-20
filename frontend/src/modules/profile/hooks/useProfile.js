@@ -214,9 +214,10 @@ export const useProfile = (onUserUpdate) => {
   };
 
   const getSessionToken = useCallback((game = {}) => {
+    const num = game?.sessionNumber;
+    if (num != null) return `#${num}`;
     const id = String(game?._id || "").trim();
-    if (!id) return "";
-    return `#${id.slice(-4).toUpperCase()}`;
+    return id ? `#${id.slice(-4).toUpperCase()}` : "";
   }, []);
 
   const filteredGameHistory = useMemo(() => {

@@ -2,8 +2,11 @@ import GameSession from '../models/gameSession.model.js';
 import Move from '../models/move.model.js';
 
 export async function createSession(dto) {
+	const last = await GameSession.findOne({}).sort({ sessionNumber: -1 }).lean();
+	const sessionNumber = (last?.sessionNumber || 0) + 1;
 	const session = new GameSession({
 		...dto,
+		sessionNumber,
 		board: Array(dto.boardSize * dto.boardSize).fill(null),
 	});
 	return await session.save();

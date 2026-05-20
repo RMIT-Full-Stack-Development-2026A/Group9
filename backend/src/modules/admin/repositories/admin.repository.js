@@ -15,7 +15,7 @@ export const adminRepository = {
     
     findAllUsers: async () => {
         // Aggregate to join UserProfile and include premiumUntil, filter only players
-        const users = await getUserModel().aggregate([
+        return await getUserModel().aggregate([
             { $match: { role: "player" } },
             { $sort: { createdAt: -1 } },
             {
@@ -28,12 +28,10 @@ export const adminRepository = {
             },
             { $unwind: { path: "$profile", preserveNullAndEmptyArrays: true } }
         ]);
-        return users.map(adminDto.toPlayerResponse);
     },
 
     findUserById: async (userId) => {
-        const user = await getUserModel().findById(userId).lean();
-        return user ? adminDto.toPlayerResponse(user) : null;
+        return await getUserModel().findById(userId).lean();
     },
 
     updateUserActiveStatus: async (userId, isActive) => {
@@ -60,7 +58,7 @@ export const adminRepository = {
         if (!users[0]) {
             throw new Error('User not found after update. objectId: ' + objectId);
         }
-        return adminDto.toPlayerResponse(users[0]);
+        return users[0];
     },
 
   

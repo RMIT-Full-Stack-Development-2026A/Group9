@@ -25,7 +25,8 @@ export const adminService = {
     },
 
     getPlayers: async () => {
-        return await adminRepository.findAllUsers();
+        const users = await adminRepository.findAllUsers();
+        return users.map((user) => adminDto.toPlayerResponse(user));
     },
 
     togglePlayerStatus: async (adminId, targetUserId) => {

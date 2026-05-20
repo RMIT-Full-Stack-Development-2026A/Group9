@@ -7,9 +7,11 @@ export const getMetrics = async (...args) => {
 };
 
 export const getPlayers = async (...args) => {
-	return await adminService.getPlayers(...args);
+	const players = await adminService.getPlayers(...args);
+	return players.map(adminDto.toPlayerResponse);
 };
 
 export const togglePlayerStatus = async (...args) => {
-	return await adminService.togglePlayerStatus(...args);
+	const user = await adminService.togglePlayerStatus(...args);
+	return adminDto.toPlayerResponse(user);
 };

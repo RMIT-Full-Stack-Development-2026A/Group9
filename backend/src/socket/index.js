@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";
 import * as authService from "../modules/auth/services/auth.service.js";
+import * as userInterface from "../modules/user/interface/user.interface.js";
 import * as tokenBlacklistService from "../shared/security/tokenBlacklist.service.js";
 import { registerMultiplayerHandlers } from "./handlers/multiplayerHandler.js";
 
@@ -34,10 +35,18 @@ export function initSocket(httpServer) {
 				return next(new Error("Authentication session has expired"));
 			}
 
+			const userId = payload.sub || payload.id || payload.userId;
+			const user = userId ? await userInterface.findUserById(userId) : null;
+
+			if (!user || user.isActive === false) {
+				return next(new Error("Account is inactive"));
+			}
+
 			socket.user = {
-				id: payload.sub || payload.id || payload.userId,
+				id: userId,
 				role: payload.role || "player",
 				email: payload.email,
+				username: user?.username,
 			};
 
 			next();

@@ -24,3 +24,10 @@ export const revokeAuthSessionByTokenHash = async (token) => {
 		{ returnDocument: "after" }
 	).lean();
 };
+
+export const revokeAuthSessionsByUserId = async (userId) => {
+	return AuthSession.updateMany(
+		{ userId, isRevoked: false },
+		{ $set: { isRevoked: true } }
+	);
+};

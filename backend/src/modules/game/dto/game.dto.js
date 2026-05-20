@@ -52,3 +52,23 @@ export function validateAIMoveDTO(body) {
 	if (aiLevel && !["Easy", "Medium", "Hard"].includes(aiLevel)) throw new Error("Invalid aiLevel");
 	return { sessionId, lastPlayerMoveIdx, marker, aiLevel: aiLevel || "Easy" };
 }
+
+// ── Response DTOs (presentation only — no business logic) ─────────────
+
+const GAME_TYPE_LABELS = {
+	classic: "Two Players",
+	ai: "Single Player",
+	multiplayer: "Online Match",
+};
+
+export const toGameHistoryItem = ({ session, userResult, opponent, players }) => ({
+	_id: session._id,
+	sessionNumber: session.sessionNumber,
+	startTime: session.startTime,
+	endTime: session.endTime,
+	boardSize: session.boardSize || 10,
+	gameType: GAME_TYPE_LABELS[session.gameType] || session.gameType,
+	result: userResult,
+	opponent,
+	players,
+});

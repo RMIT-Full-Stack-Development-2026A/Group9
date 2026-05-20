@@ -107,7 +107,42 @@ export const getGameHistory = async (userId, query = {}) => {
 		});
 	}
 
-	return sessions;
+	// Transform sessions into a user-centric shape (business logic)
+	return sessions.map((session) => {
+		let userResult;
+		if (session.result === "player1_win") {
+			userResult = String(session.player1?._id || session.player1 || "") === userId ? "Win" : "Lose";
+		} else if (session.result === "player2_win") {
+			userResult = String(session.player2?._id || session.player2 || "") === userId ? "Win" : "Lose";
+		} else if (session.result === "draw") {
+			userResult = "Draw";
+		} else {
+			userResult = "Aborted";
+		}
+
+		let opponent = "Unknown";
+		let players = [];
+		if (session.gameType === "ai" || session.gameType === "single") {
+			opponent = session.player2Name || session.botName || "AI Bot";
+			players = [
+				{ role: "player1", name: session.player1?.username || "Unknown" },
+				{ role: "opponent", name: session.player2Name || session.botName || "AI Bot" },
+			];
+		} else {
+			const userIdStr = String(session.player1?._id || session.player1 || "");
+			if (userIdStr === userId) {
+				opponent = session.player2?.username || session.player2Name || "Unknown";
+			} else {
+				opponent = session.player1?.username || "Unknown";
+			}
+			players = [
+				{ role: "player1", name: session.player1?.username || "Unknown" },
+				{ role: "player2", name: session.player2?.username || session.player2Name || "Unknown" },
+			];
+		}
+
+		return { session, userResult, opponent, players };
+	});
 };
 
 // Validates a move and returns the new board, winner, and draw state

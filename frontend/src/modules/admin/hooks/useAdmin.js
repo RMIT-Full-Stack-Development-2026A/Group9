@@ -32,7 +32,10 @@ export const useAdmin = () => {
                 adminService.getPlayers(),
                 adminService.getMetrics()
             ]);
-            setPlayers(playersRes.data.data);
+            setPlayers(playersRes.data.data.map(player => ({
+                ...player,
+                id: player.id || player._id,
+            })));
             setMetrics(metricsRes.data.data);
         } catch (error) {
             console.error("Connection failed:", error.response?.data?.message || error.message);

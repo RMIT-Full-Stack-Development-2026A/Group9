@@ -56,6 +56,15 @@ export async function abortSession(sessionId) {
 	);
 }
 
+export async function findSessionsByUser(userObjectId, filter, sort) {
+	return GameSession.find(filter)
+		.populate("player1", "username")
+		.populate("player2", "username")
+		.populate("winner", "username")
+		.sort(sort)
+		.lean();
+}
+
 export async function getMovesBySessionId(sessionId) {
 	return await Move.find({ sessionId })
 		.sort({ moveNumber: 1, createdAt: 1 })

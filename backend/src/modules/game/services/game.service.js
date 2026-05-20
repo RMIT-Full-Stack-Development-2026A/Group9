@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { checkWinLine, isDraw } from "../engine/gameEngine.js";
 import * as gameRepository from "../repositories/game.repository.js";
-import GameSession from "../models/gameSession.model.js";
 
 // ── Repository delegates ───────────────────────────────────────────────
 export const createSession = (dto) => gameRepository.createSession(dto);
@@ -79,12 +78,7 @@ export const getGameHistory = async (userId, query = {}) => {
 
 	const sort = { startTime: sortOrder === "asc" ? 1 : -1 };
 
-	let sessions = await GameSession.find(filter)
-		.populate("player1", "username")
-		.populate("player2", "username")
-		.populate("winner", "username")
-		.sort(sort)
-		.lean();
+	let sessions = await gameRepository.findSessionsByUser(userObjectId, filter, sort);
 
 	if (search) {
 		const searchLower = search.toLowerCase();

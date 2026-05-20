@@ -39,6 +39,9 @@ export const API_ROUTES = {
 		togglePlayer: (playerId) => `/api/admin/players/${playerId}/toggle-status`,
 		broadcast: "/api/admin/broadcast",
 		auditLogs: "/api/admin/audit-logs",
+		rooms: "/api/admin/rooms",
+		roomsSearch: "/api/admin/rooms/search",
+		closeRoom: (roomId) => `/api/admin/rooms/${roomId}/close`,
 	},
 
 	billing: {

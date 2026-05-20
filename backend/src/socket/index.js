@@ -5,8 +5,14 @@ import * as authService from "../modules/auth/services/auth.service.js";
 import * as tokenBlacklistService from "../shared/security/tokenBlacklist.service.js";
 import { registerMultiplayerHandlers } from "./handlers/multiplayerHandler.js";
 
+let io = null;
+
+export function getIO() {
+	return io;
+}
+
 export function initSocket(httpServer) {
-	const io = new Server(httpServer, {
+	io = new Server(httpServer, {
 		cors: {
 			origin: ["http://localhost:5173", "http://localhost:5174"],
 			credentials: true,
@@ -49,10 +55,8 @@ export function initSocket(httpServer) {
 	io.on("connection", (socket) => {
 		console.log(`[Socket] User ${socket.user?.id} connected (${socket.id})`);
 
-		// Join a personal room for direct messaging
 		socket.join(`user:${socket.user.id}`);
 
-		// Register multiplayer event handlers
 		registerMultiplayerHandlers(io, socket);
 
 		socket.on("disconnect", () => {

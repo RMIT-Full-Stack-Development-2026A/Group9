@@ -18,6 +18,7 @@
 import AdminNavBar from '../NavBar/AdminNavBar.jsx';
 import { Outlet } from 'react-router-dom';
 import PlayerTable from '../PlayerTable/PlayerTable.jsx';
+import RoomTable from '../RoomTable/RoomTable.jsx';
 import StatCard from '../StateCard/StateCard.jsx';
 import { useAdmin } from '../../hooks/useAdmin.js';
 import styles from './AdminDashboard.module.css';
@@ -73,6 +74,9 @@ export default function Admin() {
                 <main className={styles.adminMainContent}>
                     {activeTab === 'players' && (
                         <PlayerTable gamers={players} setgamers={setPlayers} refreshDashboard={refreshDashboard} />
+                    )}
+                    {activeTab === 'rooms' && (
+                        <RoomTable />
                     )}
                     <Outlet />
                 </main>

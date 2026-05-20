@@ -13,4 +13,12 @@ export const adminService = {
 		http.post(API_ROUTES.admin.broadcast, { message }),
 
 	getAuditLogs: async () => http.get(API_ROUTES.admin.auditLogs),
+
+	getRooms: async () => http.get(API_ROUTES.admin.rooms),
+
+	searchRooms: async (q) =>
+		http.get(API_ROUTES.admin.roomsSearch, { params: { q } }),
+
+	closeRoom: async (roomId) =>
+		http.post(API_ROUTES.admin.closeRoom(roomId)),
 };

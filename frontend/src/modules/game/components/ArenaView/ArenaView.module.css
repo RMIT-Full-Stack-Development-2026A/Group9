@@ -1,29 +1,40 @@
 /* src/pages/GameArena.css */
 
 .arena-page {
-    height: 100vh;
-    max-height: 100vh;
+    min-height: 100vh;
     width: 100%;
     max-width: 100%;
     background-color: #0b0f1a;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: auto;
     box-sizing: border-box;
 }
 
 .arena-content {
     display: grid;
     grid-template-columns: 1fr minmax(320px, 400px);
-    height: 100vh;
-    max-height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    width: 100%;
+    overflow: visible;
 }
 
 .arena-content > :first-child {
-    overflow: hidden;
+    overflow: visible;
     min-width: 0;
     min-height: 0;
+}
+
+@media (max-height: 850px) {
+    .arena-content {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .arena-content {
+        grid-template-columns: 1fr;
+    }
 }
 
 .arena-sidebar {
@@ -104,8 +115,23 @@
     word-break: break-all;
     cursor: pointer;
     font-weight: 400;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    padding: 0;
 }
 
 .room-link:hover {
     text-decoration: underline;
+}
+
+.copy-badge {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
 }

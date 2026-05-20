@@ -87,11 +87,14 @@ export function useOnlineGame() {
 				console.log('[SOCKET] Setting session from room:player-joined:', data.sessionId?.slice(-6));
 				setSession({ _id: data.sessionId, boardSize: data.boardSize || 10 });
 			}
-			setRoom((prev) => prev ? {
-				...prev,
-				player2: { username: data.opponentName || 'Opponent' },
-				player2Marker: data.opponentMarker || prev.player2Marker,
-			} : prev);
+			setRoom((prev) => ({
+				...(prev || {}),
+				player2: {
+					username: data.opponentName || prev?.player2?.username || 'Opponent',
+					avatar: data.opponentAvatar || prev?.player2?.avatar || null,
+				},
+				player2Marker: data.opponentMarker || prev?.player2Marker,
+			}));
 		});
 
 		socket.on('game:state-update', (data) => {
@@ -131,6 +134,7 @@ export function useOnlineGame() {
 			const firstPlayerServer = settings.firstPlayer === 'Opponent' ? 'player2' : 'player1';
 			const response = await multiplayerApi.createRoom({
 				boardSize: settings.boardSize,
+				boardStyle: settings.boardStyle,
 				marker: settings.marker,
 				firstPlayer: firstPlayerServer,
 			});

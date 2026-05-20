@@ -82,24 +82,26 @@ export default function OnlineGameArena() {
 	}
 
 	const boardSize = room?.boardSize || settings?.boardSize || 10;
-	const boardStyle = settings?.boardStyle?.toLowerCase() || 'classic';
+	const boardStyle = (settings?.boardStyle || room?.boardStyle || 'Classic').toLowerCase();
 
 	const matchData = {
 		size: boardSize,
 		style: boardStyle,
 		gameType: 'multiplayer',
 		isOfflineMatch: false,
+		roomId: room?._id,
+		sessionId: room?.sessionId,
 		player1Name: playerNumber === 'player1'
-			? (settings?.player1Name || 'You')
+			? (settings?.player1Name || room?.player1?.username || 'You')
 			: (room?.player1?.username || 'Opponent'),
 		player2Name: playerNumber === 'player2'
-			? (settings?.player1Name || 'You')
-			: (room?.player2?.username || 'Waiting...'),
-		player1Avatar: null,
-		player2Avatar: null,
+			? (room?.player2?.username || settings?.player1Name || 'You')
+			: (room?.player2?.username || '?'),
+		player1Avatar: room?.player1?.avatar || null,
+		player2Avatar: room?.player2?.avatar || null,
 		winningLine: Array.isArray(winLine) ? winLine : [],
-		p1Marker: playerNumber === 'player1' ? playerMarker : (room?.player1Marker || 'X'),
-		p2Marker: playerNumber === 'player2' ? playerMarker : (room?.player2Marker || 'O'),
+		p1Marker: playerNumber === 'player1' ? (playerMarker || '-') : (room?.player1Marker || 'X'),
+		p2Marker: playerNumber === 'player2' ? (playerMarker || '-') : (room?.player2Marker || '-'),
 		boardState: Array.isArray(board) ? board : [],
 	};
 

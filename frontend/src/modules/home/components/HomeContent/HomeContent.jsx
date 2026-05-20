@@ -64,7 +64,7 @@ export default function Home() {
         <section className={`${styles.modeRow} ${styles.row1}`}>
             <button className={styles.btn1} onClick={handleLocalGameClick}>
                 <span className={styles.Model_icon}>
-                    <i className="bi bi-display" style={{ fontSize: 32, color: "#06B6D4" }}></i>
+                    <i className="bi bi-display" style={{ fontSize: 32, color: "var(--color-primary)" }}></i>
                 </span>
                 <span className={`${styles.Model_name} fw-bold`}>Local 2‑Player<br/></span>
                 <span className={styles.Model_desc}>Play against a friend on the same device. Share the keyboard and battle it out.</span>
@@ -78,7 +78,7 @@ export default function Home() {
             </button>
             <button className={styles.btn1} onClick={requireAuth(() => navigate('/multiplayer'))}>
                 <span className={styles.Model_icon}>
-                    <i className="bi bi-globe" style={{ fontSize: 32, color: "#10B981" }}></i>
+                    <i className="bi bi-globe" style={{ fontSize: 32, color: "var(--color-success)" }}></i>
                 </span>
                 <span className={`${styles.Model_name} fw-bold`}>Online Multiplayer</span>
                 <span className={styles.Model_desc}>Play against real opponents in real-time. Create or join a game room.</span>
@@ -87,6 +87,17 @@ export default function Home() {
         </section>
 
         <section className={`${styles.modeRow} ${styles.row2}`} style={{ justifyContent: 'center', gap: '16px' }}>
+            <Button
+                className={`${styles.btn} text-white`}
+                color="var(--color-primary)"
+                icon={
+                    <span className="btn_icon">
+                        <i className="bi bi-people"></i>
+                    </span>
+                }
+                text="Browse Room"
+                onClick={requireAuth(() => navigate("/multiplayer"))}
+            />
             <Button
                 className={`${styles.btn} text-white ${styles["actionBtn--purple"]}`}
                 color="#8b5cf6"

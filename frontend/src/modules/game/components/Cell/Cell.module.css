@@ -25,18 +25,28 @@
 
 .winning-cell {
     border-color: #fbbf24;
-    box-shadow: 0 0 14px rgba(251, 191, 36, 0.45);
+    box-shadow:
+        0 0 0 2px rgba(251, 191, 36, 0.25),
+        inset 0 0 10px rgba(251, 191, 36, 0.35),
+        0 0 18px rgba(251, 191, 36, 0.45);
     background:
-        radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.14), transparent 45%),
-        rgba(251, 191, 36, 0.14);
+        radial-gradient(circle at 50% 35%, rgba(251, 191, 36, 0.25), transparent 45%),
+        rgba(251, 191, 36, 0.18);
+    outline: 2px solid rgba(251, 191, 36, 0.22);
+    outline-offset: -2px;
 }
 
 .marker-text {
     font-size: 1.75rem;
     line-height: 1;
     color: #f8fafc;
-    filter: brightness(1.2) saturate(1.25) drop-shadow(0 0 6px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 10px rgba(56, 189, 248, 0.22));
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.55);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    letter-spacing: 0.12em;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    filter: none;
+    text-shadow: none;
     display: flex;
     justify-content: center;
     align-items: center;

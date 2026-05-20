@@ -17,6 +17,7 @@ export default function ArenaView({
     outcome,
 }) {
     const [showEndGameModal, setShowEndGameModal] = useState(false);
+    const [copyStatus, setCopyStatus] = useState('Copy');
 
     useEffect(() => {
         if (!resultName) {
@@ -26,6 +27,19 @@ export default function ArenaView({
         const timer = setTimeout(() => setShowEndGameModal(true), 700);
         return () => clearTimeout(timer);
     }, [resultName]);
+
+    const handleCopyRoomId = async () => {
+        const roomText = matchDisplay.roomLabel;
+        if (!roomText) return;
+        try {
+            await navigator.clipboard.writeText(roomText);
+            setCopyStatus('Copied');
+            setTimeout(() => setCopyStatus('Copy'), 2000);
+        } catch (error) {
+            setCopyStatus('Copy');
+        }
+    };
+
     const { 
         size, 
         style, 
@@ -74,9 +88,17 @@ export default function ArenaView({
                         <div className={styles['detail-row']}>
                             <span className={styles['detail-icon']}>🔑</span>
                             <span className={styles['detail-label']}>Room:</span>
-                            <span className={`${styles['detail-value']} ${styles['room-link']}`}>
+                            <button
+                                type="button"
+                                className={`${styles['detail-value']} ${styles['room-link']}`}
+                                onClick={handleCopyRoomId}
+                                title="Click to copy room ID"
+                            >
                                 {matchDisplay.roomLabel}
-                            </span>
+                                <span className={styles['copy-badge']}>
+                                    {copyStatus}
+                                </span>
+                            </button>
                         </div>
                     </div>
                     {sidebarChildren}

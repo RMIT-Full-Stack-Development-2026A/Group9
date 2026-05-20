@@ -42,7 +42,7 @@ export default function GameBoard({ size, styleType, markerIndex, boardState, on
                             value={cellValue}
                             markerIndex={markerIndex}
                             onClick={() => onCellClick(index)}
-                            className={styles['game-cell']}
+                            className={`${styles['game-cell']} ${styles[`${styleType}-style`] || ''}`}
                             isWinningCell={Array.isArray(winningLine) && winningLine.includes(index)}
                             isLocked={isLocked}
                         />

@@ -193,5 +193,9 @@ export const logout = async (accessToken) => {
 	return { loggedOut: true };
 };
 
+export const revokeAllSessionsForUser = async (userId) => {
+	return authRepository.revokeAuthSessionsByUserId(userId);
+};
+
 export const findActiveSession = (tokenHash) =>
 	authRepository.findActiveAuthSessionByTokenHash(tokenHash);

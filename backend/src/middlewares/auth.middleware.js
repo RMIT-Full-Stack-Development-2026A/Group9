@@ -51,6 +51,14 @@ export const authenticate = async (req, res, next) => {
 			return next(new AppError("Invalid authentication token payload", 401));
 		}
 
+		const currentUser = await userService.findUserById(req.user.id);
+		if (!currentUser) {
+			return next(new AppError("User not found", 401));
+		}
+		if (currentUser.isActive === false) {
+			return next(new AppError("Account is inactive", 403));
+		}
+
 		return next();
 	} catch (error) {
 		return next(new AppError("Invalid or expired authentication token", 401));

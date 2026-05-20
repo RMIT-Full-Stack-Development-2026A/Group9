@@ -90,8 +90,12 @@ export const joinRoom = async (roomId, userId, marker) => {
 	return enrichRoomAvatars(updatedRoom);
 };
 
-export const closeRoom = async (roomId) => {
-	return multiplayerRepository.closeRoom(roomId);
+export const closeRoom = async (roomId, status = "cancelled") => {
+	const room = await multiplayerRepository.findRoomById(roomId);
+	if (!room) return null;
+	if (room.status === "finished" && status === "cancelled") return room;
+	if (room.status === status && room.endTime) return room;
+	return multiplayerRepository.closeRoom(roomId, status, room.endTime || new Date());
 };
 
 export const getRoom = async (roomId) => {

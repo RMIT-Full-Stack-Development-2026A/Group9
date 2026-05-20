@@ -81,7 +81,7 @@ export default function AdminGameRooms({ rooms: initialRooms = [], refreshRooms 
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.length === 0 && <tr><td colSpan={7}>No active rooms</td></tr>}
+                        {filtered.length === 0 && <tr><td colSpan={7}>No rooms found</td></tr>}
                         {filtered.map(room => (
                             <tr key={room._id}>
                                 <td className={playerStyles.adminTableUsername}>#{room.roomNumber || (room._id?.slice?.(0,8) || '-')}</td>
@@ -95,13 +95,24 @@ export default function AdminGameRooms({ rooms: initialRooms = [], refreshRooms 
                                 <td>{formatDate(room.endTime)}<div style={{ color: 'var(--color-muted)', fontSize: 12 }}>{formatTime(room.endTime)}</div></td>
                                 <td>{formatDuration(room.startTime, room.endTime)}</td>
                                 <td>
+                                    {room.status === 'cancelled' ? (
+                                        <button className={`${playerStyles.actionBtn} ${playerStyles.deactivate}`} disabled type="button">
+                                            Closed
+                                        </button>
+                                    ) : room.status === 'finished' ? (
+                                        <button className={`${playerStyles.actionBtn} ${playerStyles.deactivate}`} disabled type="button">
+                                            Finished
+                                        </button>
+                                    ) : (
                                     <button
                                         className={`${playerStyles.actionBtn} ${playerStyles.deactivate}`}
                                         onClick={() => handleClose(room._id)}
+                                        type="button"
                                     >
                                         <i className="bi bi-x-lg" style={{ marginRight: 8 }}></i>
                                         Close
                                     </button>
+                                    )}
                                 </td>
                             </tr>
                         ))}

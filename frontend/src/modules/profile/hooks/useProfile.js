@@ -91,7 +91,7 @@ export const useProfile = (onUserUpdate) => {
   const fetchGameHistory = useCallback(async () => {
     try {
       setHistoryLoading(true);
-      const params = { ...filters };
+      const { result: _result, ...params } = { ...filters };
       Object.keys(params).forEach((key) => {
         if (!params[key]) delete params[key];
       });
@@ -222,14 +222,21 @@ export const useProfile = (onUserUpdate) => {
 
   const filteredGameHistory = useMemo(() => {
     const query = String(search || "").trim().toLowerCase();
-    if (!query) return gameHistory;
+    const resultFilter = String(filters.result || "").trim().toLowerCase();
 
     return gameHistory.filter((game) => {
+      if (resultFilter) {
+        const gameResult = String(game?.result || "").trim().toLowerCase();
+        if (gameResult !== resultFilter) return false;
+      }
+
+      if (!query) return true;
+
       const token = getSessionToken(game).toLowerCase();
       const opponent = String(game?.opponent || "").toLowerCase();
       return token.includes(query) || opponent.includes(query);
     });
-  }, [gameHistory, search, getSessionToken]);
+  }, [gameHistory, search, filters.result, getSessionToken]);
 
   return {
     user: authContext.user,

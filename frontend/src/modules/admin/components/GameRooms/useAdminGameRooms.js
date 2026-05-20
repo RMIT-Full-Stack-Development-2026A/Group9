@@ -30,8 +30,11 @@ export function useAdminGameRooms(initialRooms = [], parentRefresh) {
     const handleClose = useCallback(async (roomId) => {
         if (!confirm('Close this room?')) return;
         try {
-            await api.closeRoom(roomId);
-            setRooms(r => r.filter(x => x._id !== roomId));
+            const updated = await api.closeRoom(roomId);
+            const nextRoom = updated?.room || updated?.data?.room || updated?.data || updated;
+            if (nextRoom?._id) {
+                setRooms((current) => current.map((room) => (room._id === nextRoom._id ? nextRoom : room)));
+            }
         } catch (err) {
             console.error('Close failed', err);
         }

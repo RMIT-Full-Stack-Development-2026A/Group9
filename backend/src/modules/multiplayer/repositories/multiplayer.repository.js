@@ -12,7 +12,7 @@ export const findWaitingRooms = () =>
 		.lean();
 
 export const findActiveRooms = () =>
-	GameRoom.find({ status: { $in: ["waiting", "playing"] } })
+	GameRoom.find({})
 		.populate("player1 player2", "username avatar")
 		.sort({ createdAt: -1 })
 		.lean();
@@ -20,12 +20,12 @@ export const findActiveRooms = () =>
 export const updateRoom = (id, data) =>
 	GameRoom.findByIdAndUpdate(id, data, { returnDocument: "after" }).populate("player1 player2", "username avatar");
 
-export const closeRoom = (id) =>
+export const closeRoom = (id, status = "cancelled", endTime = new Date()) =>
 	GameRoom.findByIdAndUpdate(
 		id,
-		{ status: "finished", endTime: new Date() },
+		{ status, endTime },
 		{ returnDocument: "after" }
-	);
+	).populate("player1 player2", "username avatar");
 
 export const findRoomBySessionId = (sessionId) =>
 	GameRoom.findOne({ sessionId }).populate("player1 player2", "username avatar");

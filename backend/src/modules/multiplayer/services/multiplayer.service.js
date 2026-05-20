@@ -41,7 +41,20 @@ export const getWaitingRooms = async () => {
 };
 
 export const getActiveRooms = async () => {
-	return multiplayerRepository.findActiveRooms();
+	const rooms = await multiplayerRepository.findActiveRooms();
+	return Promise.all(rooms.map(async (room) => {
+		if (room.status === "playing" && room.sessionId) {
+			const session = await gameInterface.GameInterface.getSessionById(room.sessionId);
+			if (session && (session.result || session.endTime)) {
+				const endTime = session.endTime || new Date();
+				return multiplayerRepository.updateRoom(room._id, {
+					status: "finished",
+					endTime,
+				});
+			}
+		}
+		return room;
+	}));
 };
 
 export const joinRoom = async (roomId, userId, marker) => {
@@ -127,6 +140,17 @@ export const processMove = async (sessionId, idx, marker, playerId) => {
 	await gameInterface.GameInterface.appendMove(
 		session._id, moveResult.board, moveResult, moveData, updateExtra
 	);
+
+	if (moveResult.winner || moveResult.draw) {
+		// Mark the multiplayer room finished when the game session ends.
+		const room = await multiplayerRepository.findRoomBySessionId(session._id);
+		if (room) {
+			await multiplayerRepository.updateRoom(room._id, {
+				status: "finished",
+				endTime: new Date(),
+			});
+		}
+	}
 
 	return {
 		board: moveResult.board,

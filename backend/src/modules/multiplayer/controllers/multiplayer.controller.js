@@ -1,4 +1,5 @@
 import * as multiplayerService from "../services/multiplayer.service.js";
+import * as multiplayerInterface from "../interface/multiplayer.interface.js";
 import * as userService from "../../user/services/user.service.js";
 import { getSocketServer } from "../../../socket/index.js";
 
@@ -74,8 +75,8 @@ export const getWaitingRooms = async (req, res, next) => {
 
 export const getActiveRooms = async (req, res, next) => {
 	try {
-		const rooms = await multiplayerService.getActiveRooms();
-		res.json(rooms.map(roomListResponse));
+		const rooms = await multiplayerInterface.getActiveRooms();
+		res.json(rooms);
 	} catch (error) {
 		next(error);
 	}

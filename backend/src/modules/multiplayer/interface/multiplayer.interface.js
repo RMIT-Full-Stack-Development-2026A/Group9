@@ -13,7 +13,7 @@ export const getWaitingRooms = async (...args) => {
 
 export const getActiveRooms = async (...args) => {
   const rooms = await multiplayerService.getActiveRooms(...args);
-  return rooms.map(toRoomListDTO);
+  return rooms.map(toRoomDTO);
 };
 
 export const joinRoom = async (...args) => {

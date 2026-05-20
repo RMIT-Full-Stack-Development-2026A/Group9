@@ -27,6 +27,9 @@ export const closeRoom = (id) =>
 		{ returnDocument: "after" }
 	);
 
+export const findRoomBySessionId = (sessionId) =>
+	GameRoom.findOne({ sessionId }).populate("player1 player2", "username avatar");
+
 export const findRoomAndClaim = (roomId, userId) =>
 	GameRoom.findOneAndUpdate(
 		{ _id: roomId, status: "waiting" },

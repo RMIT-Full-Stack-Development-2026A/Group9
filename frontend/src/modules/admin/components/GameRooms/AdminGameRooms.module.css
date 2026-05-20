@@ -1,13 +1,36 @@
-.wrapper {
-  padding: 16px;
+:root{
+  --bg:#071224;
+  --panel:#0b1926;
+  --muted:#93a3ae;
+  --accent:#06B6D4;
+  --accent-strong:#10bcd8;
+  --danger:#ef4444;
 }
-.headerRow {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
+.wrapper{ padding:18px; }
+.headerRow{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.title{ color:#e6f0f6; margin:0; font-size:20px; }
+.subtitle{ color:var(--muted); margin:4px 0 0 0; font-size:13px }
+.controls{ display:flex; gap:12px; align-items:center }
+.searchWrap{ position:relative; }
+.searchWrap input{ width:460px; padding:12px 14px 12px 40px; border-radius:12px; border:1px solid rgba(6,182,212,0.15); background:transparent; color: #d7e7ee }
+.searchIcon{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--accent); font-size:14px }
+.card{ background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); border:1px dashed rgba(16,188,216,0.12); border-radius:14px; padding:16px }
+.tableWrap{ overflow:auto; }
+.table{ width:100%; border-collapse:separate; border-spacing:0 8px }
+.table thead th{ text-align:left; color:var(--muted); font-size:13px; padding:12px 14px }
+.table tbody tr{ background:transparent }
+.row{ background: linear-gradient(90deg, rgba(255,255,255,0.01), transparent); }
+.table tbody td{ padding:14px; vertical-align:middle; color:#cfe6ee }
+.roomNumber{ color:var(--accent); font-weight:700 }
+.playerCell{ display:flex; flex-direction:column }
+.playerEmail{ color:var(--muted); font-size:12px; margin-top:4px }
+.dateText{ color:var(--muted); font-size:12px }
+.status{ display:flex; align-items:center; gap:8px; color:var(--muted); text-transform:capitalize }
+.statusDot{ color:#10b981; font-size:10px }
+.closeBtn{ background:var(--danger); color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer }
+.closeBtn:hover{ opacity:0.95 }
+
+@media (max-width:900px){
+  .searchWrap input{ width:260px }
+  .table thead th:nth-child(6), .table tbody td:nth-child(6) { display:none }
 }
-.controls input { padding:8px 10px; border-radius:6px; border:1px solid #2b2b2b; margin-right:8px; }
-.card { background: var(--card-bg, #0f1724); border-radius:10px; padding:12px; }
-.table { width:100%; border-collapse:collapse; }
-.table th, .table td { padding:12px 8px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.03); }

@@ -27,6 +27,13 @@ const Navbar = ({ activeTab, onTabChange }) => {
                     <span style={{ display: 'flex', alignItems: 'center' }}>{icons.players}</span>
                     Player Management
                 </li>
+                <li
+                    className={activeTab === 'rooms' ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink}
+                    onClick={() => onTabChange('rooms')}
+                >
+                    <span style={{ display: 'flex', alignItems: 'center' }}><i className="bi bi-grid-1x2" style={{ fontSize:20, color:'#9ca3af' }}></i></span>
+                    Game Rooms
+                </li>
             </ul>
         </nav>
     );

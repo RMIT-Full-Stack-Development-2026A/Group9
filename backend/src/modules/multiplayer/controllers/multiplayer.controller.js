@@ -1,5 +1,6 @@
 import * as multiplayerService from "../services/multiplayer.service.js";
 import UserProfile from "../../user/models/userProfile.model.js";
+import { getSocketServer } from "../../../socket/index.js";
 
 const enrichPlayerAvatars = async (room) => {
 	const obj = room.toObject ? room.toObject() : room;
@@ -92,6 +93,12 @@ export const joinRoom = async (req, res, next) => {
 export const closeRoom = async (req, res, next) => {
 	try {
 		const room = await multiplayerService.closeRoom(req.params.id);
+		const io = getSocketServer();
+		if (io && room?._id) {
+			io.to(`room:${room._id}`).emit("room:closed", {
+				roomId: room._id.toString(),
+			});
+		}
 		res.json({ success: true, room: await roomResponse(room) });
 	} catch (error) {
 		next(error);

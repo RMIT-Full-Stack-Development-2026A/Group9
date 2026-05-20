@@ -1,0 +1,13 @@
+.wrapper {
+  padding: 16px;
+}
+.headerRow {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+.controls input { padding:8px 10px; border-radius:6px; border:1px solid #2b2b2b; margin-right:8px; }
+.card { background: var(--card-bg, #0f1724); border-radius:10px; padding:12px; }
+.table { width:100%; border-collapse:collapse; }
+.table th, .table td { padding:12px 8px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.03); }

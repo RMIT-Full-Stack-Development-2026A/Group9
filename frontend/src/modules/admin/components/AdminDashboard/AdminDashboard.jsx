@@ -21,6 +21,7 @@ import PlayerTable from '../PlayerTable/PlayerTable.jsx';
 import StatCard from '../StateCard/StateCard.jsx';
 import { useAdmin } from '../../hooks/useAdmin.js';
 import styles from './AdminDashboard.module.css';
+import AdminGameRooms from '../GameRooms/AdminGameRooms.jsx';
 
 
 export default function Admin() {
@@ -30,8 +31,10 @@ export default function Admin() {
         players,
         setPlayers,
         metrics,
+        rooms,
         loading,
-        refreshDashboard
+        refreshDashboard,
+        refreshRooms
     } = useAdmin();
 
     if (loading) {
@@ -73,6 +76,9 @@ export default function Admin() {
                 <main className={styles.adminMainContent}>
                     {activeTab === 'players' && (
                         <PlayerTable gamers={players} setgamers={setPlayers} refreshDashboard={refreshDashboard} />
+                    )}
+                    {activeTab === 'rooms' && (
+                        <AdminGameRooms rooms={rooms} refreshRooms={refreshRooms} />
                     )}
                     <Outlet />
                 </main>

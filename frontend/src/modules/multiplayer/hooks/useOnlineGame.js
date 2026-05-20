@@ -224,7 +224,11 @@ export function useOnlineGame() {
 	const abortGame = useCallback(() => {
 		const socket = getSocket();
 		if (socket && roomIdRef.current) {
-			socket.emit('room:leave', { roomId: roomIdRef.current });
+			socket.emit('room:leave', { roomId: roomIdRef.current }, () => {
+				disconnectSocket();
+				navigate('/multiplayer');
+			});
+			return;
 		}
 		disconnectSocket();
 		navigate('/multiplayer');

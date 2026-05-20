@@ -6,6 +6,12 @@ import * as userInterface from "../modules/user/interface/user.interface.js";
 import * as tokenBlacklistService from "../shared/security/tokenBlacklist.service.js";
 import { registerMultiplayerHandlers } from "./handlers/multiplayerHandler.js";
 
+let ioInstance = null;
+
+export function getSocketServer() {
+	return ioInstance;
+}
+
 export function initSocket(httpServer) {
 	const io = new Server(httpServer, {
 		cors: {
@@ -13,6 +19,7 @@ export function initSocket(httpServer) {
 			credentials: true,
 		},
 	});
+	ioInstance = io;
 
 	// JWT authentication middleware on socket connection
 	io.use(async (socket, next) => {

@@ -14,11 +14,14 @@
 
 import { useState, useEffect } from 'react';
 import { adminService } from '../services/admin.service';
+import { http } from '../../../shared/utils/http.helper.js';
+import { API_ROUTES } from '../../../config/apiRoutes.js';
 
 export const useAdmin = () => {
     const [activeTab, setActiveTab] = useState('players');
     const [players, setPlayers] = useState([]);
     const [metrics, setMetrics] = useState({ totalPlayers: 0, serverLoad: '0%' });
+    const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -37,6 +40,13 @@ export const useAdmin = () => {
                 id: player.id || player._id,
             })));
             setMetrics(metricsRes.data.data);
+            // fetch active rooms too
+            try {
+                const roomsRes = await http.get(API_ROUTES.multiplayer.roomsActive);
+                setRooms(roomsRes.data || roomsRes);
+            } catch (e) {
+                console.warn('Failed to load active rooms', e.message || e);
+            }
         } catch (error) {
             console.error("Connection failed:", error.response?.data?.message || error.message);
         } finally {
@@ -49,7 +59,19 @@ export const useAdmin = () => {
         players,
         setPlayers, // Exported so PlayerTable can use it
         metrics,
+        rooms,
         loading,
-        refreshDashboard: () => fetchDashboardData(true)
+        refreshDashboard: () => fetchDashboardData(true),
+        refreshRooms: async () => {
+            try {
+                const res = await http.get(API_ROUTES.multiplayer.roomsActive);
+                setRooms(res.data || res);
+                return res.data || res;
+            } catch (err) { console.error(err); return []; }
+        },
+        closeRoom: async (roomId) => {
+            await http.post(API_ROUTES.multiplayer.closeRoom(roomId));
+            setRooms(r => r.filter(x => x._id !== roomId));
+        }
     };
 };

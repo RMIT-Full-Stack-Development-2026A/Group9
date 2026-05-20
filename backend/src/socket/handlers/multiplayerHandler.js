@@ -18,6 +18,7 @@ export function registerMultiplayerHandlers(io, socket) {
 			// board, marker display, and player name immediately.
 			const opponentName =
 				room.player2?.username ||
+				socket.user.username ||
 				socket.user.email ||
 				"Player 2";
 			const opponentAvatar = room.player2?.avatar || null;
@@ -38,7 +39,7 @@ export function registerMultiplayerHandlers(io, socket) {
 	});
 
 	// ── Leave / abort a game room ──────────────────────────────────────
-	socket.on("room:leave", async ({ roomId }) => {
+	socket.on("room:leave", async ({ roomId }, ack) => {
 		try {
 			const targetRoom = roomId || socket.currentRoom;
 			if (!targetRoom) return;
@@ -63,8 +64,14 @@ export function registerMultiplayerHandlers(io, socket) {
 			}
 
 			console.log(`[Socket] Room ${targetRoom} closed by user ${socket.user.id}`);
+			if (typeof ack === "function") {
+				ack({ success: true, roomId: targetRoom });
+			}
 		} catch (error) {
 			socket.emit("error", { message: error.message });
+			if (typeof ack === "function") {
+				ack({ success: false, message: error.message });
+			}
 		}
 	});
 

@@ -1,18 +1,39 @@
 import * as multiplayerRepository from "../repositories/multiplayer.repository.js";
 import AppError from "../../../shared/errors/AppError.js";
 import * as gameInterface from "../../game/interface/game.interface.js";
+import UserProfile from "../../user/models/userProfile.model.js";
 
-export const createRoom = async (userId, { boardSize = 10, marker = "X", firstPlayer = "player1" }) => {
+const ALL_MARKERS = ["X", "O", "⭐", "🔥", "💎", "🌙"];
+
+const enrichRoomAvatars = async (room) => {
+	if (!room) return room;
+	const obj = room.toObject ? room.toObject() : room;
+
+	if (obj.player1 && !obj.player1.avatar) {
+		const profile = await UserProfile.findById(obj.player1._id).select("avatar").lean();
+		if (profile?.avatar) obj.player1.avatar = profile.avatar;
+	}
+
+	if (obj.player2 && !obj.player2.avatar) {
+		const profile = await UserProfile.findById(obj.player2._id).select("avatar").lean();
+		if (profile?.avatar) obj.player2.avatar = profile.avatar;
+	}
+
+	return obj;
+};
+
+export const createRoom = async (userId, { boardSize = 10, boardStyle = "Classic", marker = "X", firstPlayer = "player1" }) => {
 	const roomNumber = await multiplayerRepository.generateRoomNumber();
 	const room = await multiplayerRepository.createRoom({
 		roomNumber,
 		player1: userId,
 		boardSize,
+		boardStyle,
 		player1Marker: marker,
 		firstPlayer,
 		status: "waiting",
 	});
-	return multiplayerRepository.findRoomById(room._id);
+	return enrichRoomAvatars(await multiplayerRepository.findRoomById(room._id));
 };
 
 export const getWaitingRooms = async () => {
@@ -29,7 +50,15 @@ export const joinRoom = async (roomId, userId, marker) => {
 	if (room.status !== "waiting") throw new AppError("Room is not available.", 400);
 	if (room.player1._id.toString() === userId) throw new AppError("Cannot join your own room.", 400);
 
-	const selectedMarker = marker || (room.player1Marker === "X" ? "O" : "X");
+	if (marker && !ALL_MARKERS.includes(marker)) {
+		throw new AppError("Invalid marker selected.", 400);
+	}
+	if (marker && marker === room.player1Marker) {
+		throw new AppError("That marker is already taken by Player 1.", 400);
+	}
+
+	const availableMarkers = ALL_MARKERS.filter((m) => m !== room.player1Marker);
+	const selectedMarker = marker || availableMarkers[0] || "X";
 
 	// Create a GameSession for the multiplayer match via the game interface
 	const session = await gameInterface.createMultiplayerSession({
@@ -38,13 +67,14 @@ export const joinRoom = async (roomId, userId, marker) => {
 		boardSize: room.boardSize,
 	});
 
-	return multiplayerRepository.updateRoom(roomId, {
+	const updatedRoom = await multiplayerRepository.updateRoom(roomId, {
 		player2: userId,
 		player2Marker: selectedMarker,
 		sessionId: session._id,
 		status: "playing",
 		startTime: new Date(),
 	});
+	return enrichRoomAvatars(updatedRoom);
 };
 
 export const closeRoom = async (roomId) => {
@@ -54,7 +84,7 @@ export const closeRoom = async (roomId) => {
 export const getRoom = async (roomId) => {
 	const room = await multiplayerRepository.findRoomById(roomId);
 	if (!room) throw new AppError("Room not found.", 404);
-	return room;
+	return enrichRoomAvatars(room);
 };
 
 // ── Move processing (wraps game interface for the socket handler) ──────

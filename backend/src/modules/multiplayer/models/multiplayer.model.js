@@ -35,6 +35,11 @@ const gameRoomSchema = new mongoose.Schema(
 				message: "Invalid board size",
 			},
 		},
+		boardStyle: {
+			type: String,
+			enum: ["Classic", "Retro", "Space"],
+			default: "Classic",
+		},
 		player1Marker: {
 			type: String,
 			enum: ["X", "O", "⭐", "🔥", "💎", "🌙"],

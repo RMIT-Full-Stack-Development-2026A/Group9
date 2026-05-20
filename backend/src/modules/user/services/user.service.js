@@ -1,6 +1,5 @@
 import bcrypt from "bcryptjs";
 import * as userRepository from "../repositories/user.repository.js";
-import UserProfile from "../models/userProfile.model.js";
 import * as gameInterface from "../../game/interface/game.interface.js";
 
 // ── Profile operations ─────────────────────────────────────────────────
@@ -31,11 +30,7 @@ export const updateProfile = async (userId, updateData) => {
 	if (updateData.username) user.username = updateData.username;
 	if (updateData.country !== undefined) {
 		user.country = updateData.country;
-		await UserProfile.findByIdAndUpdate(
-			userId,
-			{ country: updateData.country },
-			{ new: true, upsert: true }
-		);
+		await userRepository.updateProfileField(userId, "country", updateData.country);
 	}
 
 	if (updateData.newPassword) {
@@ -59,11 +54,7 @@ export const updateProfile = async (userId, updateData) => {
 };
 
 export const updateAvatar = async (userId, avatarPath) => {
-	await UserProfile.findByIdAndUpdate(
-		userId,
-		{ avatar: avatarPath },
-		{ new: true, upsert: true }
-	);
+	await userRepository.updateProfileField(userId, "avatar", avatarPath);
 	return getProfile(userId);
 };
 

@@ -74,6 +74,13 @@ export const setPremiumUntil = (userId, date) =>
 		{ returnDocument: "after", runValidators: true }
 	).lean();
 
+export const updateProfileField = (userId, field, value) =>
+	UserProfile.findByIdAndUpdate(
+		userId,
+		{ $set: { [field]: value } },
+		{ returnDocument: "after", upsert: true }
+	).lean();
+
 export const getPremiumUntil = async (userId) => {
 	const profile = await UserProfile.findById(userId).select("premiumUntil").lean();
 	return profile?.premiumUntil ?? null;

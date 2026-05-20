@@ -2,8 +2,8 @@
 // In-memory store: { key: { count, lastAttempt, lockUntil } }
 const attempts = {};
 const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-const LOCK_TIME_MS = 15 * 60 * 1000; // 15 minutes
+const WINDOW_MS = 60 * 1000; // 60 seconds
+const LOCK_TIME_MS = 60 * 1000; // 60 seconds
 
 function getKey(identifier, ip) {
 	return `${identifier || ''}|${ip || ''}`;

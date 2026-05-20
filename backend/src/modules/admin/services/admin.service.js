@@ -2,7 +2,6 @@
 import AppError from "../../../shared/errors/AppError.js";
 import * as authInterface from "../../auth/interface/auth.interface.js";
 import { adminRepository } from "../repositories/admin.repository.js";
-import { adminDto } from "../dto/admin.dto.js";
 
 export const adminService = {
     getMetrics: async () => {
@@ -17,17 +16,16 @@ export const adminService = {
             adminRepository.countInactiveAccounts(),
             adminRepository.countPremiumUsers()
         ]);
-        return adminDto.toMetricsResponse({
+        return {
             totalPlayers,
             activeAccounts,
             inactiveAccounts,
             premiumUsers
-        });
+        };
     },
 
     getPlayers: async () => {
-        const users = await adminRepository.findAllUsers();
-        return users.map(adminDto.toPlayerResponse);
+        return adminRepository.findAllUsers();
     },
 
     togglePlayerStatus: async (adminId, targetUserId) => {
@@ -46,6 +44,6 @@ export const adminService = {
             targetUserId,
             metadata: { previousStatus: user.isActive }
         });
-        return adminDto.toPlayerResponse(updatedUser);
+        return updatedUser;
     }
 };

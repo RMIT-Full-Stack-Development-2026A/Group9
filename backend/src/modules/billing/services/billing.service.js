@@ -207,5 +207,5 @@ export async function handleStripeWebhook(rawBody, signature) {
 // ── Transaction History ───────────────────────────────────────────────
 export async function getTransactions(userId) {
 	const txs = await billingRepo.findTransactionsByUser(userId);
-	return txs.map(BillingDto.toTransactionResponse);
+	return txs;
 }

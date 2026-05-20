@@ -56,3 +56,54 @@ export const getRoom = async (roomId) => {
 	if (!room) throw new AppError("Room not found.", 404);
 	return room;
 };
+
+// ── Move processing (wraps game interface for the socket handler) ──────
+
+export const processMove = async (sessionId, idx, marker, playerId) => {
+	const session = await gameInterface.GameInterface.getSessionById(sessionId);
+	if (!session) throw new AppError("Session not found", 404);
+
+	const moveResult = gameInterface.GameInterface.applyMove({
+		board: session.board,
+		size: session.boardSize,
+		idx,
+		marker,
+	});
+
+	const moveNumber = session.board.filter(
+		(cell) => cell !== null && cell !== undefined
+	).length + 1;
+	const row = Math.floor(idx / session.boardSize);
+	const col = idx % session.boardSize;
+	const notation = gameInterface.GameInterface.toAlgebraicNotation(
+		row, col, session.boardSize
+	);
+
+	const moveData = {
+		playerId: playerId,
+		marker,
+		notation: notation || "",
+		row,
+		col,
+		moveNumber,
+	};
+
+	const updateExtra = {};
+	if (moveResult.winner) {
+		updateExtra.result =
+			playerId === "player1" ? "player1_win" : "player2_win";
+	}
+
+	await gameInterface.GameInterface.appendMove(
+		session._id, moveResult.board, moveResult, moveData, updateExtra
+	);
+
+	return {
+		board: moveResult.board,
+		turn: playerId === "player1" ? "player2" : "player1",
+		winner: moveResult.winner,
+		winLine: moveResult.winLine,
+		draw: moveResult.draw,
+		notation: notation || "",
+	};
+};

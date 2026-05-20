@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";
-import * as authInterface from "../modules/auth/interface/auth.interface.js";
+import * as authService from "../modules/auth/services/auth.service.js";
 import * as tokenBlacklistService from "../shared/security/tokenBlacklist.service.js";
 import { registerMultiplayerHandlers } from "./handlers/multiplayerHandler.js";
 
@@ -28,7 +28,7 @@ export function initSocket(httpServer) {
 
 			const payload = jwt.verify(token, process.env.JWT_SECRET || "dev_jwt_secret");
 			const tokenHash = hashSessionToken(token);
-			const session = await authInterface.findActiveSession(tokenHash);
+			const session = await authService.findActiveSession(tokenHash);
 
 			if (!session || new Date(session.expiresAt).getTime() <= Date.now()) {
 				return next(new Error("Authentication session has expired"));

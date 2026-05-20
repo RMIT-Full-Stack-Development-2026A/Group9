@@ -12,6 +12,7 @@ import {
 } from "../dto/auth.dto.js";
 import { hashSessionToken } from "../utils/sessionToken.util.js";
 import * as authRepository from "../repositories/auth.repository.js";
+import * as userInterface from "../../user/interface/user.interface.js";
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 10);
 
@@ -58,14 +59,14 @@ export const register = async (payload, file, sessionContext = {}) => {
 	}
 
 	const dto = createRegisterDTO(payload);
-	const existingUser = await authRepository.findUserByEmail(dto.email);
+	const existingUser = await userInterface.findUserByEmail(dto.email);
 	if (existingUser) {
 		throw new AppError("Email is already registered", 409);
 	}
 
 	const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
 
-	const createdUser = await authRepository.createUser({
+	const createdUser = await userInterface.createUser({
 		username: dto.username,
 		email: dto.email,
 		password: passwordHash,
@@ -110,7 +111,7 @@ export const login = async (payload, sessionContext = {}) => {
 	}
 
 	const dto = createLoginDTO(payload);
-	let user = await authRepository.findUserByIdentifier(dto.identifier, dto.loginType);
+	let user = await userInterface.findUserByIdentifier(dto.identifier, dto.loginType);
 
 	if (!user) {
 		loginAttemptService.recordFailedAttempt(identifier, sessionContext.ipAddress);
@@ -133,7 +134,7 @@ export const login = async (payload, sessionContext = {}) => {
 		const attempts = (user.loginAttempts || 0) + 1;
 		const lockUntil = attempts >= 5 ? Date.now() + 60000 : null;
 
-		await authRepository.updateLoginMetadata(user._id, {
+		await userInterface.updateLoginMetadata(user._id, {
 			loginAttempts: attempts,
 			lockUntil
 		});
@@ -142,7 +143,7 @@ export const login = async (payload, sessionContext = {}) => {
 	}
 
 	// login success: reset attempts
-	await authRepository.updateLoginMetadata(user._id, {
+	await userInterface.updateLoginMetadata(user._id, {
 		loginAttempts: 0,
 		lockUntil: null
 	});
@@ -174,7 +175,7 @@ export const login = async (payload, sessionContext = {}) => {
 
 export const getMyProfile = async (userId) => {
 	// Keep profile response minimal; add fields intentionally to avoid API drift.
-	const user = await authRepository.findUserById(userId);
+	const user = await userInterface.findUserById(userId);
 	if (!user) {
 		throw new AppError("User not found", 404);
 	}

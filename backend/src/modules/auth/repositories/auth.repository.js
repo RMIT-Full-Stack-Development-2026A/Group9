@@ -1,19 +1,4 @@
-import * as userInterface from "../../user/interface/user.interface.js";
 import AuthSession from "../models/authSession.model.js";
-
-// ── User operations (delegated to user module) ──────────────────────────
-
-export const findUserByEmail = (email) => userInterface.findUserByEmail(email);
-
-export const findUserByIdentifier = (identifier, loginType) =>
-	userInterface.findUserByIdentifier(identifier, loginType);
-
-export const findUserById = (userId) => userInterface.findUserById(userId);
-
-export const createUser = (payload) => userInterface.createUser(payload);
-
-export const updateLoginMetadata = (userId, data) =>
-	userInterface.updateLoginMetadata(userId, data);
 
 // ── Auth session operations ─────────────────────────────────────────────
 

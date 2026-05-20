@@ -76,29 +76,29 @@ export async function depositToWallet(userId, amount) {
 		description: `Wallet deposit of $${amount}`,
 	});
 
-	const profile = await billingRepo.addToWallet(userId, amount);
+	const profile = await userInterface.addToWallet(userId, amount);
 	return { transaction: BillingDto.toTransactionResponse(tx), walletBalance: profile.walletBalance };
 }
 
 // ── Wallet Balance ────────────────────────────────────────────────────
 export async function getWallet(userId) {
-	const balance = await billingRepo.getWalletBalance(userId);
-	const premiumUntil = await billingRepo.getPremiumUntil(userId);
+	const balance = await userInterface.getWalletBalance(userId);
+	const premiumUntil = await userInterface.getPremiumUntil(userId);
 	return { walletBalance: balance, premiumUntil };
 }
 
 // ── Subscribe via Wallet ──────────────────────────────────────────────
 export async function subscribeWithWallet(userId) {
-	const balance = await billingRepo.getWalletBalance(userId);
+	const balance = await userInterface.getWalletBalance(userId);
 	if (balance < PREMIUM_PRICE) {
 		throw new AppError(`Insufficient wallet balance. Need $${PREMIUM_PRICE}, have $${balance}`, 402);
 	}
 
-	const currentPremium = await billingRepo.getPremiumUntil(userId);
+	const currentPremium = await userInterface.getPremiumUntil(userId);
 	const newPremiumUntil = computeNewPremiumUntil(currentPremium);
 
-	await billingRepo.deductFromWallet(userId, PREMIUM_PRICE);
-	const profile = await billingRepo.setPremiumUntil(userId, newPremiumUntil);
+	await userInterface.deductFromWallet(userId, PREMIUM_PRICE);
+	const profile = await userInterface.setPremiumUntil(userId, newPremiumUntil);
 
 	const tx = await billingRepo.createTransaction({
 		userId,
@@ -183,9 +183,9 @@ export async function handleStripeWebhook(rawBody, signature) {
 		console.log(`[WEBHOOK DEBUG] checkout.session.completed for userId: ${userId}, sessionId: ${sessionId}`);
 		if (!userId) return;
 
-		const currentPremium = await billingRepo.getPremiumUntil(userId);
+		const currentPremium = await userInterface.getPremiumUntil(userId);
 		const newPremiumUntil = computeNewPremiumUntil(currentPremium);
-		await billingRepo.setPremiumUntil(userId, newPremiumUntil);
+		await userInterface.setPremiumUntil(userId, newPremiumUntil);
 		console.log(`[WEBHOOK DEBUG] Premium set until: ${newPremiumUntil.toISOString()}`);
 
 		// Mark matching pending Stripe transaction as completed

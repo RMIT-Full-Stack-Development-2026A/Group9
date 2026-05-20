@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import AppError from "../shared/errors/AppError.js";
-import * as userInterface from "../modules/user/interface/user.interface.js";
-import * as authInterface from "../modules/auth/interface/auth.interface.js";
+import * as userService from "../modules/user/services/user.service.js";
+import * as authService from "../modules/auth/services/auth.service.js";
 import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";
 import * as tokenBlacklistService from "../shared/security/tokenBlacklist.service.js";
 
@@ -36,7 +36,7 @@ export const authenticate = async (req, res, next) => {
 	try {
 		const payload = jwt.verify(token, process.env.JWT_SECRET || "dev_jwt_secret");
 		const tokenHash = hashSessionToken(token);
-		const session = await authInterface.findActiveSession(tokenHash);
+		const session = await authService.findActiveSession(tokenHash);
 		if (!session || new Date(session.expiresAt).getTime() <= Date.now()) {
 			return next(new AppError("Authentication session has expired", 401));
 		}
@@ -76,7 +76,7 @@ export const requirePremium = async (req, res, next) => {
 		return next(new AppError("Authentication required", 401));
 	}
 
-	const premiumUntil = await userInterface.getPremiumUntil(req.user.id);
+	const premiumUntil = await userService.getPremiumUntil(req.user.id);
 	const hasPremium = isPremiumActive(premiumUntil);
 	if (!hasPremium) {
 		return next(new AppError("Premium membership is required to access leaderboard", 403));

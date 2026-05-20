@@ -1,5 +1,4 @@
 import * as multiplayerService from "../../modules/multiplayer/services/multiplayer.service.js";
-import { GameInterface } from "../../modules/game/interface/game.interface.js";
 
 export function registerMultiplayerHandlers(io, socket) {
 	// ── Join a game room ──────────────────────────────────────────────
@@ -75,63 +74,27 @@ export function registerMultiplayerHandlers(io, socket) {
 	socket.on("game:move", async ({ sessionId, idx, marker, playerId }) => {
 		console.log(`[game:move] Received from ${socket.user?.id?.slice(-6)}: sessionId=${sessionId?.slice(-6)} idx=${idx} marker=${marker} playerId=${playerId}`);
 		try {
-			const session = await GameInterface.getSessionById(sessionId);
-			if (!session) {
-				console.log(`[game:move] Session not found: ${sessionId}`);
-				socket.emit("error", { message: "Session not found" });
-				return;
-			}
+			const result = await multiplayerService.processMove(
+				sessionId, idx, marker, playerId || socket.user.id
+			);
 
-			const { board, boardSize } = session;
-			console.log(`[game:move] Session found, boardSize=${boardSize}, board filled=${board.filter(c => c != null).length}/${board.length}, cell[${idx}]=${board[idx]}`);
-
-			const moveResult = GameInterface.applyMove({
-				board,
-				size: boardSize,
-				idx,
-				marker,
-			});
-			console.log(`[game:move] applyMove result: winner=${moveResult.winner}, draw=${moveResult.draw}, winLine=${moveResult.winLine?.length || 0}`);
-
-			const moveNumber = board.filter(cell => cell !== null && cell !== undefined).length + 1;
-			const row = Math.floor(idx / boardSize);
-			const col = idx % boardSize;
-			const notation = GameInterface.toAlgebraicNotation(row, col, boardSize);
-			const moveData = {
-				playerId: playerId || socket.user.id,
-				marker,
-				notation: notation || "",
-				row,
-				col,
-				moveNumber,
-			};
-
-			const updateExtra = {};
-			if (moveResult.winner) {
-				updateExtra.result = playerId === "player1" ? "player1_win" : "player2_win";
-			}
-
-			await GameInterface.appendMove(session._id, moveResult.board, moveResult, moveData, updateExtra);
-			console.log(`[game:move] Move persisted`);
-
-			const currentTurn = playerId === "player1" ? "player2" : "player1";
 			const currentRoom = socket.currentRoom;
-			console.log(`[game:move] Broadcasting to room:${currentRoom}, turn=${currentTurn}`);
+			console.log(`[game:move] Broadcasting to room:${currentRoom}, turn=${result.turn}`);
 
 			io.to(`room:${currentRoom}`).emit("game:state-update", {
-				board: moveResult.board,
-				turn: currentTurn,
-				winner: moveResult.winner,
-				winLine: moveResult.winLine,
-				draw: moveResult.draw,
-				lastMove: { idx, marker, playerId, notation: notation || "" },
+				board: result.board,
+				turn: result.turn,
+				winner: result.winner,
+				winLine: result.winLine,
+				draw: result.draw,
+				lastMove: { idx, marker, playerId: playerId || socket.user.id, notation: result.notation },
 			});
 
-			if (moveResult.winner || moveResult.draw) {
+			if (result.winner || result.draw) {
 				io.to(`room:${socket.currentRoom}`).emit("game:over", {
-					winner: moveResult.winner,
-					winLine: moveResult.winLine,
-					draw: moveResult.draw,
+					winner: result.winner,
+					winLine: result.winLine,
+					draw: result.draw,
 				});
 			}
 		} catch (error) {

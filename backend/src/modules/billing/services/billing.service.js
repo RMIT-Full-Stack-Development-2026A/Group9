@@ -3,7 +3,6 @@ import nodemailer from "nodemailer";
 import AppError from "../../../shared/errors/AppError.js";
 import * as billingRepo from "../repositories/billing.repository.js";
 import * as userInterface from "../../user/interface/user.interface.js";
-import { BillingDto } from "../dto/billing.dto.js";
 
 const PREMIUM_PRICE = 10; // USD
 const PREMIUM_DURATION_DAYS = 30;
@@ -77,7 +76,7 @@ export async function depositToWallet(userId, amount) {
 	});
 
 	const profile = await userInterface.addToWallet(userId, amount);
-	return { transaction: BillingDto.toTransactionResponse(tx), walletBalance: profile.walletBalance };
+	return { transaction: tx, walletBalance: profile.walletBalance };
 }
 
 // ── Wallet Balance ────────────────────────────────────────────────────
@@ -115,7 +114,7 @@ export async function subscribeWithWallet(userId) {
 	}
 
 	return {
-		transaction: BillingDto.toTransactionResponse(tx),
+		transaction: tx,
 		walletBalance: profile.walletBalance,
 		premiumUntil: profile.premiumUntil,
 	};

@@ -1,24 +1,24 @@
-
-
 import * as authService from '../services/auth.service.js';
+import { createAuthResponseDTO } from '../dto/auth.dto.js';
 
-// Expose public functions for other modules
-export const register = (payload, file, sessionContext) => {
-  return authService.register(payload, file, sessionContext);
+export const register = async (payload, file, sessionContext) => {
+	const { accessToken, user } = await authService.register(payload, file, sessionContext);
+	return createAuthResponseDTO({ accessToken, user });
 };
 
-export const login = (payload, sessionContext) => {
-  return authService.login(payload, sessionContext);
+export const login = async (payload, sessionContext) => {
+	const { accessToken, user } = await authService.login(payload, sessionContext);
+	return createAuthResponseDTO({ accessToken, user });
 };
 
-export const getMyProfile = (userId) => {
-  return authService.getMyProfile(userId);
+export const getMyProfile = async (userId) => {
+	const user = await authService.getMyProfile(userId);
+	return createAuthResponseDTO({
+		accessToken: null,
+		user: { ...user, country: user.country },
+	}).user;
 };
 
-export const logout = (accessToken) => {
-  return authService.logout(accessToken);
-};
+export const logout = (accessToken) => authService.logout(accessToken);
 
-export const findActiveSession = (tokenHash) => {
-  return authService.findActiveSession(tokenHash);
-};
+export const findActiveSession = (tokenHash) => authService.findActiveSession(tokenHash);

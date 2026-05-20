@@ -66,10 +66,12 @@ const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredPlayers.map(p => (
-                            <tr key={p.id}>
-                                <td className={styles.adminTableUsername}>{p.username}</td>
-                                <td>{p.email}</td>
+                        {filteredPlayers.map(p => {
+                            const playerId = p.id || p._id;
+                            return (
+                                <tr key={playerId}>
+                                    <td className={styles.adminTableUsername}>{p.username}</td>
+                                    <td>{p.email}</td>
                                 <td>
                                     {p.isPremium ? (
                                         <span className={styles.premiumBadge}>
@@ -93,7 +95,7 @@ const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
                                 <td>
                                     <button
                                         className={`${styles.actionBtn} ${!p.isActive ? styles.reactivate : styles.deactivate}`}
-                                        onClick={() => toggleDeactivate(p.id)}
+                                        onClick={() => toggleDeactivate(playerId)}
                                     >
                                         {!p.isActive ? (
                                             <>
@@ -109,7 +111,7 @@ const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
                                     </button>
                                 </td>
                             </tr>
-                        ))}
+                        ); })}
                     </tbody>
                 </table>
             </div>

@@ -402,6 +402,14 @@ export function getHardAIMove(board, size, lastPlayerMoveIdx, aiMarker, playerMa
 		if (win) return idx;
 	}
 
+	// 2.5) Detect simulated forks: positions that, if opponent plays there,
+	// would create 2+ immediate winning replies (classic fork). Block them now.
+	const simulatedForks = detectSimulatedForks(board, size, inferredPlayerMarker);
+	if (simulatedForks.length > 0) {
+		// Prefer the highest priority simulated fork position
+		return simulatedForks[0];
+	}
+
 	// 3) Keep all defensive requirements from Medium (open-4/open-3/fork blocking)
 	// Use improved fork detection
 	const forkThreats = detectCrossingForkThreats(board, size, inferredPlayerMarker);
@@ -457,4 +465,37 @@ export function getHardAIMove(board, size, lastPlayerMoveIdx, aiMarker, playerMa
 	}
 
 	return bestIdx ?? getMediumAIMove(board, size, lastPlayerMoveIdx, aiMarker, inferredPlayerMarker);
+}
+
+function detectSimulatedForks(board, size, marker) {
+	// Simulate opponent placing on likely fork-candidate empty cells and count immediate winning replies.
+	const empties = [];
+	for (let i = 0; i < board.length; i++) if (isEmptyCell(board[i])) empties.push(i);
+	if (empties.length === 0) return [];
+
+	// Prefilter candidates by a cheap fork heuristic: positions that have at least one open-three direction
+	// (using existing `countForkThreat`). This avoids simulating every empty cell on large boards.
+	const candidates = empties.filter((idx) => countForkThreat(board, size, idx, marker) >= 1);
+	if (candidates.length === 0) return [];
+
+	const forks = [];
+	for (const idx of candidates) {
+		// Play hypothetical opponent move at idx
+		board[idx] = marker;
+		let winCount = 0;
+		for (const j of empties) {
+			if (j === idx) continue;
+			if (!isEmptyCell(board[j])) continue;
+			board[j] = marker;
+			const win = checkWinLine(board, size, marker);
+			board[j] = null;
+			if (win) {
+				winCount++;
+				if (winCount >= 2) break;
+			}
+		}
+		board[idx] = null;
+		if (winCount >= 2) forks.push(idx);
+	}
+	return forks;
 }

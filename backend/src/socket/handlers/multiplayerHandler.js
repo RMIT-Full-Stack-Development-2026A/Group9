@@ -20,17 +20,15 @@ export function registerMultiplayerHandlers(io, socket) {
 				room.player2?.username ||
 				socket.user.email ||
 				"Player 2";
+			const opponentAvatar = room.player2?.avatar || null;
 
 			socket.to(`room:${roomId}`).emit("room:player-joined", {
 				roomId,
 				sessionId: room.sessionId?.toString() || null,
 				boardSize: room.boardSize,
 				opponentName,
+				opponentAvatar,
 				opponentMarker: room.player2Marker,
-				player: {
-					id: socket.user.id,
-					username: opponentName,
-				},
 			});
 
 			console.log(`[Socket] User ${socket.user.id} joined room ${roomId}`);
@@ -109,7 +107,7 @@ export function registerMultiplayerHandlers(io, socket) {
 
 		const message = {
 			userId: socket.user.id,
-			username: socket.user.email || "Player",
+			username: socket.user.username || socket.user.email || "Player",
 			text: text.trim(),
 			timestamp: new Date().toISOString(),
 		};

@@ -1,15 +1,15 @@
 import * as multiplayerService from "../services/multiplayer.service.js";
-import UserProfile from "../../user/models/userProfile.model.js";
+import * as userService from "../../user/services/user.service.js";
 import { getSocketServer } from "../../../socket/index.js";
 
 const enrichPlayerAvatars = async (room) => {
 	const obj = room.toObject ? room.toObject() : room;
 	if (obj.player1 && !obj.player1.avatar) {
-		const profile = await UserProfile.findById(obj.player1._id).select("avatar").lean();
+		const profile = await userService.findUserById(obj.player1._id);
 		if (profile?.avatar) obj.player1.avatar = profile.avatar;
 	}
 	if (obj.player2 && !obj.player2.avatar) {
-		const profile = await UserProfile.findById(obj.player2._id).select("avatar").lean();
+		const profile = await userService.findUserById(obj.player2._id);
 		if (profile?.avatar) obj.player2.avatar = profile.avatar;
 	}
 	return obj;

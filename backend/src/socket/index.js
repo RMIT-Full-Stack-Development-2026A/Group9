@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import { hashSessionToken } from "../modules/auth/utils/sessionToken.util.js";
-import * as authService from "../modules/auth/services/auth.service.js";
-import * as userService from "../modules/user/services/user.service.js";
+import * as authInterface from "../modules/auth/interface/auth.interface.js";
+import * as userInterface from "../modules/user/interface/user.interface.js";
 import * as tokenBlacklistService from "../shared/security/tokenBlacklist.service.js";
 import { registerMultiplayerHandlers } from "./handlers/multiplayerHandler.js";
 
@@ -36,16 +36,16 @@ export function initSocket(httpServer) {
 
 			const payload = jwt.verify(token, process.env.JWT_SECRET || "dev_jwt_secret");
 			const tokenHash = hashSessionToken(token);
-			const session = await authService.findActiveSession(tokenHash);
+			const session = await authInterface.findActiveSession(tokenHash);
 
 			if (!session || new Date(session.expiresAt).getTime() <= Date.now()) {
 				return next(new Error("Authentication session has expired"));
 			}
 
 			const userId = payload.sub || payload.id || payload.userId;
-			const profile = userId ? await userService.getProfile(userId) : null;
+			const user = userId ? await userInterface.findUserById(userId) : null;
 
-			if (!profile || profile.isActive === false) {
+			if (!user || user.isActive === false) {
 				return next(new Error("Account is inactive"));
 			}
 
@@ -53,7 +53,7 @@ export function initSocket(httpServer) {
 				id: userId,
 				role: payload.role || "player",
 				email: payload.email,
-				username: profile?.username,
+				username: user?.username,
 			};
 
 			next();
@@ -65,8 +65,10 @@ export function initSocket(httpServer) {
 	io.on("connection", (socket) => {
 		console.log(`[Socket] User ${socket.user?.id} connected (${socket.id})`);
 
+		// Join a personal room for direct messaging
 		socket.join(`user:${socket.user.id}`);
 
+		// Register multiplayer event handlers
 		registerMultiplayerHandlers(io, socket);
 
 		socket.on("disconnect", () => {

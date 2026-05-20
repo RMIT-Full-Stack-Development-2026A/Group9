@@ -9,12 +9,12 @@ export const getProfile = async (userId) => {
 	if (!account) throw new Error("User not found");
 
 	const profile = await userRepository.getProfileById(userId);
-	return {
+	return userRepository.formatProfileResponse({
 		...account,
 		avatar: profile?.avatar || "",
 		country: profile?.country || "",
 		premiumUntil: profile?.premiumUntil || null,
-	};
+	});
 };
 
 export const updateProfile = async (userId, updateData) => {
@@ -50,7 +50,7 @@ export const updateProfile = async (userId, updateData) => {
 	userData.country = profile?.country || "";
 	userData.premiumUntil = profile?.premiumUntil || null;
 	delete userData.password;
-	return userData;
+	return userRepository.formatProfileResponse(userData);
 };
 
 export const updateAvatar = async (userId, avatarPath) => {

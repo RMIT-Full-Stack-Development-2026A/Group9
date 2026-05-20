@@ -1,5 +1,6 @@
 import UserAccount from "../models/user.model.js";
 import UserProfile from "../models/userProfile.model.js";
+import { createProfileDTO, createUserResponseDTO } from "../dto/user.dto.js";
 
 const escapeRegex = (value = "") => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -85,3 +86,6 @@ export const getPremiumUntil = async (userId) => {
 	const profile = await UserProfile.findById(userId).select("premiumUntil").lean();
 	return profile?.premiumUntil ?? null;
 };
+
+export const formatProfileResponse = (user = {}) => createProfileDTO(user);
+export const formatUserResponse = (user = {}) => createUserResponseDTO(user);

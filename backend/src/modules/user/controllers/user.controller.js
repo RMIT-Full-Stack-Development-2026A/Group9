@@ -1,31 +1,9 @@
 import * as userService from "../services/user.service.js";
 
-const profileResponse = (user = {}) => ({
-	id: user.id || user._id,
-	username: user.username,
-	email: user.email,
-	country: user.country,
-	role: user.role,
-	premiumUntil: user.premiumUntil || null,
-	avatar: user.avatar || "",
-	createdAt: user.createdAt,
-	updatedAt: user.updatedAt,
-});
-
-const userResponse = (user = {}) => ({
-	id: user.id || user._id,
-	username: user.username,
-	email: user.email,
-	country: user.country,
-	role: user.role,
-	premiumUntil: user.premiumUntil || null,
-	avatar: user.avatar || "",
-});
-
 export const getProfile = async (req, res) => {
 	try {
 		const user = await userService.getProfile(req.user.id);
-		res.json(profileResponse(user));
+		res.json(user);
 	} catch (error) {
 		res.status(404).json({ message: error.message });
 	}
@@ -34,7 +12,7 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
 	try {
 		const user = await userService.updateProfile(req.user.id, req.body);
-		res.json(profileResponse(user));
+		res.json(user);
 	} catch (error) {
 		const messages = {
 			"Email already in use": 409,
@@ -53,7 +31,7 @@ export const uploadAvatar = async (req, res) => {
 			return res.status(400).json({ message: "No image file provided" });
 		}
 		const user = await userService.updateAvatar(req.user.id, req.file.cloudinaryUrl);
-		res.json(userResponse(user));
+		res.json(user);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}

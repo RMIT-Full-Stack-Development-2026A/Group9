@@ -1,14 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getSocket } from '../services/socket.service.js';
+import { getSocket } from '../../../services/socket.service.js';
 
 export function useChat(roomId, connected) {
 	const [messages, setMessages] = useState([]);
 	const messagesEndRef = useRef(null);
 
-	// Register chat:message listener once the socket is connected.
-	// We depend on `connected` because the socket doesn't exist
-	// yet when this hook first mounts — `connected` flips to true
-	// when the socket actually connects.
+	// Register chat:message listener once the socket is connected
 	useEffect(() => {
 		if (!connected) return;
 

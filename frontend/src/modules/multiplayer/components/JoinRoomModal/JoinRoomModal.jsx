@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SimpleModal from '../../../shared/ui/SimpleModal.jsx';
-import styles from '../../game/components/GameModals/GameModals.module.css';
+import SimpleModal from '../../../../shared/ui/SimpleModal.jsx';
+import styles from '../../../game/components/GameModals/GameModals.module.css';
 
 const ALL_MARKERS = ['X', 'O', '⭐', '🔥', '💎', '🌙'];
 

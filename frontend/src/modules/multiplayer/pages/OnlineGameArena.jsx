@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ArenaView from '../../game/components/ArenaView/ArenaView';
-import ChatPanel from '../components/ChatPanel';
+import ChatPanel from '../components/ChatPanel/ChatPanel';
 import { useOnlineGame } from '../hooks/useOnlineGame';
-import { useChat } from '../hooks/useChat';
+import { useChat } from '../components/ChatPanel/hooks/useChat';
 
 export default function OnlineGameArena() {
 	const navigate = useNavigate();

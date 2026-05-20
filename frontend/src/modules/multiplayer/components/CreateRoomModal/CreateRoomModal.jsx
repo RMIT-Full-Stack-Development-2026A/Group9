@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SimpleModal from '../../../shared/ui/SimpleModal.jsx';
-import { AuthContext } from '../../../app/providers/AuthProvider.jsx';
-import styles from '../../game/components/GameModals/GameModals.module.css';
+import SimpleModal from '../../../../shared/ui/SimpleModal.jsx';
+import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
+import styles from '../../../game/components/GameModals/GameModals.module.css';
 
 export default function CreateRoomModal({ open, onClose }) {
 	const { user } = useContext(AuthContext) || {};

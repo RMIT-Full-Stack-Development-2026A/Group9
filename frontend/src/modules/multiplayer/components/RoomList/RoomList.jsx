@@ -1,5 +1,5 @@
 import React from 'react';
-import RoomCard from './RoomCard';
+import RoomCard from '../RoomCard/RoomCard';
 import styles from './RoomList.module.css';
 
 export default function RoomList({ rooms, loading, error, onJoin, joiningRoomId }) {

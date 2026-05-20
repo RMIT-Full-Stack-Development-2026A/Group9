@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import * as multiplayerApi from '../services/multiplayer.api.js';
+import * as multiplayerApi from '../../services/multiplayer.api.js';
 
 export function useRoomList() {
 	const [rooms, setRooms] = useState([]);

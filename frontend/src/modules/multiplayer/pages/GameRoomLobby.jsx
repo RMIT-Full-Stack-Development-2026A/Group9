@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../app/providers/AuthProvider.jsx';
-import RoomList from '../components/RoomList';
-import CreateRoomModal from '../components/CreateRoomModal';
-import JoinRoomModal from '../components/JoinRoomModal';
+import RoomList from '../components/RoomList/RoomList';
+import CreateRoomModal from '../components/CreateRoomModal/CreateRoomModal';
+import JoinRoomModal from '../components/JoinRoomModal/JoinRoomModal';
 import * as multiplayerApi from '../services/multiplayer.api.js';
 import styles from './GameRoomLobby.module.css';
 

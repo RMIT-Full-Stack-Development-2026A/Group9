@@ -16,7 +16,7 @@ const app = express();
 
 // middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"], // Allow both dev ports
+  origin: ["http://localhost:5173", "http://localhost:5174", "https://group9-frontend.onrender.com"], // Allow dev ports and production front-end
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
 }));

@@ -76,6 +76,36 @@ export const errorMessages = {
 		cause: 'Could not reach the server.',
 		example: 'Check if backend is running.'
 	},
+	invalidRegisterPayload: {
+		error: 'Invalid register payload',
+		cause: 'One or more registration fields have invalid values.',
+		example: 'Ensure all fields meet the format requirements listed above each input.'
+	},
+	invalidUsername: {
+		error: 'Invalid username',
+		cause: 'Username must only contain letters, numbers, underscores, or hyphens.',
+		example: 'Valid: user_123, player-1'
+	},
+	invalidEmail: {
+		error: 'Invalid email',
+		cause: 'The email address format is invalid or missing a valid domain or "@" symbol.',
+		example: 'Valid: player1@gmail.com, admin@domain.net'
+	},
+	weakPassword: {
+		error: 'Weak password',
+		cause: 'Password must be at least 8 characters, include one uppercase letter, one number, and one special character.',
+		example: 'Try a password like: My$ecureP@ss1!'
+	},
+	loginEmail: {
+		error: 'Invalid email address',
+		cause: 'The email format is incorrect.',
+		example: 'Valid: player1@gmail.com, admin@domain.net'
+	},
+	loginPassword: {
+		error: 'Invalid password',
+		cause: 'Password must be at least 8 characters, include one uppercase letter, one number, and one special character.',
+		example: 'Try a password like: My$ecureP@ss1!'
+	},
 	unknown: {
 		error: 'Unknown Error',
 		cause: '',

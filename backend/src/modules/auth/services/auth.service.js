@@ -42,10 +42,26 @@ function validateRegister(payload) {
 	const value = normalizeRegisterInput(payload);
 	const errors = [];
 	const required = validators.assertRequiredFields(value, ["username", "email", "password", "country"]);
-	if (!required.valid) errors.push(`Missing required fields: ${required.missing.join(", ")}`);
-	if (value.username && !validators.isValidUsername(value.username)) errors.push("Invalid username.");
-	if (value.email && !validators.isEmail(value.email)) errors.push("Invalid email address.");
-	if (value.password && !validators.isStrongPassword(value.password)) errors.push("Invalid password.");
+	if (!required.valid) errors.push({
+		error: "Missing required fields",
+		cause: `The following fields are required: ${required.missing.join(", ")}.`,
+		example: "Fill in all required fields: username, email, password, confirm password, and country.",
+	});
+	if (value.username && !validators.isValidUsername(value.username)) errors.push({
+		error: "Invalid username",
+		cause: "Username must only contain letters, numbers, underscores, or hyphens.",
+		example: "Valid: user_123, player-1",
+	});
+	if (value.email && !validators.isEmail(value.email)) errors.push({
+		error: "Invalid email",
+		cause: "The email address format is invalid or missing a valid domain or '@' symbol.",
+		example: "Valid: player1@gmail.com, admin@domain.net",
+	});
+	if (value.password && !validators.isStrongPassword(value.password)) errors.push({
+		error: "Weak password",
+		cause: "Password must be at least 8 characters, include one uppercase letter, one number, and one special character.",
+		example: "Try a password like: My$ecureP@ss1!",
+	});
 	return { valid: errors.length === 0, errors, value };
 }
 
@@ -63,9 +79,21 @@ function validateLogin(payload) {
 	const value = normalizeLoginInput(payload);
 	const errors = [];
 	const required = validators.assertRequiredFields(value, ["identifier", "password"]);
-	if (!required.valid) errors.push(`Missing required fields: ${required.missing.join(", ")}`);
-	if (value.loginType === "email" && value.identifier && !validators.isEmail(value.identifier)) errors.push("Invalid email address.");
-	if (value.loginType === "username" && value.identifier && !validators.isValidUsername(value.identifier)) errors.push("Invalid username.");
+	if (!required.valid) errors.push({
+		error: "Missing required fields",
+		cause: `The following fields are required: ${required.missing.join(", ")}.`,
+		example: "Please provide both your identifier (email or username) and password.",
+	});
+	if (value.loginType === "email" && value.identifier && !validators.isEmail(value.identifier)) errors.push({
+		error: "Invalid email address",
+		cause: "The email format is incorrect.",
+		example: "Valid: player1@gmail.com, admin@domain.net",
+	});
+	if (value.loginType === "username" && value.identifier && !validators.isValidUsername(value.identifier)) errors.push({
+		error: "Invalid username",
+		cause: "Username must only contain letters, numbers, underscores, or hyphens.",
+		example: "Valid: user_123, player-1",
+	});
 	return { valid: errors.length === 0, errors, value };
 }
 

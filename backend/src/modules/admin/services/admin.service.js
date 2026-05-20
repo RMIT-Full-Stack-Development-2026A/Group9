@@ -2,6 +2,7 @@
 import AppError from "../../../shared/errors/AppError.js";
 import * as authInterface from "../../auth/interface/auth.interface.js";
 import { adminRepository } from "../repositories/admin.repository.js";
+import { adminDto } from "../dto/admin.dto.js";
 
 export const adminService = {
     getMetrics: async () => {

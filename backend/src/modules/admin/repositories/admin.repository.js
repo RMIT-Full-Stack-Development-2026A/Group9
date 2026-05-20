@@ -2,6 +2,7 @@
 
 import mongoose from "mongoose";
 import AdminActionLog from "../models/adminActionLog.model.js";
+import { adminDto } from "../dto/admin.dto.js";
 
 const getUserModel = () => mongoose.model("UserAccount");
 
@@ -14,7 +15,7 @@ export const adminRepository = {
     
     findAllUsers: async () => {
         // Aggregate to join UserProfile and include premiumUntil, filter only players
-        return await getUserModel().aggregate([
+        const users = await getUserModel().aggregate([
             { $match: { role: "player" } },
             { $sort: { createdAt: -1 } },
             {
@@ -27,10 +28,12 @@ export const adminRepository = {
             },
             { $unwind: { path: "$profile", preserveNullAndEmptyArrays: true } }
         ]);
+        return users.map(adminDto.toPlayerResponse);
     },
 
     findUserById: async (userId) => {
-        return await getUserModel().findById(userId).lean();
+        const user = await getUserModel().findById(userId).lean();
+        return user ? adminDto.toPlayerResponse(user) : null;
     },
 
     updateUserActiveStatus: async (userId, isActive) => {
@@ -57,7 +60,7 @@ export const adminRepository = {
         if (!users[0]) {
             throw new Error('User not found after update. objectId: ' + objectId);
         }
-        return users[0];
+        return adminDto.toPlayerResponse(users[0]);
     },
 
   

@@ -25,7 +25,7 @@ export const adminService = {
     },
 
     getPlayers: async () => {
-        return adminRepository.findAllUsers();
+        return await adminRepository.findAllUsers();
     },
 
     togglePlayerStatus: async (adminId, targetUserId) => {

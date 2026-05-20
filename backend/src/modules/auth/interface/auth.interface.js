@@ -22,3 +22,5 @@ export const getMyProfile = async (userId) => {
 export const logout = (accessToken) => authService.logout(accessToken);
 
 export const findActiveSession = (tokenHash) => authService.findActiveSession(tokenHash);
+
+export const revokeAllSessionsForUser = (userId) => authService.revokeAllSessionsForUser(userId);

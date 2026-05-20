@@ -1,6 +1,6 @@
 
 import AppError from "../../../shared/errors/AppError.js";
-import * as authService from "../../auth/services/auth.service.js";
+import * as authInterface from "../../auth/interface/auth.interface.js";
 import { adminRepository } from "../repositories/admin.repository.js";
 import { adminDto } from "../dto/admin.dto.js";
 
@@ -38,7 +38,7 @@ export const adminService = {
         const newStatus = !user.isActive;
         const updatedUser = await adminRepository.updateUserActiveStatus(targetUserId, newStatus);
         if (newStatus === false) {
-            await authService.revokeAllSessionsForUser(targetUserId);
+            await authInterface.revokeAllSessionsForUser(targetUserId);
         }
         await adminRepository.createActionLog({
             adminId,

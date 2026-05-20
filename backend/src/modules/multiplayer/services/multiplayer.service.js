@@ -1,7 +1,7 @@
 import * as multiplayerRepository from "../repositories/multiplayer.repository.js";
 import AppError from "../../../shared/errors/AppError.js";
 import * as gameInterface from "../../game/interface/game.interface.js";
-import UserProfile from "../../user/models/userProfile.model.js";
+import * as userInterface from "../../user/interface/user.interface.js";
 
 const ALL_MARKERS = ["X", "O", "⭐", "🔥", "💎", "🌙"];
 
@@ -10,12 +10,12 @@ const enrichRoomAvatars = async (room) => {
 	const obj = room.toObject ? room.toObject() : room;
 
 	if (obj.player1 && !obj.player1.avatar) {
-		const profile = await UserProfile.findById(obj.player1._id).select("avatar").lean();
+		const profile = await userInterface.findUserById(obj.player1._id);
 		if (profile?.avatar) obj.player1.avatar = profile.avatar;
 	}
 
 	if (obj.player2 && !obj.player2.avatar) {
-		const profile = await UserProfile.findById(obj.player2._id).select("avatar").lean();
+		const profile = await userInterface.findUserById(obj.player2._id);
 		if (profile?.avatar) obj.player2.avatar = profile.avatar;
 	}
 

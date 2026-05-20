@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 // legacy module styles removed; layout now reuses PlayerTable styles
 import playerStyles from '../PlayerTable/PlayerTable.module.css';
-import { API_ROUTES } from '../../../../config/apiRoutes.js';
-import { http } from '../../../../shared/utils/http.helper.js';
+import { useAdminGameRooms } from './useAdminGameRooms.js';
 
 const formatTime = (iso) => {
     if (!iso) return '-';
@@ -34,34 +33,20 @@ const formatDuration = (startIso, endIso) => {
     return `${hrs}h ${rem}m`;
 }
 
-export default function AdminGameRooms({ rooms: initialRooms = [] }) {
-    const [rooms, setRooms] = useState(initialRooms);
-    const [q, setQ] = useState('');
+export default function AdminGameRooms({ rooms: initialRooms = [], refreshRooms }) {
+    const {
+        filtered,
+        q,
+        setQ,
+        handleClose
+    } = useAdminGameRooms(initialRooms, refreshRooms);
 
     useEffect(() => {
-        setRooms(initialRooms);
-    }, [initialRooms]);
-
-    // Refresh is handled by parent hook via `refreshRooms` if provided
-
-    const handleClose = async (roomId) => {
-        if (!confirm('Close this room?')) return;
-        try {
-            await http.post(API_ROUTES.multiplayer.closeRoom(roomId));
-            setRooms(r => r.filter(x => x._id !== roomId));
-        } catch (err) { console.error('Close failed', err); }
-    }
-
-    const filtered = rooms.filter(r => {
-        if (!q) return true;
-        const s = q.toLowerCase();
-        const roomNumber = r.roomNumber == null ? '' : String(r.roomNumber);
-        const player1Name = r.player1?.username ? String(r.player1.username) : '';
-        const player2Name = r.player2?.username ? String(r.player2.username) : '';
-        return roomNumber.toLowerCase().includes(s) ||
-            player1Name.toLowerCase().includes(s) ||
-            player2Name.toLowerCase().includes(s);
-    });
+        // keep parent-driven refresh in sync if provided
+        if (typeof refreshRooms === 'function') {
+            // no-op: parent may call its refreshRooms; we expose `refresh` for consumer use
+        }
+    }, [refreshRooms]);
 
     return (
         <div className={playerStyles.adminCard}>
@@ -102,11 +87,9 @@ export default function AdminGameRooms({ rooms: initialRooms = [] }) {
                                 <td className={playerStyles.adminTableUsername}>#{room.roomNumber || (room._id?.slice?.(0,8) || '-')}</td>
                                 <td>
                                     <div>{room.player1?.username || 'Unknown'}</div>
-                                    <div style={{ color: 'var(--color-muted)', fontSize: 12 }}>{room.player1?.email || ''}</div>
                                 </td>
                                 <td>
                                     <div>{room.player2?.username || '-'}</div>
-                                    <div style={{ color: 'var(--color-muted)', fontSize: 12 }}>{room.player2?.email || ''}</div>
                                 </td>
                                 <td>{formatDate(room.startTime)}<div style={{ color: 'var(--color-muted)', fontSize: 12 }}>{formatTime(room.startTime)}</div></td>
                                 <td>{formatDate(room.endTime)}<div style={{ color: 'var(--color-muted)', fontSize: 12 }}>{formatTime(room.endTime)}</div></td>

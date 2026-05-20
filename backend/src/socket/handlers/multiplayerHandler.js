@@ -1,10 +1,10 @@
-import * as multiplayerService from "../../modules/multiplayer/services/multiplayer.service.js";
+import * as multiplayerInterface from "../../modules/multiplayer/interface/multiplayer.interface.js";
 
 export function registerMultiplayerHandlers(io, socket) {
 	// ── Join a game room ──────────────────────────────────────────────
 	socket.on("room:join", async ({ roomId }) => {
 		try {
-			const room = await multiplayerService.getRoom(roomId);
+			const room = await multiplayerInterface.getRoom(roomId);
 			if (!room) {
 				socket.emit("error", { message: "Room not found" });
 				return;
@@ -46,7 +46,7 @@ export function registerMultiplayerHandlers(io, socket) {
 
 			// Close the room on the backend
 			try {
-				await multiplayerService.closeRoom(targetRoom);
+				await multiplayerInterface.closeRoom(targetRoom);
 			} catch {}
 
 			// Notify everyone still in the room to leave
@@ -79,7 +79,7 @@ export function registerMultiplayerHandlers(io, socket) {
 	socket.on("game:move", async ({ sessionId, idx, marker, playerId }) => {
 		console.log(`[game:move] Received from ${socket.user?.id?.slice(-6)}: sessionId=${sessionId?.slice(-6)} idx=${idx} marker=${marker} playerId=${playerId}`);
 		try {
-			const result = await multiplayerService.processMove(
+			const result = await multiplayerInterface.processMove(
 				sessionId, idx, marker, playerId || socket.user.id
 			);
 

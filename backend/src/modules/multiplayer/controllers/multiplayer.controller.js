@@ -1,16 +1,14 @@
 import * as multiplayerService from "../services/multiplayer.service.js";
-import UserProfile from "../../user/models/userProfile.model.js";
+import * as userInterface from "../../user/interface/user.interface.js";
 import { getSocketServer } from "../../../socket/index.js";
 
 const enrichPlayerAvatars = async (room) => {
 	const obj = room.toObject ? room.toObject() : room;
-	if (obj.player1 && !obj.player1.avatar) {
-		const profile = await UserProfile.findById(obj.player1._id).select("avatar").lean();
-		if (profile?.avatar) obj.player1.avatar = profile.avatar;
+	if (obj.player1?._id && !obj.player1.avatar) {
+		obj.player1.avatar = await userInterface.getAvatar(obj.player1._id);
 	}
-	if (obj.player2 && !obj.player2.avatar) {
-		const profile = await UserProfile.findById(obj.player2._id).select("avatar").lean();
-		if (profile?.avatar) obj.player2.avatar = profile.avatar;
+	if (obj.player2?._id && !obj.player2.avatar) {
+		obj.player2.avatar = await userInterface.getAvatar(obj.player2._id);
 	}
 	return obj;
 };
@@ -66,7 +64,8 @@ export const createRoom = async (req, res, next) => {
 export const getWaitingRooms = async (req, res, next) => {
 	try {
 		const rooms = await multiplayerService.getWaitingRooms();
-		res.json(rooms.map(roomListResponse));
+		const list = await Promise.all(rooms.map(roomListResponse));
+		res.json(list);
 	} catch (error) {
 		next(error);
 	}
@@ -75,7 +74,8 @@ export const getWaitingRooms = async (req, res, next) => {
 export const getActiveRooms = async (req, res, next) => {
 	try {
 		const rooms = await multiplayerService.getActiveRooms();
-		res.json(rooms.map(roomListResponse));
+		const list = await Promise.all(rooms.map(roomListResponse));
+		res.json(list);
 	} catch (error) {
 		next(error);
 	}

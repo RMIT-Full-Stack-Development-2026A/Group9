@@ -116,6 +116,8 @@ export const deductFromWallet = (userId, amount) => userRepository.deductFromWal
 
 export const setPremiumUntil = (userId, date) => userRepository.setPremiumUntil(userId, date);
 
+export const getAvatar = (userId) => userRepository.getAvatar(userId);
+
 export const getPremiumUntil = (userId) => userRepository.getPremiumUntil(userId);
 
 // ── Game history (delegated to game module) ─────────────────────────────

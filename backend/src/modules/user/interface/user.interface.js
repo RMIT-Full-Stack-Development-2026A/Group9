@@ -50,4 +50,6 @@ export const deductFromWallet = (userId, amount) => userService.deductFromWallet
 
 export const setPremiumUntil = (userId, date) => userService.setPremiumUntil(userId, date);
 
+export const getAvatar = (userId) => userService.getAvatar(userId);
+
 export const getPremiumUntil = (userId) => userService.getPremiumUntil(userId);

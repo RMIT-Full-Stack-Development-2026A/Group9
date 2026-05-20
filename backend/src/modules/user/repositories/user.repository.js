@@ -81,6 +81,11 @@ export const updateProfileField = (userId, field, value) =>
 		{ returnDocument: "after", upsert: true }
 	).lean();
 
+export const getAvatar = async (userId) => {
+	const profile = await UserProfile.findById(userId).select("avatar").lean();
+	return profile?.avatar || "";
+};
+
 export const getPremiumUntil = async (userId) => {
 	const profile = await UserProfile.findById(userId).select("premiumUntil").lean();
 	return profile?.premiumUntil ?? null;

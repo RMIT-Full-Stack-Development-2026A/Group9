@@ -15,8 +15,10 @@
 
 
 
+import { useContext } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
 import AdminNavBar from '../NavBar/AdminNavBar.jsx';
-import { Outlet } from 'react-router-dom';
 import PlayerTable from '../PlayerTable/PlayerTable.jsx';
 import StatCard from '../StateCard/StateCard.jsx';
 import { useAdmin } from '../../hooks/useAdmin.js';
@@ -25,6 +27,8 @@ import AdminGameRooms from '../GameRooms/AdminGameRooms.jsx';
 
 
 export default function Admin() {
+    const { logout } = useContext(AuthContext) || {};
+    const navigate = useNavigate();
     const {
         activeTab,
         setActiveTab,
@@ -36,6 +40,13 @@ export default function Admin() {
         refreshDashboard,
         refreshRooms
     } = useAdmin();
+
+    const handleLogout = async () => {
+        if (logout) {
+            await logout();
+        }
+        navigate('/');
+    };
 
     if (loading) {
         return (
@@ -57,7 +68,7 @@ export default function Admin() {
                     <button
                         className="logoutIconBtn"
                         type="button"
-                        onClick={() => window.dispatchEvent(new CustomEvent('admin-logout'))}
+                        onClick={handleLogout}
                         aria-label="Logout"
                         style={{ marginLeft: 24 }}
                     >

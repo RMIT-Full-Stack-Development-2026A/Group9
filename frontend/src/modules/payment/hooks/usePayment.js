@@ -3,18 +3,33 @@ import { AuthContext } from "../../../app/providers/AuthProvider.jsx";
 import { AUTH_USER_KEY } from "../../../config/api.config.js";
 import * as paymentService from "../services/payment.service.js";
 
+/*
+  usePayment
+  - Hook encapsulating payment-related UI state and actions used by the
+	`PaymentForm` component. Responsibilities:
+	- Load user's wallet from the backend
+	- Handle deposits (add funds)
+	- Subscribe to premium using wallet balance
+	- Start a Stripe checkout flow
+	- Keep AuthContext in sync with wallet/premium changes
+*/
 export default function usePayment() {
 	const authContext = useContext(AuthContext);
+
+	// Local UI state
 	const [wallet, setWallet] = useState({ walletBalance: 0, premiumUntil: null });
 	const [depositAmount, setDepositAmount] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState({ text: "", type: "" });
 
+	// Helper to show transient messages to the user
 	const showMessage = (text, type = "success") => {
 		setMessage({ text, type });
 		setTimeout(() => setMessage({ text: "", type: "" }), 4000);
 	};
 
+	// Sync local changes back into AuthContext + localStorage so other parts
+	// of the app see updated wallet/premium data immediately.
 	const syncUser = useCallback((updates) => {
 		if (!authContext?.user) return;
 		const next = { ...authContext.user, ...updates };
@@ -22,6 +37,7 @@ export default function usePayment() {
 		authContext.login(next);
 	}, [authContext]);
 
+	// Fetch wallet from API and populate state; shows an error message on failure
 	const fetchWallet = useCallback(async () => {
 		try {
 			const { data } = await paymentService.getWallet();
@@ -33,6 +49,7 @@ export default function usePayment() {
 
 	useEffect(() => { fetchWallet(); }, [fetchWallet]);
 
+	// Deposit flow: validate input, call API, update wallet + auth context
 	const handleDeposit = async () => {
 		const amt = Number(depositAmount);
 		if (!amt || amt <= 0) { showMessage("Enter a valid amount", "error"); return; }
@@ -51,6 +68,7 @@ export default function usePayment() {
 		}
 	};
 
+	// Subscribe using wallet balance: server handles billing logic
 	const handleSubscribeWallet = async () => {
 		try {
 			setLoading(true);
@@ -66,6 +84,7 @@ export default function usePayment() {
 		}
 	};
 
+	// Start Stripe checkout flow; server returns a redirect URL
 	const handleStripeCheckout = async () => {
 		try {
 			setLoading(true);

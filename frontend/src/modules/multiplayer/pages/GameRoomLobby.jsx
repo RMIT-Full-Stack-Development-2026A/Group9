@@ -7,6 +7,12 @@ import JoinRoomModal from '../components/JoinRoomModal/JoinRoomModal';
 import * as multiplayerApi from '../services/multiplayer.api.js';
 import styles from './GameRoomLobby.module.css';
 
+/*
+  GameRoomLobby
+  - Lobby page where authenticated users can see waiting rooms, create
+	a new room, or join an existing one. Handles polling for rooms and
+	direct-join by ID.
+*/
 export default function GameRoomLobby() {
 	const { isAuthenticated, user } = useContext(AuthContext) || {};
 	const navigate = useNavigate();
@@ -20,10 +26,12 @@ export default function GameRoomLobby() {
 	const [joinError, setJoinError] = useState('');
 	const [joinLoading, setJoinLoading] = useState(false);
 
+	// Redirect admins to admin UI
 	if (user?.role === 'admin') {
 		return <Navigate to="/admin" replace />;
 	}
 
+	// Fetch currently waiting rooms from the API
 	const fetchRooms = useCallback(async () => {
 		try {
 			setError(null);
@@ -38,6 +46,7 @@ export default function GameRoomLobby() {
 	}, []);
 
 	useEffect(() => {
+		// Ensure user is logged in
 		if (!isAuthenticated) {
 			navigate('/login');
 			return;
@@ -48,6 +57,7 @@ export default function GameRoomLobby() {
 	}, [isAuthenticated, navigate, fetchRooms]);
 
 	const handleJoin = (room) => {
+		// Open join modal for selected room
 		setJoiningRoomId(room._id);
 		setJoinRoom(room);
 	};

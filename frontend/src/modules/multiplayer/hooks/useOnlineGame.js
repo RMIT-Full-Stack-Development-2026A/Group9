@@ -3,9 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { connectSocket, disconnectSocket, getSocket } from '../services/socket.service.js';
 import * as multiplayerApi from '../services/multiplayer.api.js';
 
+/*
+  useOnlineGame
+  - Hook that encapsulates lifecycle and real-time interactions for an
+	online multiplayer match. Responsibilities:
+	* Creating/joining rooms via REST APIs
+	* Managing a single shared socket connection and event handlers
+	* Keeping local UI state (board, turn, winner) in sync with server
+	* Providing imperative actions (`playMove`, `abortGame`) to the UI
+*/
 export function useOnlineGame() {
 	const navigate = useNavigate();
 
+	// Core session/room state
 	const [session, setSession] = useState(null);
 	const [room, setRoom] = useState(null);
 	const [board, setBoard] = useState([]);
@@ -13,13 +23,18 @@ export function useOnlineGame() {
 	const [winner, setWinner] = useState(null);
 	const [winLine, setWinLine] = useState(null);
 	const [draw, setDraw] = useState(false);
+
+	// Connection and player metadata
 	const [connected, setConnected] = useState(false);
 	const [playerMarker, setPlayerMarker] = useState(null);
 	const [playerNumber, setPlayerNumber] = useState(null);
 	const [opponentJoined, setOpponentJoined] = useState(false);
+
+	// UI flags
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
+	// Keep a mutable ref snapshot used by event handlers (avoids stale closures)
 	const stateRef = useRef({ session, board, turn, winner, draw, playerNumber });
 	stateRef.current = { session, board, turn, winner, draw, playerNumber };
 	const roomIdRef = useRef(null);
@@ -32,6 +47,8 @@ export function useOnlineGame() {
 			console.log('[syncRoomState] room status=', r.status,
 				'sessionId=', r.sessionId?.toString?.()?.slice(-6) || r.sessionId?.slice?.(-6) || null,
 				'player2=', !!r.player2);
+
+			// If a sessionId was created on the server, initialize session locally
 			if (r.sessionId) {
 				setSession((prev) => {
 					if (prev?._id === r.sessionId?.toString?.() || prev?._id === r.sessionId) return prev;
@@ -39,6 +56,8 @@ export function useOnlineGame() {
 					return { _id: r.sessionId, boardSize: r.boardSize || 10 };
 				});
 			}
+
+			// If a second player joined, update room and opponent flag
 			if (r.player2) {
 				setOpponentJoined(true);
 				setRoom((prev) => prev ? {
@@ -58,6 +77,7 @@ export function useOnlineGame() {
 		const socket = getSocket();
 		if (!socket) return;
 
+		// Remove previous handlers to avoid duplicate calls
 		socket.off('connect');
 		socket.off('disconnect');
 		socket.off('game:state-update');
@@ -67,6 +87,7 @@ export function useOnlineGame() {
 		socket.off('room:closed');
 		socket.off('error');
 
+		// When connected, join the room if we have an id and sync state
 		socket.on('connect', () => {
 			console.log('[SOCKET] connect event, roomIdRef=', roomIdRef.current?.slice(-6));
 			setConnected(true);
@@ -75,11 +96,14 @@ export function useOnlineGame() {
 				syncRoomState(roomIdRef.current);
 			}
 		});
+
+		// Handle disconnection and set connected flag
 		socket.on('disconnect', () => setConnected(false));
 		if (socket.connected) {
 			setConnected(true);
 		}
 
+		// Opponent joined: set opponent details and session if provided
 		socket.on('room:player-joined', (data) => {
 			console.log('[SOCKET] room:player-joined received', data);
 			setOpponentJoined(true);
@@ -97,6 +121,7 @@ export function useOnlineGame() {
 			}));
 		});
 
+		// Update board state when server emits a state update
 		socket.on('game:state-update', (data) => {
 			console.log('[SOCKET] game:state-update received boardLen=', data.board?.length, 'turn=', data.turn, 'winner=', data.winner, 'draw=', data.draw);
 			setBoard(data.board);
@@ -106,12 +131,14 @@ export function useOnlineGame() {
 			if (data.draw) setDraw(true);
 		});
 
+		// Final game over event
 		socket.on('game:over', (data) => {
 			if (data.winner) setWinner(data.winner);
 			if (data.winLine) setWinLine(data.winLine);
 			if (data.draw) setDraw(true);
 		});
 
+		// Opponent left or room closed
 		socket.on('room:player-left', () => {
 			setOpponentJoined(false);
 		});
@@ -121,6 +148,7 @@ export function useOnlineGame() {
 			navigate('/multiplayer');
 		});
 
+		// Generic error handler
 		socket.on('error', (data) => {
 			setError(data.message);
 		});
@@ -141,6 +169,7 @@ export function useOnlineGame() {
 			const createdRoom = response.data || response;
 			const size = createdRoom.boardSize || settings.boardSize || 10;
 
+			// Initialize local room/session state and default board
 			setRoom(createdRoom);
 			setPlayerMarker(createdRoom.player1Marker);
 			setPlayerNumber('player1');
@@ -211,6 +240,7 @@ export function useOnlineGame() {
 		if (!s) { console.log('[playMove] BLOCKED: no session (stateRef)'); return; }
 		if (!pn) { console.log('[playMove] BLOCKED: no playerNumber'); return; }
 
+		// Emit the move event to server — server will validate and broadcast
 		console.log('[playMove] EMIT game:move sessionId=', s._id?.slice(-6), 'idx=', idx, 'marker=', playerMarker, 'playerId=', pn);
 		socket.emit('game:move', {
 			sessionId: s._id,

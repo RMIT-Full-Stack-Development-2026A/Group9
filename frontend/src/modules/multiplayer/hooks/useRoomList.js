@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as multiplayerApi from '../../services/multiplayer.api.js';
 
+/*
+  useRoomList
+  - Simple hook for polling waiting multiplayer rooms. Returns the
+	current list, loading state, and an error string.
+  - Polling frequency is intentionally conservative (5s) to keep the UI
+	responsive without overwhelming the API.
+*/
 export function useRoomList() {
 	const [rooms, setRooms] = useState([]);
 	const [loading, setLoading] = useState(true);

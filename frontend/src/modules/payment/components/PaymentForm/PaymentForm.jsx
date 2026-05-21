@@ -1,6 +1,16 @@
 import styles from "./PaymentForm.module.css";
 import usePayment from "../../hooks/usePayment.js";
 
+/*
+  PaymentForm
+  - UI for purchasing a premium subscription and depositing to an internal
+	wallet. The component is intentionally presentational and delegates all
+	business work to `usePayment`.
+  - Main flows supported:
+	1. Deposit funds to internal wallet (quick add)
+	2. Subscribe using wallet balance
+	3. Redirect to Stripe Checkout for card payments
+*/
 export default function PaymentForm() {
 	const {
 		wallet,
@@ -15,6 +25,7 @@ export default function PaymentForm() {
 
 	return (
 		<div className={styles.premiumPage}>
+			{/* transient message area (success / error) provided by the hook */}
 			{message.text && (
 				<div className={`${styles.premiumMessage} ${styles[message.type]}`}>{message.text}</div>
 			)}

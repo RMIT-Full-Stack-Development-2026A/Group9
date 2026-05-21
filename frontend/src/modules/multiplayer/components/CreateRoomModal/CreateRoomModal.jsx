@@ -4,10 +4,13 @@ import SimpleModal from '../../../../shared/ui/SimpleModal.jsx';
 import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
 import styles from '../../../game/components/GameModals/GameModals.module.css';
 
+// CreateRoomModal: collects settings for creating an online room and
+// navigates to the arena page with the constructed `settings` payload.
 export default function CreateRoomModal({ open, onClose }) {
 	const { user } = useContext(AuthContext) || {};
 	const navigate = useNavigate();
 
+	// Local form state
 	const [boardSize, setBoardSize] = useState('10x10');
 	const [boardStyle, setBoardStyle] = useState('Classic');
 	const [marker, setMarker] = useState(null);
@@ -22,6 +25,7 @@ export default function CreateRoomModal({ open, onClose }) {
 	const playerName = currentUser?.username || currentUser?.email || 'Player';
 
 	const handleCreate = () => {
+		// Build settings used by OnlineGameArena to create/join session
 		const settings = {
 			boardSize: boardSize === '10x10' ? 10 : 15,
 			boardStyle,

@@ -2,8 +2,10 @@ import React from 'react';
 import RoomCard from '../RoomCard/RoomCard';
 import styles from './RoomList.module.css';
 
+// RoomList: presentational list rendering states (loading, error, empty)
 export default function RoomList({ rooms, loading, error, onJoin, joiningRoomId }) {
 	if (loading) {
+		// Loading placeholder while API returns rooms
 		return (
 			<div className={styles.empty}>
 				<i className="bi bi-arrow-repeat spin-icon"></i>
@@ -13,6 +15,7 @@ export default function RoomList({ rooms, loading, error, onJoin, joiningRoomId 
 	}
 
 	if (error) {
+		// Simple error UI
 		return (
 			<div className={styles.empty}>
 				<i className="bi bi-exclamation-triangle"></i>
@@ -22,6 +25,7 @@ export default function RoomList({ rooms, loading, error, onJoin, joiningRoomId 
 	}
 
 	if (!rooms || rooms.length === 0) {
+		// Empty state when no rooms are waiting
 		return (
 			<div className={styles.empty}>
 				<i className="bi bi-inbox"></i>
@@ -30,6 +34,7 @@ export default function RoomList({ rooms, loading, error, onJoin, joiningRoomId 
 		);
 	}
 
+	// Render list of RoomCards
 	return (
 		<div className={styles.roomList}>
 			{rooms.map((room) => (

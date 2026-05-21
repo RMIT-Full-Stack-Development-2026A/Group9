@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getSocket } from '../../../services/socket.service.js';
 
+/*
+  useChat
+  - Lightweight hook that subscribes to `chat:message` socket events for the
+	current room and exposes `messages`, `sendMessage`, and `messagesEndRef`.
+  - Behavior:
+	- Registers a socket listener when `connected` becomes true.
+	- Auto-scrolls to the bottom when new messages arrive.
+	- `sendMessage` performs an optimistic local append then emits to server.
+*/
 export function useChat(roomId, connected) {
 	const [messages, setMessages] = useState([]);
 	const messagesEndRef = useRef(null);
@@ -13,12 +22,14 @@ export function useChat(roomId, connected) {
 		if (!socket) return;
 
 		const handler = (message) => {
+			// Append incoming message from server
 			setMessages((prev) => [...prev, message]);
 		};
 
 		socket.on('chat:message', handler);
 
 		return () => {
+			// Clean up when disconnected or unmounted
 			socket.off('chat:message', handler);
 		};
 	}, [connected]);
@@ -33,7 +44,7 @@ export function useChat(roomId, connected) {
 		const socket = getSocket();
 		if (!socket) return;
 
-		// Show message locally immediately (optimistic)
+		// Show message locally immediately (optimistic UI) so sender sees it
 		setMessages((prev) => [...prev, {
 			userId: 'me',
 			username: 'You',
@@ -41,7 +52,7 @@ export function useChat(roomId, connected) {
 			timestamp: new Date().toISOString(),
 		}]);
 
-		// Server broadcasts to the other player via socket.to()
+		// Emit to server; server will broadcast back to other clients
 		socket.emit('chat:message', { text: text.trim() });
 	}, []);
 

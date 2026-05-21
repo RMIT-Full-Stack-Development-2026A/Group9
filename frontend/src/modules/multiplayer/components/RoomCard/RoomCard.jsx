@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './RoomCard.module.css';
 
+// Small mapping to show a friendly emoji for common markers
 const MARKER_ICONS = {
 	'X': '❌',
 	'O': '⭕',
@@ -10,6 +11,7 @@ const MARKER_ICONS = {
 	'🌙': '🌙',
 };
 
+// RoomCard: compact visual summary for a waiting room used in the lobby
 export default function RoomCard({ room, onJoin, joining }) {
 	if (!room) return null;
 
@@ -52,6 +54,7 @@ export default function RoomCard({ room, onJoin, joining }) {
 	);
 }
 
+// Utility: friendly relative time display used in the room card
 function getTimeAgo(dateStr) {
 	const diff = Date.now() - new Date(dateStr).getTime();
 	const mins = Math.floor(diff / 60000);
@@ -62,6 +65,7 @@ function getTimeAgo(dateStr) {
 	return `${Math.floor(hours / 24)}d ago`;
 }
 
+// Utility: capitalize single word strings
 function capitalize(value) {
 	return String(value).charAt(0).toUpperCase() + String(value).slice(1);
 }

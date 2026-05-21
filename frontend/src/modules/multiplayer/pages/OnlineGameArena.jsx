@@ -5,6 +5,13 @@ import ChatPanel from '../components/ChatPanel/ChatPanel';
 import { useOnlineGame } from '../hooks/useOnlineGame';
 import { useChat } from '../components/ChatPanel/hooks/useChat';
 
+/*
+  OnlineGameArena
+  - Page wiring that composes `useOnlineGame` (real-time game state) and
+	`useChat` to render the multiplayer arena with a chat sidebar.
+  - Handles initialization from navigation `state` (create vs join) and
+	redirects back to lobby if required state is missing.
+*/
 export default function OnlineGameArena() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -35,6 +42,7 @@ export default function OnlineGameArena() {
 		abortGame,
 	} = useOnlineGame();
 
+	// Chat hook subscribes only when `connected` becomes true
 	const { messages, sendMessage, messagesEndRef } = useChat(room?._id, connected);
 
 	// If state was lost (e.g. page reload), redirect to lobby
@@ -81,6 +89,7 @@ export default function OnlineGameArena() {
 		);
 	}
 
+	// Prepare matchData passed to ArenaView
 	const boardSize = room?.boardSize || settings?.boardSize || 10;
 	const boardStyle = (settings?.boardStyle || room?.boardStyle || 'Classic').toLowerCase();
 
@@ -124,6 +133,7 @@ export default function OnlineGameArena() {
 	const isLocked = loading || !connected || !opponentJoined || Boolean(winner) || draw || !isMyTurn;
 
 	const handleCellClick = (idx) => {
+		// Defensive logging to help debug client-side blocking cases
 		console.log('[CLICK] idx=', idx,
 			'| isLocked=', isLocked,
 			'| loading=', loading,

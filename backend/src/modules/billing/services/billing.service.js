@@ -20,44 +20,23 @@ const getStripe = () => {
 	return stripe;
 };
 
-// // ── Email transporter (lazy) ──────────────────────────────────────────
-// let transporter = null;
-// // Lazily create and return a nodemailer transport. If email environment
-// // variables are missing, sending is skipped by callers; creating the
-// // transporter is non-blocking and only happens when first needed.
-// const getTransporter = () => {
-// 	if (!transporter) {
-// 		transporter = nodemailer.createTransport({
-// 			host: process.env.EMAIL_HOST || "smtp.gmail.com",
-// 			port: Number(process.env.EMAIL_PORT) || 587,
-// 			auth: {
-// 				user: process.env.EMAIL_USER,
-// 				pass: process.env.EMAIL_PASS,
-// 			},
-// 		});
-// 	}
-// 	return transporter;
-// };
-
 // ── Email transporter (lazy) ──────────────────────────────────────────
 let transporter = null;
-// Lazily create and return a nodemailer transport. Automatically switches
-// to secure connection handling if Port 465 is provided.
+// Lazily create and return a nodemailer transport. If email environment
+// variables are missing, sending is skipped by callers; creating the
+// transporter is non-blocking and only happens when first needed.
 const getTransporter = () => {
-    if (!transporter) {
-        const port = Number(process.env.EMAIL_PORT) || 465;
-        transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST || "smtp.gmail.com",
-            port: port,
-            secure: port === 465, // True for 465, false for 587
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            },
-			family: 4
-        });
-    }
-    return transporter;
+	if (!transporter) {
+		transporter = nodemailer.createTransport({
+			host: process.env.EMAIL_HOST || "smtp.gmail.com",
+			port: Number(process.env.EMAIL_PORT) || 587,
+			auth: {
+				user: process.env.EMAIL_USER,
+				pass: process.env.EMAIL_PASS,
+			},
+		});
+	}
+	return transporter;
 };
 
 // Send a non-blocking payment confirmation email. Returns quickly when

@@ -1,5 +1,6 @@
 import * as userService from "../services/user.service.js";
 
+// Return the current user's combined profile payload.
 export const getProfile = async (req, res) => {
 	try {
 		const user = await userService.getProfile(req.user.id);
@@ -9,6 +10,7 @@ export const getProfile = async (req, res) => {
 	}
 };
 
+// Update the current user's profile fields and return the refreshed profile.
 export const updateProfile = async (req, res) => {
 	try {
 		const user = await userService.updateProfile(req.user.id, req.body);
@@ -25,6 +27,7 @@ export const updateProfile = async (req, res) => {
 	}
 };
 
+// Upload a new avatar image and persist the resulting Cloudinary URL.
 export const uploadAvatar = async (req, res) => {
 	try {
 		if (!req.file) {
@@ -37,6 +40,7 @@ export const uploadAvatar = async (req, res) => {
 	}
 };
 
+// Return the current user's game history using the shared game-history query.
 export const getGameHistory = async (req, res) => {
 	try {
 		const sessions = await userService.getGameHistory(req.user.id, req.query);

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Schema for a multiplayer room that links two players to a shared game session.
 const gameRoomSchema = new mongoose.Schema(
 	{
 		roomNumber: {
@@ -75,6 +76,7 @@ const gameRoomSchema = new mongoose.Schema(
 	}
 );
 
+// Keep newest rooms easy to query and sort for list views.
 gameRoomSchema.index({ createdAt: -1 });
 
 const GameRoom = mongoose.models.GameRoom || mongoose.model("GameRoom", gameRoomSchema);

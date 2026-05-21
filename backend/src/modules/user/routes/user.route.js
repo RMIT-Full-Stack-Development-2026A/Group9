@@ -5,8 +5,11 @@ import upload, { uploadToCloudinary } from "../../../middlewares/upload.middlewa
 
 const router = Router();
 
+// Fetch the authenticated user's profile.
 router.get("/profile", authenticate, userController.getProfile);
+// Update profile fields for the authenticated user.
 router.put("/profile", authenticate, userController.updateProfile);
+// Upload and persist an avatar image for the authenticated user.
 router.post(
   "/profile/avatar",
   authenticate,
@@ -14,6 +17,7 @@ router.post(
   uploadToCloudinary,
   userController.uploadAvatar
 );
+// Return the authenticated user's game history.
 router.get("/game-history", authenticate, userController.getGameHistory);
 
 export default router;

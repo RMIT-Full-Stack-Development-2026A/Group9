@@ -1,3 +1,4 @@
+// Shape the public profile response shown to the user.
 export const createProfileDTO = (user = {}) => ({
 	id: user.id || user._id,
 	username: user.username,
@@ -10,6 +11,7 @@ export const createProfileDTO = (user = {}) => ({
 	updatedAt: user.updatedAt,
 });
 
+// Shape the public user response returned after auth/profile mutations.
 export const createUserResponseDTO = (user = {}) => ({
 	id: user.id || user._id,
 	username: user.username,

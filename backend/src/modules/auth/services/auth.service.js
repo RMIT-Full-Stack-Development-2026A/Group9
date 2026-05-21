@@ -10,14 +10,15 @@ import * as userInterface from "../../user/interface/user.interface.js";
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 10);
 
-// ── JWT ──────────────────────────────────────────────────────────────
-
+// ── JWT helpers ───────────────────────────────────────────────────────
+// Create a signed JWT access token with subject, email and role
 const signAccessToken = (user) => jwt.sign(
 	{ sub: user._id?.toString(), email: user.email, role: user.role },
 	process.env.JWT_SECRET || "dev_jwt_secret",
 	{ expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
 );
 
+// Resolve `expiresAt` Date based on `JWT_EXPIRES_IN` env (supports seconds or s/m/h/d)
 const resolveExpiresAt = () => {
 	const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
 	if (/^\d+$/.test(expiresIn)) return new Date(Date.now() + Number(expiresIn) * 1000);
@@ -27,8 +28,7 @@ const resolveExpiresAt = () => {
 	return new Date(Date.now() + Number(match[1]) * multipliers[match[2].toLowerCase()]);
 };
 
-// ── Input helpers ────────────────────────────────────────────────────
-
+// ── Input helpers (sanitization + validation) ──────────────────────────
 function normalizeRegisterInput({ username, email, password, country }) {
 	return {
 		username: validators.sanitizeString(username),
@@ -41,22 +41,26 @@ function normalizeRegisterInput({ username, email, password, country }) {
 function validateRegister(payload) {
 	const value = normalizeRegisterInput(payload);
 	const errors = [];
+	// Ensure required fields are present
 	const required = validators.assertRequiredFields(value, ["username", "email", "password", "country"]);
 	if (!required.valid) errors.push({
 		error: "Missing required fields",
 		cause: `The following fields are required: ${required.missing.join(", ")}.`,
 		example: "Fill in all required fields: username, email, password, confirm password, and country.",
 	});
+	// Validate username format
 	if (value.username && !validators.isValidUsername(value.username)) errors.push({
 		error: "Invalid username",
 		cause: "Username must only contain letters, numbers, underscores, or hyphens.",
 		example: "Valid: user_123, player-1",
 	});
+	// Validate email format
 	if (value.email && !validators.isEmail(value.email)) errors.push({
 		error: "Invalid email",
 		cause: "The email address format is invalid or missing a valid domain or '@' symbol.",
 		example: "Valid: player1@gmail.com, admin@domain.net",
 	});
+	// Enforce password strength policy
 	if (value.password && !validators.isStrongPassword(value.password)) errors.push({
 		error: "Weak password",
 		cause: "Password must be at least 8 characters, include one uppercase letter, one number, and one special character.",
@@ -99,6 +103,11 @@ function validateLogin(payload) {
 
 // ── Public API ───────────────────────────────────────────────────────
 
+// Register a new user:
+// - Validate and sanitize input
+// - Hash password
+// - Create user record via `userInterface`
+// - Issue JWT access token and persist a hashed session for revocation
 export const register = async (payload, file, sessionContext = {}) => {
 	const { valid, errors } = validateRegister(payload);
 	if (!valid) throw new AppError("Invalid register payload", 400, errors);
@@ -116,6 +125,7 @@ export const register = async (payload, file, sessionContext = {}) => {
 		avatar: file?.cloudinaryUrl || "",
 	});
 
+	// Issue token and store a hashed session for server-side revocation
 	const accessToken = signAccessToken(createdUser);
 	await authRepository.createAuthSession({
 		userId: createdUser._id,
@@ -128,8 +138,10 @@ export const register = async (payload, file, sessionContext = {}) => {
 	return { accessToken, user: createdUser };
 };
 
+// Authenticate a user and create a session record
 export const login = async (payload, sessionContext = {}) => {
 	const identifier = payload.identifier || payload.email || payload.username;
+	// Rate-limiting / lockout check based on previous failed attempts
 	if (loginAttemptService.isLocked(identifier, sessionContext.ipAddress))
 		throw new AppError("Too many failed login attempts. Please try again later.", 429);
 
@@ -139,6 +151,7 @@ export const login = async (payload, sessionContext = {}) => {
 	const input = normalizeLoginInput(payload);
 	let user = await userInterface.findUserByIdentifier(input.identifier, input.loginType);
 	if (!user) {
+		// Record failed attempt for lockout heuristics
 		loginAttemptService.recordFailedAttempt(identifier, sessionContext.ipAddress);
 		throw new AppError("Invalid username/email or password", 401);
 	}
@@ -156,9 +169,11 @@ export const login = async (payload, sessionContext = {}) => {
 		throw new AppError("The username or password you entered is incorrect. Please try again", 401);
 	}
 
+	// Successful login: reset attempt counters
 	await userInterface.updateLoginMetadata(user._id, { loginAttempts: 0, lockUntil: null });
 	loginAttemptService.resetAttempts(identifier, sessionContext.ipAddress);
 
+	// Issue token and persist session
 	const accessToken = signAccessToken(user);
 	await authRepository.createAuthSession({
 		userId: user._id,
@@ -181,11 +196,13 @@ export const getMyProfile = async (userId) => {
 	};
 };
 
+// Logout by revoking the stored hashed session and blacklisting the token expiry
 export const logout = async (accessToken) => {
 	if (!accessToken) throw new AppError("Authentication token is required", 400);
 	const tokenHash = hashSessionToken(accessToken);
 	const revokedSession = await authRepository.revokeAuthSessionByTokenHash(tokenHash);
 	try {
+		// Add to in-memory blacklist to prevent reuse until expiry (best-effort)
 		const decoded = jwt.decode(accessToken);
 		if (decoded?.exp) tokenBlacklistService.add(accessToken, decoded.exp);
 	} catch {}

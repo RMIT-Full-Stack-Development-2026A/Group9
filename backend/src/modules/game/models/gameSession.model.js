@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Schema for a single game session, including players, outcome, and board state.
 const gameSessionSchema = new mongoose.Schema(
 	{
 		sessionNumber: {

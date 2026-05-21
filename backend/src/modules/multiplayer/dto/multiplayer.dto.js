@@ -2,6 +2,7 @@
  * Multiplayer DTOs — present only necessary data in responses (A.3.2).
  */
 
+// Convert a room document into the full room payload used by detail views.
 export const toRoomDTO = (room) => {
   const obj = room.toObject ? room.toObject() : room;
   return {
@@ -24,6 +25,7 @@ export const toRoomDTO = (room) => {
   };
 };
 
+// Convert a room into the compact list-item payload used by waiting-room lists.
 export const toRoomListDTO = (room) => {
   const obj = room.toObject ? room.toObject() : room;
   return {

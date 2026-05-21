@@ -9,6 +9,8 @@ const PREMIUM_DURATION_DAYS = 30;
 
 // ── Stripe (lazy init so app boots even without key) ──────────────────
 let stripe = null;
+// Return a singleton Stripe client. Throws a 503 AppError when the secret
+// key is not configured so callers can handle missing configuration.
 const getStripe = () => {
 	if (!stripe) {
 		const key = process.env.STRIPE_SECRET_KEY;
@@ -20,6 +22,9 @@ const getStripe = () => {
 
 // ── Email transporter (lazy) ──────────────────────────────────────────
 let transporter = null;
+// Lazily create and return a nodemailer transport. If email environment
+// variables are missing, sending is skipped by callers; creating the
+// transporter is non-blocking and only happens when first needed.
 const getTransporter = () => {
 	if (!transporter) {
 		transporter = nodemailer.createTransport({
@@ -34,6 +39,9 @@ const getTransporter = () => {
 	return transporter;
 };
 
+// Send a non-blocking payment confirmation email. Returns quickly when
+// email is not configured. Any failures are logged but do not block billing
+// flows (best-effort notification).
 const sendPaymentEmail = async (email, username) => {
 	if (!process.env.EMAIL_USER) return; // skip if not configured
 	const from = `"TicTacToang" <${process.env.EMAIL_USER}>`;
@@ -44,9 +52,9 @@ const sendPaymentEmail = async (email, username) => {
 			to: email,
 			subject: "Premium Subscription Confirmed!",
 			html: `<h2>Hey ${username},</h2>
-			       <p>Your premium subscription has been activated for 30 days.</p>
-			       <p>Enjoy advanced ranking and match replay features!</p>
-			       <p>&mdash; TicTacToang Team</p>`,
+				   <p>Your premium subscription has been activated for 30 days.</p>
+				   <p>Enjoy advanced ranking and match replay features!</p>
+				   <p>&mdash; TicTacToang Team</p>`,
 		});
 		console.log(`[EMAIL DEBUG] Email sent successfully to ${email}`);
 	} catch (err) {
@@ -55,6 +63,9 @@ const sendPaymentEmail = async (email, username) => {
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────
+// Compute the new premium expiry date by extending from the later of
+// `currentPremiumUntil` (if in future) or now. Returns a Date object
+// PREMIUM_DURATION_DAYS ahead of the chosen base date.
 const computeNewPremiumUntil = (currentPremiumUntil) => {
 	const now = new Date();
 	const base = currentPremiumUntil && new Date(currentPremiumUntil) > now
@@ -64,6 +75,9 @@ const computeNewPremiumUntil = (currentPremiumUntil) => {
 };
 
 // ── Wallet Deposit ────────────────────────────────────────────────────
+// Deposit money into a user's wallet and record a completed transaction.
+// Throws if amount is not positive. Returns the created transaction and
+// the updated wallet balance from the user's profile.
 export async function depositToWallet(userId, amount) {
 	if (!amount || amount <= 0) throw new AppError("Amount must be positive", 400);
 
@@ -80,6 +94,7 @@ export async function depositToWallet(userId, amount) {
 }
 
 // ── Wallet Balance ────────────────────────────────────────────────────
+// Retrieve wallet balance and premium expiry for a user.
 export async function getWallet(userId) {
 	const balance = await userInterface.getWalletBalance(userId);
 	const premiumUntil = await userInterface.getPremiumUntil(userId);
@@ -87,6 +102,10 @@ export async function getWallet(userId) {
 }
 
 // ── Subscribe via Wallet ──────────────────────────────────────────────
+// Create a premium subscription using the user's wallet balance.
+// - Ensures sufficient balance
+// - Deducts the premium price, extends premiumUntil, records a completed
+//   transaction, and triggers a non-blocking email notification.
 export async function subscribeWithWallet(userId) {
 	const balance = await userInterface.getWalletBalance(userId);
 	if (balance < PREMIUM_PRICE) {
@@ -121,6 +140,8 @@ export async function subscribeWithWallet(userId) {
 }
 
 // ── Create Stripe Checkout Session ────────────────────────────────────
+// Create a Stripe Checkout session and record a pending transaction.
+// Returns an object containing the `checkoutUrl` to redirect the client.
 export async function createStripeCheckout(userId) {
 	const s = getStripe();
 
@@ -159,6 +180,10 @@ export async function createStripeCheckout(userId) {
 }
 
 // ── Stripe Webhook Handler ────────────────────────────────────────────
+// Handle Stripe webhook raw body and signature verification.
+// - Validates the signature using the configured webhook secret
+// - Processes `checkout.session.completed` events by extending premium
+//   status, marking pending transactions completed, and sending emails.
 export async function handleStripeWebhook(rawBody, signature) {
 	console.log("[WEBHOOK DEBUG] Received webhook event, signature present:", !!signature);
 	const s = getStripe();
@@ -205,6 +230,7 @@ export async function handleStripeWebhook(rawBody, signature) {
 }
 
 // ── Transaction History ───────────────────────────────────────────────
+// Return the transaction history for a user (most recent first)
 export async function getTransactions(userId) {
 	const txs = await billingRepo.findTransactionsByUser(userId);
 	return txs;

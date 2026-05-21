@@ -1,6 +1,7 @@
 import GameSession from '../models/gameSession.model.js';
 import Move from '../models/move.model.js';
 
+// Create a new session with an incremented session number and empty board.
 export async function createSession(dto) {
 	const last = await GameSession.findOne({}).sort({ sessionNumber: -1 }).lean();
 	const sessionNumber = (last?.sessionNumber || 0) + 1;
@@ -12,10 +13,12 @@ export async function createSession(dto) {
 	return await session.save();
 }
 
+// Fetch a game session by its database id.
 export async function getSessionById(sessionId) {
 	return await GameSession.findById(sessionId);
 }
 
+// Record a move and update the session board/result fields.
 export async function appendMove(sessionId, board, moveResult, moveData, updateExtra = {}) {
 	// Persist move in Moves collection
 	await Move.create({
@@ -43,6 +46,7 @@ export async function appendMove(sessionId, board, moveResult, moveData, updateE
 	return await GameSession.findByIdAndUpdate(sessionId, update, { returnDocument: "after" });
 }
 
+// Abort a session and stamp its end time.
 export async function abortSession(sessionId) {
 	return await GameSession.findByIdAndUpdate(
 		sessionId,
@@ -56,6 +60,7 @@ export async function abortSession(sessionId) {
 	);
 }
 
+// Find all sessions belonging to a user using caller-provided filters.
 export async function findSessionsByUser(userObjectId, filter, sort) {
 	return GameSession.find(filter)
 		.populate("player1", "username")
@@ -65,6 +70,7 @@ export async function findSessionsByUser(userObjectId, filter, sort) {
 		.lean();
 }
 
+// Return the move history for one session ordered by move number.
 export async function getMovesBySessionId(sessionId) {
 	return await Move.find({ sessionId })
 		.sort({ moveNumber: 1, createdAt: 1 })

@@ -3,6 +3,7 @@ import * as multiplayerInterface from "../interface/multiplayer.interface.js";
 import * as userService from "../../user/services/user.service.js";
 import { getSocketServer } from "../../../socket/index.js";
 
+// Attach missing avatar fields to player objects before formatting the room response.
 const enrichPlayerAvatars = async (room) => {
 	const obj = room.toObject ? room.toObject() : room;
 	if (obj.player1 && !obj.player1.avatar) {
@@ -16,6 +17,7 @@ const enrichPlayerAvatars = async (room) => {
 	return obj;
 };
 
+// Shape a full room document into the response expected by the room detail UI.
 const roomResponse = async (room) => {
 	const obj = await enrichPlayerAvatars(room);
 	return {
@@ -39,6 +41,7 @@ const roomResponse = async (room) => {
 	};
 };
 
+// Shape a room into the smaller list-item response used by waiting-room lists.
 const roomListResponse = (room) => {
 	const obj = room.toObject ? room.toObject() : room;
 	return {
@@ -55,6 +58,7 @@ const roomListResponse = (room) => {
 	};
 };
 
+// Create a room and return the fully formatted room payload.
 export const createRoom = async (req, res, next) => {
 	try {
 		const room = await multiplayerService.createRoom(req.user.id, req.body || {});
@@ -64,6 +68,7 @@ export const createRoom = async (req, res, next) => {
 	}
 };
 
+// Return all waiting rooms in compact list form.
 export const getWaitingRooms = async (req, res, next) => {
 	try {
 		const rooms = await multiplayerService.getWaitingRooms();
@@ -73,6 +78,7 @@ export const getWaitingRooms = async (req, res, next) => {
 	}
 };
 
+// Return active rooms using the interface layer's DTO mapping.
 export const getActiveRooms = async (req, res, next) => {
 	try {
 		const rooms = await multiplayerInterface.getActiveRooms();
@@ -82,6 +88,7 @@ export const getActiveRooms = async (req, res, next) => {
 	}
 };
 
+// Join an existing waiting room and return the updated room payload.
 export const joinRoom = async (req, res, next) => {
 	try {
 		const room = await multiplayerService.joinRoom(req.params.id, req.user.id, req.body?.marker);
@@ -91,6 +98,7 @@ export const joinRoom = async (req, res, next) => {
 	}
 };
 
+// Close a room and notify any socket listeners that the room is finished.
 export const closeRoom = async (req, res, next) => {
 	try {
 		const room = await multiplayerService.closeRoom(req.params.id);
@@ -106,6 +114,7 @@ export const closeRoom = async (req, res, next) => {
 	}
 };
 
+// Fetch a single room by id and return the formatted response.
 export const getRoom = async (req, res, next) => {
 	try {
 		const room = await multiplayerService.getRoom(req.params.id);

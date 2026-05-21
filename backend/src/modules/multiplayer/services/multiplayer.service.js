@@ -5,6 +5,7 @@ import * as userInterface from "../../user/interface/user.interface.js";
 
 const ALL_MARKERS = ["X", "O", "⭐", "🔥", "💎", "🌙"];
 
+// Enrich a room object with player avatars when the populated document does not already include them.
 const enrichRoomAvatars = async (room) => {
 	if (!room) return room;
 	const obj = room.toObject ? room.toObject() : room;
@@ -22,6 +23,7 @@ const enrichRoomAvatars = async (room) => {
 	return obj;
 };
 
+// Create a waiting multiplayer room for the current user and return the room with avatar data attached.
 export const createRoom = async (userId, { boardSize = 10, boardStyle = "Classic", marker = "X", firstPlayer = "player1" }) => {
 	const roomNumber = await multiplayerRepository.generateRoomNumber();
 	const room = await multiplayerRepository.createRoom({
@@ -36,10 +38,12 @@ export const createRoom = async (userId, { boardSize = 10, boardStyle = "Classic
 	return enrichRoomAvatars(await multiplayerRepository.findRoomById(room._id));
 };
 
+// Return all rooms that are currently waiting for a second player.
 export const getWaitingRooms = async () => {
 	return multiplayerRepository.findWaitingRooms();
 };
 
+// Return active rooms and mark any room as finished when its linked game session already ended.
 export const getActiveRooms = async () => {
 	const rooms = await multiplayerRepository.findActiveRooms();
 	return Promise.all(rooms.map(async (room) => {
@@ -57,6 +61,7 @@ export const getActiveRooms = async () => {
 	}));
 };
 
+// Join a waiting room as player2, allocate the final marker, and create the linked game session.
 export const joinRoom = async (roomId, userId, marker) => {
 	const room = await multiplayerRepository.findRoomById(roomId);
 	if (!room) throw new AppError("Room not found.", 404);
@@ -90,6 +95,7 @@ export const joinRoom = async (roomId, userId, marker) => {
 	return enrichRoomAvatars(updatedRoom);
 };
 
+// Close a room while preserving existing finished rooms unless a different terminal status is required.
 export const closeRoom = async (roomId, status = "cancelled") => {
 	const room = await multiplayerRepository.findRoomById(roomId);
 	if (!room) return null;
@@ -98,6 +104,7 @@ export const closeRoom = async (roomId, status = "cancelled") => {
 	return multiplayerRepository.closeRoom(roomId, status, room.endTime || new Date());
 };
 
+// Fetch a single room with avatar enrichment for the detail view.
 export const getRoom = async (roomId) => {
 	const room = await multiplayerRepository.findRoomById(roomId);
 	if (!room) throw new AppError("Room not found.", 404);
@@ -106,6 +113,7 @@ export const getRoom = async (roomId) => {
 
 // ── Move processing (wraps game interface for the socket handler) ──────
 
+// Apply a multiplayer move to the underlying game session and finish the room when the session ends.
 export const processMove = async (sessionId, idx, marker, playerId) => {
 	const session = await gameInterface.GameInterface.getSessionById(sessionId);
 	if (!session) throw new AppError("Session not found", 404);

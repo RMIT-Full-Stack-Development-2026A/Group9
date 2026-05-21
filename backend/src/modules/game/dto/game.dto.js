@@ -4,6 +4,7 @@ const GAME_TYPE_LABELS = {
 	multiplayer: "Online Match",
 };
 
+// Normalize a game session into the shape used by the history UI.
 export const toGameHistoryItem = ({ session, userResult, opponent, players }) => ({
 	_id: session._id,
 	sessionNumber: session.sessionNumber,

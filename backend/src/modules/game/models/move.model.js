@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Schema for an individual move recorded inside a game session replay.
 const moveSchema = new mongoose.Schema(
 	{
 		sessionId: {

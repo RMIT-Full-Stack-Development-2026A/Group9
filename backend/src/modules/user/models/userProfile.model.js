@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Profile model that stores non-credential user data in a separate collection.
 const userProfileSchema = new mongoose.Schema(
   {
     _id: {
@@ -13,7 +14,7 @@ const userProfileSchema = new mongoose.Schema(
       trim: true,
     },
     avatar: {
-      type: String, // Store Cloudinary URL
+      type: String, // Store Cloudinary URL.
       default: "",
       trim: true,
     },

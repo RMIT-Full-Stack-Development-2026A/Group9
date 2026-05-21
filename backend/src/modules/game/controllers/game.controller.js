@@ -5,15 +5,18 @@ import { getHardAIMove } from "../ai/hardAI.js";
 
 // ── Inline validators ─────────────────────────────────────────────────
 
+// Ensure the board size is one of the supported values.
 function validBoardSize(v) {
 	if (![10, 15].includes(v)) throw new Error("Invalid board size");
 	return v;
 }
+// Ensure the game type matches one of the supported modes.
 function validGameType(v) {
 	if (!["classic", "ai", "multiplayer"].includes(v)) throw new Error("Invalid game type");
 	return v;
 }
 
+// Validate session creation input and normalize fields used by the service.
 function validateSession(body, user) {
 	const boardSize = validBoardSize(body.boardSize || 10);
 	const gameType = validGameType(body.gameType || "classic");
@@ -31,6 +34,7 @@ function validateSession(body, user) {
 	};
 }
 
+// Validate a standard move payload.
 function validateMove(body) {
 	const { sessionId, idx, marker } = body;
 	if (!sessionId) throw new Error("sessionId required");
@@ -39,6 +43,7 @@ function validateMove(body) {
 	return { sessionId, idx, marker };
 }
 
+// Validate AI move input and default the AI difficulty when omitted.
 function validateAIMove(body) {
 	const { sessionId, lastPlayerMoveIdx, marker, aiLevel } = body;
 	if (!sessionId) throw new Error("sessionId required");
@@ -52,6 +57,7 @@ function validateAIMove(body) {
 
 // ── Controllers ───────────────────────────────────────────────────────
 
+// Create a new game session for the authenticated user.
 export async function createSession(req, res) {
 	try {
 		const dto = validateSession(req.body, req.user);
@@ -62,6 +68,7 @@ export async function createSession(req, res) {
 	}
 }
 
+// Apply a normal move, persist it, and return the resulting board state.
 export async function makeMove(req, res) {
 	try {
 		const dto = validateMove(req.body);
@@ -94,6 +101,7 @@ export async function makeMove(req, res) {
 	}
 }
 
+// Ask the AI to respond to the player's last move and persist the AI move.
 export async function makeAIMove(req, res) {
 	try {
 		const dto = validateAIMove(req.body);
@@ -130,6 +138,7 @@ export async function makeAIMove(req, res) {
 	}
 }
 
+// Abort a session if the requesting user is one of the players.
 export async function abortSession(req, res) {
 	try {
 		const { sessionId } = req.body;
@@ -151,6 +160,7 @@ export async function abortSession(req, res) {
 	}
 }
 
+// Return replay metadata and the full move list for a finished session.
 export async function getSessionReplay(req, res) {
 	try {
 		const { sessionId } = req.params;

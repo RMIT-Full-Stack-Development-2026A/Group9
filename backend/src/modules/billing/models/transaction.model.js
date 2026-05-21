@@ -1,23 +1,12 @@
 /**
- * ============================================================================
- * TRANSACTION MODEL (The Database Blueprint)
- * ============================================================================
- * Purpose: This file defines the exact structure (schema) for how a 
- * Transaction document will look when saved into MongoDB. It translates 
- * your visual Entity-Relationship (ER) diagram into Mongoose code.
- * * Mapping your ER Diagram to Mongoose:
- * - _id: Automatically generated and handled by MongoDB.
- * - userId -> user: A relational reference pointing to the 'User' collection.
- * - type: The kind of transaction (String).
- * - amount: The financial value (Number).
- * - status: The current state of the transaction (String).
- * * CRITICAL RULE: Models should only contain the Schema definition and basic 
- * database-level validation rules (like Enums or Min/Max values). Keep complex 
- * business logic OUT of here and in the Billing Service!
+ * Transaction schema for wallet deposits and premium purchases.
+ * Keeps only database shape and validation rules; business logic lives in
+ * the billing service layer.
  */
 
 import mongoose from "mongoose";
 
+// MongoDB schema describing a billing transaction record.
 const transactionSchema = new mongoose.Schema(
 	{
 		userId: {
@@ -54,6 +43,7 @@ const transactionSchema = new mongoose.Schema(
 	}
 );
 
+// Index user transaction history by newest first.
 transactionSchema.index({ userId: 1, createdAt: -1 });
 
 const Transaction =

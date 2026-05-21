@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../app/providers/AuthProvider.jsx';
 import RoomList from '../components/RoomList/RoomList';
 import CreateRoomModal from '../components/CreateRoomModal/CreateRoomModal';
@@ -8,7 +8,7 @@ import * as multiplayerApi from '../services/multiplayer.api.js';
 import styles from './GameRoomLobby.module.css';
 
 export default function GameRoomLobby() {
-	const { isAuthenticated } = useContext(AuthContext) || {};
+	const { isAuthenticated, user } = useContext(AuthContext) || {};
 	const navigate = useNavigate();
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [rooms, setRooms] = useState([]);
@@ -19,6 +19,10 @@ export default function GameRoomLobby() {
 	const [roomIdInput, setRoomIdInput] = useState('');
 	const [joinError, setJoinError] = useState('');
 	const [joinLoading, setJoinLoading] = useState(false);
+
+	if (user?.role === 'admin') {
+		return <Navigate to="/admin" replace />;
+	}
 
 	const fetchRooms = useCallback(async () => {
 		try {

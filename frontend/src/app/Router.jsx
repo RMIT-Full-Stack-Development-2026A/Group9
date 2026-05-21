@@ -89,9 +89,13 @@ function Router() {
 
 // Wrapper to extract settings from location.state
 function LocalGameArenaWrapper() {
+  const { user } = useContext(AuthContext) || {};
   const location = useLocation();
   const navigate = useNavigate();
   const settings = location.state?.settings;
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
   if (!settings) {
     // If no settings, redirect to home
     navigate("/", { replace: true });
@@ -106,9 +110,13 @@ function LocalGameArenaWrapper() {
 }
 
 function AIGameArenaWrapper() {
+  const { user } = useContext(AuthContext) || {};
   const location = useLocation();
   const navigate = useNavigate();
   const settings = location.state?.settings;
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
   if (!settings) {
     navigate("/", { replace: true });
     return null;
@@ -122,9 +130,13 @@ function AIGameArenaWrapper() {
 }
 
 function OnlineGameArenaWrapper() {
+  const { user } = useContext(AuthContext) || {};
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state;
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
   if (!state) {
     navigate("/multiplayer", { replace: true });
     return null;

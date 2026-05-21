@@ -19,6 +19,9 @@ const IMAGE_MIME_TYPES = new Set([
 ]);
 
 let cloudinaryConfigured = false;
+// Lazily configure Cloudinary from env vars on first use. Doing this lazily
+// keeps startup fast when image uploads are not required and allows the
+// server to run even if Cloudinary credentials are not present in dev.
 const ensureCloudinary = () => {
 	if (cloudinaryConfigured) return;
 	cloudinary.config({
@@ -31,6 +34,8 @@ const ensureCloudinary = () => {
 
 const storage = multer.memoryStorage();
 
+// Validate incoming file MIME type early to reject non-image payloads.
+// `multer` will call this before putting the file into memory.
 const fileFilter = (req, file, callback) => {
 	if (!IMAGE_MIME_TYPES.has(file.mimetype)) {
 		return callback(new AppError("Invalid file type. Only JPEG, PNG, WEBP, and GIF are allowed.", 400));
@@ -39,6 +44,9 @@ const fileFilter = (req, file, callback) => {
 	return callback(null, true);
 };
 
+// Use memory storage so we can stream the file directly to Cloudinary
+// without writing to disk. Files are limited in size by MAX_FILE_SIZE_BYTES
+// to avoid excessive memory usage.
 const upload = multer({
 	storage,
 	fileFilter,
@@ -52,8 +60,17 @@ export const uploadToCloudinary = async (req, res, next) => {
 	if (!req.file) return next();
 
 	try {
+		// Ensure configuration is loaded
 		ensureCloudinary();
+
+		// Build a predictable public id. Prefer the authenticated user's id
+		// when available so updates overwrite the same file. Fallback to a
+		// timestamp when no user context exists.
 		const publicId = `avatar-${req.user?.id ?? req.userId ?? Date.now()}`;
+
+		// Upload via Cloudinary upload_stream using the in-memory buffer
+		// so we never write to disk on the server. The promise wrapper
+		// converts the callback API into an async/await friendly form.
 		const result = await new Promise((resolve, reject) => {
 			const stream = cloudinary.uploader.upload_stream(
 				{
@@ -70,6 +87,7 @@ export const uploadToCloudinary = async (req, res, next) => {
 			stream.end(req.file.buffer);
 		});
 
+		// Attach the hosted URL to the request for downstream handlers
 		req.file.cloudinaryUrl = result?.secure_url || null;
 		return next();
 	} catch (error) {

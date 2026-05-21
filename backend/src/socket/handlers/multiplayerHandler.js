@@ -2,6 +2,10 @@ import * as multiplayerInterface from "../../modules/multiplayer/interface/multi
 
 export function registerMultiplayerHandlers(io, socket) {
 	// ── Join a game room ──────────────────────────────────────────────
+	// When a client requests to join a room, we validate the room exists
+	// server-side (do not trust client-supplied state), add the socket to
+	// the room namespace and notify the other participant(s) so they can
+	// update UI (board, opponent info, marker).
 	socket.on("room:join", async ({ roomId }) => {
 		try {
 			const room = await multiplayerInterface.getRoom(roomId);
@@ -23,6 +27,7 @@ export function registerMultiplayerHandlers(io, socket) {
 				"Player 2";
 			const opponentAvatar = room.player2?.avatar || null;
 
+			// Emit to everyone in the room except this socket
 			socket.to(`room:${roomId}`).emit("room:player-joined", {
 				roomId,
 				sessionId: room.sessionId?.toString() || null,
@@ -39,6 +44,9 @@ export function registerMultiplayerHandlers(io, socket) {
 	});
 
 	// ── Leave / abort a game room ──────────────────────────────────────
+	// Handles voluntary leaves and aborts. This closes server-side room
+	// state, notifies remaining clients and forcibly removes sockets from
+	// the room namespace.
 	socket.on("room:leave", async ({ roomId }, ack) => {
 		try {
 			const targetRoom = roomId || socket.currentRoom;
@@ -76,6 +84,10 @@ export function registerMultiplayerHandlers(io, socket) {
 	});
 
 	// ── Game move ─────────────────────────────────────────────────────
+	// Authoritative move processing: the server calls into the multiplayer
+	// domain service to validate and execute the move, then broadcasts the
+	// resulting canonical game state to all clients in the room. This avoids
+	// client-side cheating and keeps both players in-sync.
 	socket.on("game:move", async ({ sessionId, idx, marker, playerId }) => {
 		console.log(`[game:move] Received from ${socket.user?.id?.slice(-6)}: sessionId=${sessionId?.slice(-6)} idx=${idx} marker=${marker} playerId=${playerId}`);
 		try {
@@ -86,6 +98,7 @@ export function registerMultiplayerHandlers(io, socket) {
 			const currentRoom = socket.currentRoom;
 			console.log(`[game:move] Broadcasting to room:${currentRoom}, turn=${result.turn}`);
 
+			// Broadcast the canonical state to the entire room
 			io.to(`room:${currentRoom}`).emit("game:state-update", {
 				board: result.board,
 				turn: result.turn,
@@ -109,6 +122,9 @@ export function registerMultiplayerHandlers(io, socket) {
 	});
 
 	// ── Chat message ──────────────────────────────────────────────────
+	// Simple room-scoped chat: sanitize and broadcast text messages to the
+	// socket's current room. We avoid trusting a client-supplied roomId and
+	// instead use the server-known `socket.currentRoom` for reliability.
 	socket.on("chat:message", ({ text }) => {
 		if (!text || typeof text !== "string" || !text.trim()) return;
 
@@ -126,7 +142,11 @@ export function registerMultiplayerHandlers(io, socket) {
 		socket.to(`room:${room}`).emit("chat:message", message);
 	});
 
-	// ── Disconnect ────────────────────────────────────────────────────
+	// ── Disconnect ───────────────────────────────────────────────────-
+	// Clean up when a socket disconnects: inform remaining players and
+	// optionally close the room if it's now empty. Note: the room-close
+	// call should be resilient (errors ignored) because disconnects can
+	// happen during network flaps.
 	socket.on("disconnect", async () => {
 		if (socket.currentRoom) {
 			socket.to(`room:${socket.currentRoom}`).emit("room:player-left", {
@@ -134,10 +154,11 @@ export function registerMultiplayerHandlers(io, socket) {
 				userId: socket.user?.id,
 			});
 
-			// If no sockets left in the room, close it
+			// If no sockets left in the room, close it on the backend
 			const roomSockets = io.sockets.adapter.rooms.get(`room:${socket.currentRoom}`);
 			if (!roomSockets || roomSockets.size === 0) {
 				try {
+					// Note: multiplayerService is intentionally resilient here
 					await multiplayerService.closeRoom(socket.currentRoom);
 					console.log(`[Socket] Room ${socket.currentRoom} closed (empty)`);
 				} catch {}

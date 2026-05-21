@@ -15,6 +15,7 @@ import "./modules/user/models/user.model.js";
 const app = express();
 
 // middleware
+// CORS: allow local dev ports and the production frontend origin
 app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:5174", "https://group9-frontend.onrender.com"], // Allow dev ports and production front-end
   credentials: true,
@@ -23,6 +24,8 @@ app.use(cors({
 // Parse JSON for all routes EXCEPT Stripe webhook (needs raw body)
 app.use((req, res, next) => {
   if (req.originalUrl === "/api/billing/webhook/stripe") {
+    // Stripe requires the raw request body for signature verification.
+    // Use `express.raw()` for the webhook path and `express.json()` elsewhere.
     express.raw({ type: "application/json" })(req, res, next);
   } else {
     express.json()(req, res, next);
@@ -52,10 +55,13 @@ app.get("/", (req, res) => {
   });
 });
 
+// 404 fallback for unhandled routes
 app.use((req, res, next) => {
   next(new AppError("Route not found", 404));
 });
 
+// Central error handler: normalizes AppError instances into consistent JSON
+// responses and only includes stack traces in non-production environments.
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
 

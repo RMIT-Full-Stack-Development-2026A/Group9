@@ -21,7 +21,13 @@ export function initSocket(httpServer) {
 	});
 	ioInstance = io;
 
-	// JWT authentication middleware on socket connection
+    // JWT authentication middleware on socket connection
+    // - Validates that incoming socket connections provide a valid JWT in
+    //   `socket.handshake.auth.token` and that the server-side session
+    //   referenced by the token is still active.
+    // - Also checks the in-memory token blacklist so revoked tokens cannot
+    //   be used to open socket connections.
+    // - On success we attach a minimal `socket.user` object for handlers.
 	io.use(async (socket, next) => {
 		try {
 			const token = socket.handshake.auth?.token || "";
@@ -49,6 +55,7 @@ export function initSocket(httpServer) {
 				return next(new Error("Account is inactive"));
 			}
 
+			// Expose lightweight user info on the socket for downstream handlers
 			socket.user = {
 				id: userId,
 				role: payload.role || "player",
@@ -65,10 +72,12 @@ export function initSocket(httpServer) {
 	io.on("connection", (socket) => {
 		console.log(`[Socket] User ${socket.user?.id} connected (${socket.id})`);
 
-		// Join a personal room for direct messaging
+
+		// Join a personal (private) room for direct messages and targeted emits
+		// Example: server can emit to `user:<id>` to reach all sockets for that user
 		socket.join(`user:${socket.user.id}`);
 
-		// Register multiplayer event handlers
+		// Register multiplayer-specific event handlers (join/leave/move/chat)
 		registerMultiplayerHandlers(io, socket);
 
 		socket.on("disconnect", () => {

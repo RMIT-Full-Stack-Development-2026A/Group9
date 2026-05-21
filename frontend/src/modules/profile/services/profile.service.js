@@ -1,6 +1,13 @@
 import http from "../../../shared/utils/http.helper.js";
 import { API_ROUTES } from "../../../config/apiRoutes.js";
 
+/*
+  profile.service
+  - Thin adapter mapping frontend calls to backend profile-related endpoints.
+  - Exports promise-returning functions so callers can await `response.data`.
+  - Keep this file free of business logic; it only declares routes and HTTP
+	method shapes for testability and reuse.
+*/
 export const getProfile = () => http.get(API_ROUTES.users.profile);
 
 export const updateProfile = (data) => http.put(API_ROUTES.users.profile, data);

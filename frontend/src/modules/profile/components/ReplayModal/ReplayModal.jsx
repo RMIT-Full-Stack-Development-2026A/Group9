@@ -3,6 +3,18 @@ import ReplayBoard from './ReplayBoard.jsx';
 import ReplayControls from './ReplayControls.jsx';
 import styles from './ReplayModal.module.css';
 
+/*
+  ReplayModal
+  - Modal UI that displays a match replay using `ReplayBoard` and
+    playback controls from `ReplayControls`.
+  - Props:
+    - `open` boolean to show/hide modal
+    - `session` metadata (boardSize, timestamps)
+    - `moves` array of move objects with { notation, marker }
+    - `replayIndex` current step index (0 = before first move)
+    - `replayPlaying` boolean playback state
+    - control callbacks for jump/step/toggle
+*/
 export default function ReplayModal({
   open,
   session,
@@ -18,6 +30,7 @@ export default function ReplayModal({
 }) {
   if (!open) return null;
 
+  // Default board size when session doesn't include it
   const boardSize = session?.boardSize || 10;
   const currentMove = replayIndex > 0 ? moves[replayIndex - 1] : null;
 

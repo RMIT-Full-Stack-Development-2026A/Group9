@@ -1,6 +1,14 @@
 import React, { useMemo } from 'react';
 import styles from './ReplayModal.module.css';
 
+/*
+  ReplayBoard
+  - Renders a static board representation for a given `replayIndex` by
+    reconstructing the board from algebraic move notation (e.g., "c2").
+  - Also performs a local win-line detection (mirrors backend logic) so the
+    UI can highlight the winning cells during replay playback.
+*/
+
 // Convert algebraic notation (e.g., "c2") back to row/col coordinates
 function fromAlgebraicNotation(notation, boardSize) {
   if (!notation || typeof notation !== 'string' || notation.length < 2) return null;
@@ -33,6 +41,7 @@ export default function ReplayBoard({ boardSize, moves, replayIndex }) {
   const isLargeBoard = boardSize >= 15;
 
   const { cells: board, winningLine } = useMemo(() => {
+    // Build a flat board array and apply moves up to `replayIndex`
     const cells = Array(boardSize * boardSize).fill(null);
     for (let i = 0; i < replayIndex; i += 1) {
       const move = moves[i];

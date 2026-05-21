@@ -9,6 +9,21 @@ import Button from '../../../../shared/ui/Button/Button.jsx';
 import Input from '../../../../shared/ui/Input/Input.jsx';
 import ReplayModal from '../ReplayModal/ReplayModal.jsx';
 
+/*
+  ProfileCard
+  - Purpose: present the user's profile dashboard composed by two hooks:
+      `useProfile` (loads and manages profile & history state)
+      `usePayment` (wallet / premium controls)
+  - Key responsibilities:
+      * Show profile summary (avatar, name, email, country)
+      * Provide three main tabs: History, Edit Profile, Wallet
+      * Surface transient UI messages and loading states
+      * Open the replay modal (via `useReplay` returned from `useProfile`)
+  - Important: this component is intentionally a hybrid — it wires
+    container hooks to presentational pieces (inputs, buttons, modal).
+    Keep UI-only concerns here; business logic and side-effects live in
+    the hooks to make the component simpler to reason about and test.
+*/
 const ProfileCard = ({ onUserUpdate }) => {
 
 
@@ -58,7 +73,12 @@ const ProfileCard = ({ onUserUpdate }) => {
     handleSubscribeWallet,
   } = usePayment();
 
-  // Read tab from location.state (for navigation from Home)
+  // Read requested tab from location.state (useful when navigating from elsewhere)
+  // Explanation:
+  // - Other parts of the app (for example a notification or call-to-action)
+  //   may navigate to `/profile` and set `state.tab` to preselect a tab.
+  // - We consume that value once on mount and then clear it (replace
+  //   history state) to avoid re-triggering when the user navigates again.
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
@@ -71,6 +91,7 @@ const ProfileCard = ({ onUserUpdate }) => {
         navigate(location.pathname, { replace: true, state: {} });
       }, 0);
     } else {
+      // Restore tab preference from localStorage for a persistent UX
       const savedTab = localStorage.getItem('profileActiveTab');
       if (savedTab && savedTab !== activeTab) {
         setActiveTab(savedTab);
@@ -85,10 +106,15 @@ const ProfileCard = ({ onUserUpdate }) => {
     }
   }, [activeTab]);
 
+  // Short-circuit rendering while profile data is loading or absent
   if (loading) return <div className={styles.profileLoading}>Loading profile...</div>;
   if (!user) return <div className={styles.profileLoading}>Please log in to view your profile.</div>;
 
-  // Avatar logic: handle base64 avatar from backend or URL (same as Navbar)
+  // Avatar handling: backend may return either:
+  // - an object with `{ data: base64 }` for inline images, or
+  // - a string URL (which we append a cache-busting query param to).
+  // We intentionally avoid touching the server-side representation and
+  // only craft a browser-friendly `avatarSrc` for the <img> element.
   let avatarSrc = "";
   if (user?.avatar) {
     if (typeof user.avatar === "object" && user.avatar.data) {
@@ -115,6 +141,7 @@ const ProfileCard = ({ onUserUpdate }) => {
   };
 
   const getGameIcon = (gameType) => {
+    // Small visual affordances to help users quickly identify session type
     if (gameType === 'Single Player') return <i className="bi bi-robot" title="Single Player" />;
     if (gameType === 'Two Players') return <i className="bi bi-display" title="Two Players" />;
     return <i className="bi bi-globe2" title="Online Match" />;
@@ -134,6 +161,7 @@ const ProfileCard = ({ onUserUpdate }) => {
 
   const getSessionTokenLabel = (session) => getSessionToken(session);
 
+  // Wallet/premium check (derived from payment hook)
   const isPremiumActive =
     Boolean(wallet?.premiumUntil) &&
     new Date(wallet.premiumUntil).getTime() > Date.now();
@@ -161,6 +189,10 @@ const ProfileCard = ({ onUserUpdate }) => {
     return result;
   };
 
+  // Main render: split into three vertical sections for clarity:
+  // 1) Profile summary card (left)
+  // 2) Tab selector (History / Edit / Wallet)
+  // 3) Tab content area (controlled by `activeTab`)
   return (
     <div className={styles.profilePage}>
       {message.text && (
@@ -181,6 +213,7 @@ const ProfileCard = ({ onUserUpdate }) => {
             <input type="file" accept="image/*" onChange={handleAvatarUpload} hidden />
           </label>
           <div className={styles.profileInfo}>
+            {/* Header row: name + optional premium badge */}
             <div className={styles.profileNameRow}>
               <h2>{user.username}</h2>
               {(() => {
@@ -200,6 +233,7 @@ const ProfileCard = ({ onUserUpdate }) => {
                 return null;
               })()}
             </div>
+            {/* Secondary metadata: email and country */}
             <p className={styles.profileEmail}>{user.email}</p>
             <p className={styles.profileCountry}>{user.country}</p>
           </div>
@@ -218,6 +252,7 @@ const ProfileCard = ({ onUserUpdate }) => {
         )}
       </div>
 
+      {/* Tab selector — persisted selection is handled in effects above */}
       <div className={styles.profileTabs}>
         <button className={`${styles.tabBtn} ${activeTab === 'history' ? styles.active : ''}`} onClick={() => setActiveTab('history')}><i className="bi bi-clock-history"></i> History</button>
         <button className={`${styles.tabBtn} ${activeTab === 'edit' ? styles.active : ''}`} onClick={() => setActiveTab('edit')}><i className="bi bi-pencil"></i> Edit Profile</button>
@@ -225,6 +260,7 @@ const ProfileCard = ({ onUserUpdate }) => {
       </div>
 
       <div className={styles.tabContent}>
+        {/* Tab content area — rendered conditionally based on `activeTab` */}
         {activeTab === 'edit' && (
           <div className={styles.editPanel}>
             <form className={styles.editForm} onSubmit={handleUpdateProfile}>
@@ -260,6 +296,7 @@ const ProfileCard = ({ onUserUpdate }) => {
                 </select>
               </div>
 
+              {/* Password change hint: empty fields mean 'no change' */}
               <p className={styles.passwordHint}>change password (leave blank to keep current)</p>
 
               <div className={styles.formGroup}>
@@ -377,6 +414,7 @@ const ProfileCard = ({ onUserUpdate }) => {
               <div className={styles.sessionList}>
                 {gameHistory.map((session) => (
                   <div className={styles.sessionCard} key={session._id}>
+                    {/* Visual icon + tone for quick scanning */}
                     <div className={`${styles.sessionIcon} ${getGameIconTone(session.gameType)}`}>
                       {getGameIcon(session.gameType)}
                     </div>
@@ -386,6 +424,7 @@ const ProfileCard = ({ onUserUpdate }) => {
                         <span className={`${styles.resultBadge} ${styles[session.result.toLowerCase()]}`}>{getBadgeText(session)}</span>
                       </div>
                       <div className={styles.sessionMeta}>
+                        {/* Compact token, type, board size, and timestamps */}
                         <span className={styles.sessionToken}>{getSessionTokenLabel(session)}</span>
                         <span>{getGameTypeShort(session.gameType)}</span>
                         <span className={styles.metaSep}>{session.boardSize || '10'}x{session.boardSize || '10'}</span>

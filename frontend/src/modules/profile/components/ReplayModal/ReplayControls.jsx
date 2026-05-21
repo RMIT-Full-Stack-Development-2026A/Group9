@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './ReplayModal.module.css';
 
+// ReplayControls: simple playback UI used by `ReplayModal`.
+// All buttons are pure callbacks provided by the parent hook.
 export default function ReplayControls({
   onJumpStart,
   onStepBack,

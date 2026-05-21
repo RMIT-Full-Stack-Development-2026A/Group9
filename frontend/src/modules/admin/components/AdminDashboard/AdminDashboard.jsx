@@ -12,3 +12,99 @@
  * 3. Game Monitoring: Viewing live "Toang" matches to ensure fair play.
  * 4. Database Stats: Overview of total users, matches played, and XP distributed.
  */
+
+
+
+import { useContext } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../../app/providers/AuthProvider.jsx';
+import AdminNavBar from '../NavBar/AdminNavBar.jsx';
+import PlayerTable from '../PlayerTable/PlayerTable.jsx';
+import StatCard from '../StateCard/StateCard.jsx';
+import { useAdmin } from '../../hooks/useAdmin.js';
+import styles from './AdminDashboard.module.css';
+import AdminGameRooms from '../GameRooms/AdminGameRooms.jsx';
+
+
+export default function Admin() {
+    const { logout } = useContext(AuthContext) || {};
+    const navigate = useNavigate();
+    const {
+        activeTab,
+        setActiveTab,
+        players,
+        setPlayers,
+        metrics,
+        rooms,
+        loading,
+        refreshDashboard,
+        refreshRooms
+    } = useAdmin();
+
+    const handleLogout = async () => {
+        if (logout) {
+            await logout();
+        }
+        navigate('/');
+    };
+
+    // `handleLogout` first calls the `logout` helper from `AuthProvider`,
+    // which attempts server-side session revocation and always clears
+    // client-side storage. We then navigate to the public home page. This
+    // sequence ensures server invalidation is attempted while keeping the
+    // UI responsive.
+
+    if (loading) {
+        return (
+            <div className={styles.adminLoading}>
+                <h3>Loading System Data...</h3>
+            </div>
+        );
+    }
+
+    return (
+        <div className={styles.adminDashboardBg}>
+            <div className={styles.adminDashboardWrapper}>
+                <header className={styles.adminHeader}>
+                    <div className={styles.adminHeaderLeft}>
+                        <img src="/logo.png" alt="Admin" className={styles.adminLogo} />
+                        <span className={styles.adminTitle}>Admin Dashboard</span>
+                        <br />
+                    </div>
+                    <button
+                        className="logoutIconBtn"
+                        type="button"
+                        onClick={handleLogout}
+                        aria-label="Logout"
+                        style={{ marginLeft: 24 }}
+                    >
+                        <i className="bi bi-box-arrow-right" style={{ fontSize: 22 }}></i>
+                    </button>
+                </header>
+                {/* AdminNavBar controls which panel is visible (players / rooms) */}
+                <AdminNavBar activeTab={activeTab} onTabChange={setActiveTab} />
+                {activeTab === 'players' && (
+                    <div className={styles.adminStatsRow}>
+                        <StatCard label="Total Players" value={metrics.totalPlayers} color="#1ec9a7" bgColor="rgba(30, 201, 167, 0.12)" />
+                        <StatCard label="Active Accounts" value={metrics.activeAccounts} color="#4CAF50" bgColor="rgba(76, 175, 80, 0.12)" />
+                        <StatCard label="Premium Users" value={metrics.premiumUsers} color="#ffb300" bgColor="rgba(255, 179, 0, 0.12)" />
+                        <StatCard label="Inactive Accounts" value={metrics.inactiveAccounts} color="#f44336" bgColor="rgba(244, 67, 54, 0.12)" />
+                    </div>
+                )}
+                <main className={styles.adminMainContent}>
+                    {/* Player management view: lists all players and allows
+                        moderators to toggle active status. The PlayerTable gets
+                        a `setgamers` callback so it can optimistically update
+                        local state when performing actions. */}
+                    {activeTab === 'players' && (
+                        <PlayerTable gamers={players} setgamers={setPlayers} refreshDashboard={refreshDashboard} />
+                    )}
+                    {activeTab === 'rooms' && (
+                        <AdminGameRooms rooms={rooms} refreshRooms={refreshRooms} />
+                    )}
+                    <Outlet />
+                </main>
+            </div>
+        </div>
+    );
+}

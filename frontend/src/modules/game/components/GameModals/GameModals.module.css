@@ -1,0 +1,645 @@
+.modalContent {
+  background: none;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  min-width: 350px;
+  box-sizing: border-box;
+  padding: var(--space-md) var(--space-md) var(--space-sm) var(--space-md);
+  overflow-y: auto;
+  justify-content: flex-start;
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.label {
+  font-size: 1rem;
+  margin-bottom: var(--space-xs);
+}
+.input {
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  padding: var(--space-sm) 12px;
+  margin-bottom: var(--space-sm);
+}
+.markerRow {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+.markerBtn {
+  background: var(--color-surface);
+  border: 2px solid var(--color-surface-2);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border 0.2s;
+}
+.markerSelected {
+  background: var(--color-surface-2);
+  border: 2px solid var(--color-primary);
+  color: var(--color-text);
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.markerSelected2 {
+  background: var(--color-surface-2);
+  border: 2px solid var(--purple);
+  color: var(--color-text);
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.startBtn {
+  background: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 12px 0;
+  margin-top: var(--space-sm);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.startBtn:hover {
+  background: #0ea5d9;
+}
+.victoryOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.victoryCard {
+  background: var(--bg-card); /* Dark Navy */
+  border: 2px solid var(--green); /* Green Glow Border */
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.4);
+  border-radius: 24px;
+  padding: 40px;
+  width: 420px;
+  text-align: center;
+  animation:
+    victoryEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.35),
+    colorGlow 2.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.victoryTheme {
+  border-color: rgba(34, 197, 94, 0.95);
+  box-shadow:
+    0 0 30px rgba(34, 197, 94, 0.38),
+    0 0 70px rgba(74, 222, 128, 0.18);
+  animation:
+    victoryEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    victoryGlow 2.6s ease-in-out infinite;
+  background:
+    radial-gradient(circle at top, rgba(20, 83, 45, 0.32), transparent 45%),
+    #0f172a;
+}
+
+.victoryTheme::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(74, 222, 128, 0.18),
+    transparent 38%
+  );
+  pointer-events: none;
+}
+
+.victoryTheme::after {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(74, 222, 128, 0.18);
+  pointer-events: none;
+}
+
+.trophyWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.trophyIcon {
+  width: 80px;
+  height: 80px;
+  background: #0f172a;
+  border: 3px solid var(--cyan);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  color: var(--premium-orange); /* Trophy Orange */
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+}
+
+.defeatTheme {
+  border-color: rgba(239, 68, 68, 0.95);
+  box-shadow:
+    0 0 30px rgba(239, 68, 68, 0.38),
+    0 0 70px rgba(248, 113, 113, 0.18);
+  animation:
+    defeatEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    defeatGlow 2.6s ease-in-out infinite;
+  background:
+    radial-gradient(circle at top, rgba(127, 29, 29, 0.35), transparent 45%),
+    #0f172a;
+}
+
+.defeatTheme::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(248, 113, 113, 0.18),
+    transparent 38%
+  );
+  pointer-events: none;
+}
+
+.defeatTheme::after {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(248, 113, 113, 0.18);
+  pointer-events: none;
+}
+
+.defeatIcon {
+  border-color: var(--red);
+  color: #fb7185;
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.65);
+  background: #1f2937;
+  animation: defeatIconPulse 1.7s ease-in-out infinite;
+}
+
+.victoryIcon {
+  border-color: var(--cyan);
+  color: var(--premium-orange);
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.65);
+  background: #1f2937;
+  animation: victoryIconPulse 1.7s ease-in-out infinite;
+}
+
+.defeatIcon i {
+  animation: defeatShake 1.2s ease-in-out infinite;
+}
+
+.victoryIcon i {
+  animation: victoryShake 1.2s ease-in-out infinite;
+}
+
+.crackOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  animation: crackFadeIn 0.5s ease-out forwards;
+}
+
+.crackAnimation {
+  animation:
+    crackShake 0.9s cubic-bezier(0.36, 0.07, 0.19, 0.97),
+    crackDim 1.2s ease-in-out forwards;
+}
+
+@keyframes crackShake {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+  10% {
+    transform: translateX(-6px) rotate(-1deg);
+  }
+  20% {
+    transform: translateX(6px) rotate(1deg);
+  }
+  30% {
+    transform: translateX(-4px) rotate(-0.6deg);
+  }
+  40% {
+    transform: translateX(4px) rotate(0.6deg);
+  }
+  50% {
+    transform: translateX(-2px) rotate(-0.3deg);
+  }
+  60% {
+    transform: translateX(2px) rotate(0.3deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes crackDim {
+  0% {
+    filter: none;
+  }
+  60% {
+    filter: none;
+  }
+  100% {
+    filter: grayscale(80%) brightness(70%);
+  }
+}
+
+@keyframes crackFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.defeatTheme .victoryTitle {
+  color: #fff1f2;
+}
+
+.defeatTheme .winnerSubtitle {
+  color: #fb7185;
+}
+
+.defeatTheme .congratsText {
+  color: #cbd5e1;
+}
+
+.defeatQuoteBox {
+  margin: 8px 0 22px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(248, 113, 113, 0.24);
+  background: rgba(30, 41, 59, 0.72);
+}
+
+.defeatQuote {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.93rem;
+  line-height: 1.45;
+  font-style: italic;
+}
+
+.defeatTheme .scoreBoard {
+  background: rgba(30, 41, 59, 0.92);
+  border: 1px solid rgba(248, 113, 113, 0.12);
+}
+
+.defeatTheme .playerLabel {
+  color: #94a3b8;
+}
+
+.defeatTheme .markerArea {
+  color: #fff7ed;
+}
+
+/* defeatParticles removed — defeat uses canvas-confetti like win/draw */
+
+.drawTheme {
+  border-color: rgba(148, 163, 184, 0.25);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.55);
+  animation:
+    victoryEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.35),
+    drawGlow 4s ease-in-out infinite;
+}
+
+.drawIcon {
+  border-color: rgba(148, 163, 184, 0.35);
+  color: #94a3b8;
+  box-shadow: 0 0 10px rgba(148, 163, 184, 0.25);
+  background: var(--bg-card);
+  animation: drawIconPulse 2.6s ease-in-out infinite;
+}
+
+.drawIcon img {
+  width: 60px;
+  height: 60px;
+  filter: invert(1) brightness(1.2);
+}
+
+.drawTheme .victoryTitle {
+  color: #f8fafc;
+}
+
+.drawTheme .winnerSubtitle {
+  color: #94a3b8;
+}
+
+.drawTheme .scoreBoard {
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.victoryTitle {
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.winnerSubtitle {
+  color: var(--cyan); /* Cyan */
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.congratsText {
+  color: var(--text);
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+.scoreBoard {
+  background: #1f2937;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.playerInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.playerLabel {
+  color: #6b7280;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.markerArea {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.matchNoteBox {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #cbd5f5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin: -10px 0 20px;
+}
+
+.victoryActions {
+  display: flex;
+  gap: 15px;
+}
+
+.playAgainBtn {
+  flex: 1;
+  background: var(--cyan);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.goHomeBtn {
+  flex: 1;
+  background: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes victoryEntrance {
+  0% {
+    transform: translateY(50px) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes colorGlow {
+  0% {
+    border-color: var(--cyan);
+    box-shadow: 0 0 18px rgba(6, 182, 212, 0.35);
+  }
+  50% {
+    border-color: var(--green);
+    box-shadow: 0 0 28px rgba(34, 197, 94, 0.5);
+  }
+  100% {
+    border-color: var(--cyan);
+    box-shadow: 0 0 18px rgba(6, 182, 212, 0.35);
+  }
+}
+
+@keyframes drawGlow {
+  0% {
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.55);
+  }
+  50% {
+    border-color: rgba(148, 163, 184, 0.35);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.6);
+  }
+  100% {
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.55);
+  }
+}
+
+@keyframes drawIconPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(148, 163, 184, 0.25);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(148, 163, 184, 0.35);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(148, 163, 184, 0.25);
+  }
+}
+
+@keyframes defeatEntrance {
+  0% {
+    transform: translateY(40px) scale(0.6);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  70% {
+    transform: translateY(0) scale(1.02);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes defeatGlow {
+  0% {
+    border-color: rgba(239, 68, 68, 0.85);
+    box-shadow:
+      0 0 24px rgba(239, 68, 68, 0.32),
+      0 0 50px rgba(248, 113, 113, 0.12);
+  }
+  50% {
+    border-color: rgba(248, 113, 113, 1);
+    box-shadow:
+      0 0 34px rgba(239, 68, 68, 0.48),
+      0 0 78px rgba(248, 113, 113, 0.2);
+  }
+  100% {
+    border-color: rgba(239, 68, 68, 0.85);
+    box-shadow:
+      0 0 24px rgba(239, 68, 68, 0.32),
+      0 0 50px rgba(248, 113, 113, 0.12);
+  }
+}
+
+@keyframes defeatIconPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.52);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 26px rgba(239, 68, 68, 0.72);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.52);
+  }
+}
+
+@keyframes victoryGlow {
+  0% {
+    border-color: rgba(34, 197, 94, 0.85);
+    box-shadow:
+      0 0 24px rgba(34, 197, 94, 0.32),
+      0 0 50px rgba(74, 222, 128, 0.12);
+  }
+  50% {
+    border-color: rgba(74, 222, 128, 1);
+    box-shadow:
+      0 0 34px rgba(34, 197, 94, 0.48),
+      0 0 78px rgba(74, 222, 128, 0.2);
+  }
+  100% {
+    border-color: rgba(34, 197, 94, 0.85);
+    box-shadow:
+      0 0 24px rgba(34, 197, 94, 0.32),
+      0 0 50px rgba(74, 222, 128, 0.12);
+  }
+}
+
+@keyframes victoryIconPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.52);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 26px rgba(34, 197, 94, 0.72);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.52);
+  }
+}
+
+@keyframes victoryShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-1px);
+  }
+  40% {
+    transform: translateX(1px);
+  }
+  60% {
+    transform: translateX(-1px);
+  }
+  80% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes defeatShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-1px);
+  }
+  40% {
+    transform: translateX(1px);
+  }
+  60% {
+    transform: translateX(-1px);
+  }
+  80% {
+    transform: translateX(1px);
+  }
+}

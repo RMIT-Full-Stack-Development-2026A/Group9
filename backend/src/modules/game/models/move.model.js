@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Schema for an individual move recorded inside a game session replay.
 const moveSchema = new mongoose.Schema(
 	{
 		sessionId: {
@@ -16,10 +17,11 @@ const moveSchema = new mongoose.Schema(
 		},
 		marker: {
 			type: String,
-			enum: ["X", "O"],
 			required: true,
+			trim: true,
+			maxlength: 8,
 		},
-		position: {
+		notation: {
 			type: String,
 			required: true,
 			trim: true,

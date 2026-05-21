@@ -1,8 +1,65 @@
-/**
- * ============================================================================
- * CELL STYLES (The Micro-Interaction)
- * ============================================================================
- * Location: src/modules/game/components/Cell.module.css
- * Purpose: This file handles the specific styling, hover states, and 
- * high-energy "Toang" animations for a single Tic-Tac-Toe square.
- */
+
+.game-cell {
+    background:
+        radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.06), transparent 42%),
+        linear-gradient(180deg, #18243f 0%, #10192c 100%);
+    border: 1px solid #24304f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box; 
+}
+
+.game-cell:hover:not(:disabled) {
+    background:
+        radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.1), transparent 42%),
+        linear-gradient(180deg, #223154 0%, #162038 100%);
+    border-color: #7dd3fc;
+}
+
+.winning-cell {
+    border-color: #fbbf24;
+    box-shadow:
+        0 0 0 2px rgba(251, 191, 36, 0.25),
+        inset 0 0 10px rgba(251, 191, 36, 0.35),
+        0 0 18px rgba(251, 191, 36, 0.45);
+    background:
+        radial-gradient(circle at 50% 35%, rgba(251, 191, 36, 0.25), transparent 45%),
+        rgba(251, 191, 36, 0.18);
+    outline: 2px solid rgba(251, 191, 36, 0.22);
+    outline-offset: -2px;
+}
+
+.marker-text {
+    font-size: 1.75rem;
+    line-height: 1;
+    color: #f8fafc;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    letter-spacing: 0.12em;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    filter: none;
+    text-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    user-select: none;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+:global(.neon-theme) .cell {
+    border: 0.5px solid rgba(0, 210, 255, 0.2);
+}
+
+:global(.dark-theme) .cell {
+    background: linear-gradient(180deg, #15192a 0%, #0c1020 100%);
+}

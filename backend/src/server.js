@@ -1,25 +1,26 @@
-/**
- * ============================================================================
- * SERVER RUNTIME FILE PURPOSE
- * ============================================================================
- * Purpose: Entry point that boots environment config, database connection,
- * HTTP server, and realtime socket server.
- * This is integration infrastructure and should stay stable for all modules.
- */
-
 import dotenv from "dotenv";
-dotenv.config();
-import { createServer } from "node:http";
+// Load environment variables from .env into process.env early
+dotenv.config({ path: ".env" });
 import app from "./app.js";
 import connectDB from "./config/db.js";
-import { initSocket } from "./Realtime/socketServer.js";
+import { createServer } from "http";
+import { initSocket } from "./socket/index.js";
 
 const PORT = process.env.PORT || 3000;
+
+// Establish DB connection before starting the HTTP server so the app
+// fails fast if the database is not reachable.
 connectDB();
 
+// Create the Node HTTP server and attach Express `app`.
 const server = createServer(app);
+
+// Initialize Socket.IO on the same HTTP server to enable real-time
+// multiplayer features. This registers authentication middleware and
+// per-connection handlers.
 initSocket(server);
 
+// Start listening after DB and socket are initialized
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });

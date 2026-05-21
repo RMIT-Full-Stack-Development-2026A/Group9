@@ -1,16 +1,25 @@
-/**
- * ============================================================================
- * GAME FACADE FILE PURPOSE
- * ============================================================================
- * Purpose: Provides a thin orchestration layer for Game flows by coordinating
- * controller input, service logic, and repository persistence.
- * Current State: Placeholder only, intentionally left without facade logic.
- * Owner: Game feature assignee.
- *
- * Teammate guidance:
- * 1) Keep facade focused on flow coordination, not HTTP/database details.
- * 2) Delegate rules to service/engine and persistence to repository.
- * 3) Expose stable functions used by controllers and realtime handlers.
- */
+import * as gameService from '../services/game.service.js';
+import { toGameHistoryItem } from '../dto/game.dto.js';
 
-export {};
+// Function map exposed as the module's public interface.
+export const GameInterface = {
+	createSession: gameService.createSession,
+	getSessionById: gameService.getSessionById,
+	applyMove: gameService.applyMove,
+	toAlgebraicNotation: gameService.toAlgebraicNotation,
+	appendMove: gameService.appendMove,
+	abortSession: gameService.abortSession,
+	getMovesBySessionId: gameService.getMovesBySessionId,
+};
+
+// ── Cross-module operations ────────────────────────────────────────────
+
+// Create a multiplayer session through the service layer.
+export const createMultiplayerSession = ({ player1, player2, boardSize }) =>
+	gameService.createMultiplayerSession({ player1, player2, boardSize });
+
+// Fetch game history and map each item to the DTO shape.
+export const getGameHistory = async (userId, query) => {
+	const items = await gameService.getGameHistory(userId, query);
+	return items.map(toGameHistoryItem);
+};

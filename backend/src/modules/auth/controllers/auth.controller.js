@@ -1,68 +1,64 @@
+import { register as registerAuth, login as loginAuth, getMyProfile, logout as logoutAuth } from "../services/auth.service.js";
 
-/**
- * ============================================================================
- * AUTH CONTROLLER (The Receptionist / Front Desk)
- * ============================================================================
- * Purpose: This file handles incoming HTTP requests specifically for the 
- * Authentication module (Logging in, Registering, Logging out). 
- * It acts as the bridge between the Express Routes and the Auth Service.
- * * Key Responsibilities:
- * 1. Extract data from the request (req.body for credentials).
- * 2. Pass that clean data to the AuthService.
- * 3. Receive the generated token and composed user data from the Service
- *    (UserAccount identity + UserProfile entitlement fields).
- * 4. Send the appropriate HTTP response (200 OK, 201 Created) back to React.
- * 5. Catch any errors (like "Invalid Password") and pass them to next().
- * * CRITICAL RULE: A Controller should NEVER contain bcrypt hashing, JWT 
- * generation, or Mongoose queries. It strictly manages the HTTP flow.
- */
-
-import * as authService from "../services/auth.service.js";
-
+// Extract raw Bearer token from `Authorization` header. Returns `null` when missing.
 const getBearerToken = (authorizationHeader = "") => {
-	if (!authorizationHeader.startsWith("Bearer ")) {
-		return null;
-	}
-
+	if (!authorizationHeader.startsWith("Bearer ")) return null;
 	return authorizationHeader.slice(7).trim();
 };
 
+// Build a small session context used for session auditing (user agent and IP)
 const extractSessionContext = (req) => ({
 	userAgent: req.headers["user-agent"],
 	ipAddress: req.ip,
 });
 
+// Normalize user object to a safe response shape returned to clients
+const userIdentity = (u) => ({
+	id: u._id || u.id,
+	username: u.username,
+	email: u.email,
+	role: u.role,
+	premiumUntil: u.premiumUntil || null,
+	avatar: u.avatar || "",
+	country: u.country,
+	walletBalance: u.walletBalance,
+});
+
+// Register endpoint: delegates validation, creation and session creation to service
 export const register = async (req, res, next) => {
 	try {
-		const result = await authService.register(req.body, extractSessionContext(req));
-		return res.status(201).json({ success: true, data: result });
+		const { accessToken, user } = await registerAuth(req.body, req.file, extractSessionContext(req));
+		return res.status(201).json({ success: true, data: { accessToken, user: userIdentity(user) } });
 	} catch (error) {
 		return next(error);
 	}
 };
 
+// Login endpoint: validates credentials and returns access token + user
 export const login = async (req, res, next) => {
 	try {
-		const result = await authService.login(req.body, extractSessionContext(req));
-		return res.status(200).json({ success: true, data: result });
+		const { accessToken, user } = await loginAuth(req.body, extractSessionContext(req));
+		return res.status(200).json({ success: true, data: { accessToken, user: userIdentity(user) } });
 	} catch (error) {
 		return next(error);
 	}
 };
 
+// Get current user's profile. `req.user` is expected to come from auth middleware.
 export const me = async (req, res, next) => {
 	try {
-		const profile = await authService.getMyProfile(req.user.id);
-		return res.status(200).json({ success: true, data: profile });
+		const profile = await getMyProfile(req.user.id);
+		return res.status(200).json({ success: true, data: userIdentity(profile) });
 	} catch (error) {
 		return next(error);
 	}
 };
 
+// Logout: takes Authorization header token, revokes server session and blacklists token expiry
 export const logout = async (req, res, next) => {
 	try {
 		const token = getBearerToken(req.headers.authorization || "");
-		const result = await authService.logout(token);
+		const result = await logoutAuth(token);
 		return res.status(200).json({ success: true, data: result });
 	} catch (error) {
 		return next(error);

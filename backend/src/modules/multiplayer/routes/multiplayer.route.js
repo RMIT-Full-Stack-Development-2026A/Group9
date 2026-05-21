@@ -1,26 +1,25 @@
 import { Router } from "express";
+import * as multiplayerController from "../controllers/multiplayer.controller.js";
+import { authenticate } from "../../../middlewares/auth.middleware.js";
 
 const router = Router();
 
-// Health probe used by monitoring and quick module checks.
+// Health check used by deployment and uptime monitoring.
 router.get("/health", (req, res) => {
 	res.status(200).json({ module: "multiplayer", status: "ok" });
 });
 
-// Placeholder: create room flow to be implemented by multiplayer owner.
-router.post("/rooms", (req, res) => {
-	res.status(501).json({
-		success: false,
-		message: "Create room service not implemented yet",
-	});
-});
-
-// Placeholder: list public rooms flow to be implemented by multiplayer owner.
-router.get("/rooms/public", (req, res) => {
-	res.status(501).json({
-		success: false,
-		message: "Public room listing service not implemented yet",
-	});
-});
+// Create a multiplayer room for the authenticated user.
+router.post("/rooms", authenticate, multiplayerController.createRoom);
+// List rooms that are waiting for a second player.
+router.get("/rooms", authenticate, multiplayerController.getWaitingRooms);
+// List rooms that are already active.
+router.get("/rooms/active", authenticate, multiplayerController.getActiveRooms);
+// Join a waiting room and become player2.
+router.post("/rooms/:id/join", authenticate, multiplayerController.joinRoom);
+// Manually close a room and broadcast the change through sockets.
+router.post("/rooms/:id/close", authenticate, multiplayerController.closeRoom);
+// Fetch a room by id for the room detail screen.
+router.get("/rooms/:id", authenticate, multiplayerController.getRoom);
 
 export default router;

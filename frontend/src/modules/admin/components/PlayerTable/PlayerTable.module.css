@@ -1,0 +1,212 @@
+@media (max-width: 900px) {
+    .adminCard {
+        padding: 12px 8px 20px 8px;
+        max-width: 100%;
+        border-radius: var(--radius-md);
+    }
+    .adminTable th, .adminTable td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+    .adminSearchInput {
+        font-size: 13px;
+        height: 38px;
+    }
+}
+
+@media (max-width: 600px) {
+    .adminCard {
+        padding: 6px 2px 10px 2px;
+        border-radius: var(--radius-sm);
+    }
+    .adminTableWrapper {
+        padding: 0;
+        margin-top: 8px;
+        overflow-x: auto;
+    }
+    .adminTable {
+        min-width: 600px;
+        font-size: 12px;
+    }
+    .adminTable th, .adminTable td {
+        padding: 6px 4px;
+        font-size: 12px;
+    }
+    .adminSearchInput {
+        font-size: 12px;
+        height: 32px;
+    }
+}
+
+/* Card container */
+.adminCard {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: 20px 32px 32px 32px;
+    margin-bottom: 0;
+    margin-top: 0;
+    box-shadow: var(--shadow-soft);
+    border: 2px solid var(--color-primary);
+    width: 100%;
+    max-width: 1152px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Search bar */
+ .searchBarContainer {
+     position: relative;
+     width: 100%;
+     margin-top: 8px;
+     margin-bottom: 8px;
+ }
+
+ .searchIcon {
+     position: absolute;
+     left: 18px;
+     top: 50%;
+     transform: translateY(-50%);
+     color: var(--color-primary);
+     font-size: 20px;
+     pointer-events: none;
+     z-index: 2;
+ }
+
+ .adminSearchInput {
+     padding: 10px 18px 10px 44px;
+     border-radius: var(--radius-md);
+     border: 2px solid var(--color-primary);
+     background: var(--color-bg);
+     color: var(--color-text);
+     font-size: 15px;
+     width: 100%;
+     height: 48px;
+     outline: none;
+     transition: border 0.2s;
+     box-sizing: border-box;
+ }
+.admin-search-input:focus {
+    border: 2px solid var(--color-success);
+}
+
+/* Table wrapper */
+ .adminTableWrapper {
+    overflow-x: auto;
+     padding: 8px 0 0 0;
+    margin-top: 18px;
+}
+
+/* Table */
+.adminTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    background: none;
+    color: var(--color-text);
+}
+
+/* Table header */
+ .adminTable thead tr {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+ .adminTable th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    background: var(--color-surface-2);
+    border-bottom: 2px solid var(--color-primary);
+}
+ .adminTable th:not(:first-child) {
+    border-top-left-radius: 0;
+}
+ .adminTable th:not(:last-child) {
+    border-top-right-radius: 0;
+}
+
+.adminCardSubtitle{
+    padding-bottom: 10px;
+}
+
+/* Table rows */
+
+ .adminTable tbody tr {
+    color: var(--color-text);
+    border-radius: var(--radius-md);
+    transition: background 0.15s;
+    margin-bottom: 0;
+}
+
+ .adminTable tbody td {
+    border-bottom: 1px solid var(--color-muted);
+    border-top:  1px solid var(--color-muted);
+}
+
+ .adminTable td {
+    padding: 16px 20px;
+    vertical-align: middle;
+    background: var(--color-surface);
+}
+
+/* Premium/Free badge */
+.premiumBadge {
+    background: var(--premium-orange);
+    color: var(--color-text);
+    border-radius: var(--radius-sm);
+    padding: 2px 12px;
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-block;
+}
+.freeBadge {
+    background: var(--color-surface-2);
+    color: var(--color-muted);
+    border-radius: var(--radius-sm);
+    padding: 2px 12px;
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-block;
+}
+
+/* Status dot and text */
+ .statusDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+ .statusActive {
+    background: var(--color-success);
+}
+ .statusInactive {
+    background: var(--color-danger);
+}
+ .statusTextActive {
+    color: var(--color-success);
+    font-weight: 600;
+}
+ .statusTextInactive {
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+/* Action buttons */
+ .actionBtn {
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 7px 20px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.actionBtn.deactivate {
+    background: var(--color-danger);
+    color: #fff;
+}
+.actionBtn.reactivate {
+    background: var(--color-success);
+    color: #fff;
+}

@@ -1,15 +1,23 @@
-/**
- * ============================================================================
- * USER DTO FILE PURPOSE
- * ============================================================================
- * Purpose: Defines request/response DTO contracts for User module APIs.
- * Current State: Placeholder only, intentionally left for the User feature
- * assignee to implement.
- *
- * Teammate guidance:
- * 1) Add DTO builders for user profile/search/update endpoints.
- * 2) Add payload/query validation helpers used by routes/controllers.
- * 3) Keep this file user-only (do not mix Auth/Admin/Leaderboard DTO logic).
- */
+// Shape the public profile response shown to the user.
+export const createProfileDTO = (user = {}) => ({
+	id: user.id || user._id,
+	username: user.username,
+	email: user.email?.toLowerCase(),
+	country: user.country,
+	role: user.role,
+	premiumUntil: user.premiumUntil || null,
+	avatar: user.avatar || "",
+	createdAt: user.createdAt,
+	updatedAt: user.updatedAt,
+});
 
-export {};
+// Shape the public user response returned after auth/profile mutations.
+export const createUserResponseDTO = (user = {}) => ({
+	id: user.id || user._id,
+	username: user.username,
+	email: user.email,
+	country: user.country,
+	role: user.role,
+	premiumUntil: user.premiumUntil || null,
+	avatar: user.avatar || "",
+});

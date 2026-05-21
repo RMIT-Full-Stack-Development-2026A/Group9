@@ -1,0 +1,137 @@
+/* src/pages/GameArena.css */
+
+.arena-page {
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    background-color: #0b0f1a;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+.arena-content {
+    display: grid;
+    grid-template-columns: 1fr minmax(320px, 400px);
+    min-height: 100vh;
+    width: 100%;
+    overflow: visible;
+}
+
+.arena-content > :first-child {
+    overflow: visible;
+    min-width: 0;
+    min-height: 0;
+}
+
+@media (max-height: 850px) {
+    .arena-content {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .arena-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+.arena-sidebar {
+    background-color: #0d1527;
+    border-left: 1px solid #1f2b47;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-panel {
+    background: rgba(18, 50, 90, 0.4);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    padding: 20px;
+    color: white;
+}
+
+.chat-panel {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-box {
+    flex-grow: 1;
+    min-height: 200px;
+    margin: 15px 0;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    padding: 10px;
+}
+
+.chat-input {
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    color: white;
+    border-radius: 6px;
+}
+
+/* match details */
+.sidebar-panel h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+}
+
+.detail-icon {
+    font-size: 1.1rem;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.detail-label {
+    color: #94a3b8;
+    min-width: 60px;
+}
+
+.detail-value {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.room-link {
+    color: #00d2ff;
+    font-size: 0.8rem;
+    word-break: break-all;
+    cursor: pointer;
+    font-weight: 400;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.room-link:hover {
+    text-decoration: underline;
+}
+
+.copy-badge {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+}

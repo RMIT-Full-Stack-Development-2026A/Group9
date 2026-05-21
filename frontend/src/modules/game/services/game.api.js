@@ -1,15 +1,26 @@
-/**
- * ============================================================================
- * GAME API (The Matchmaking & Records Interface)
- * ============================================================================
- * Location: src/modules/game/services/game.api.js
- * Purpose: While useMultiplayer handles the "Live" WebSocket traffic, 
- * this service handles the standard HTTP requests for the Game module.
- * * Key Responsibilities:
- * 1. Matchmaking: Requesting to join a queue or creating a private room.
- * 2. Match History: Fetching a player's past "Toang" results.
- * 3. Leaderboards: Retrieving top-ranked players and their global XP.
- * 4. Game Validation: Fetching static game config or rules.
- */
+import { api } from '../../../services/api.js';
+import { API_ROUTES } from '../../../config/apiRoutes.js';
 
-export {};
+/*
+	game.api.js
+	- Thin HTTP adapter that centralizes all network calls for the Game
+		module. Returning the raw `api` promise lets callers inspect
+		`response.data` or handle different HTTP error shapes centrally.
+	- Keep this file minimal; any response transformations belong in
+		higher-level hooks (e.g., `useGame`).
+*/
+export function createSession(sessionData) {
+	return api.post(API_ROUTES.game.sessions, sessionData);
+}
+
+export function makeMove(moveData) {
+	return api.post(API_ROUTES.game.move, moveData);
+}
+
+export function makeAIMove(aiMoveData) {
+	return api.post(API_ROUTES.game.aiMove, aiMoveData);
+}
+
+export function abortSession(abortData) {
+	return api.post(API_ROUTES.game.abort, abortData);
+}

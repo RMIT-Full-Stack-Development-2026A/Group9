@@ -1,9 +1,566 @@
-/**
- * ============================================================================
- * REGISTRATION FORM STYLES (Scoped)
- * ============================================================================
- * Location: src/modules/auth/components/RegistrationForm.module.css
- * Purpose: Provides a layout for the registration process. Since registration 
- * forms are typically longer than login forms, this focuses on vertical 
- * rhythm and clear grouping of related fields.
- */
+/* Success Notification */
+.successNotification {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card, #1e293b);
+  color: var(--success, #10b981);
+  border: 2px solid var(--success, #10b981);
+  border-radius: 8px;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 16px rgba(16,185,129,0.15);
+}
+:root {
+  --bg-main: #0b1120;
+  --bg-card: #1e293b;
+  --bg-input: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: var(--cyan);
+  --accent-hover: #0891b2;
+  --error: var(--red);
+  --success: #10b981;
+  --border: #334155;
+}
+
+/* Layout & Typography */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.headerIcon {
+  width: 56px;
+  height: 56px;
+  background: var(--bg-card);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1rem;
+}
+
+.headerIcon svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--accent);
+}
+
+.headerSection h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.headerSection p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+
+.formCard {
+  background: transparent;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.formCard h2 {
+  font-size: 1.5rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.formSubtitle {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+}
+
+
+.profileSection {
+  margin-bottom: 1.5rem;
+}
+
+.pageContainer {
+  background: transparent;
+}
+.profileSection label {
+  margin-bottom: 0.75rem;
+  display: block;
+}
+.profileUploadRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.avatarCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-input);
+}
+.avatarCircle svg {
+  max-width: 32px;
+  max-height: 32px;
+  stroke: var(--text-muted);
+}
+
+.uploadBtn {
+  background: var(--accent);
+  color: #000;
+  font-size: 1.1rem;
+  margin: 0 0 0.2rem 0;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+.uploadHint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.7rem;
+}
+
+/* Inputs & Labels */
+.formGroup {
+  margin-bottom: 0.6rem;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 0.8rem;
+  margin: 0.7rem 0;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.errorLabel {
+  color: var(--error);
+  padding: 0.7rem;
+  font-size: 0.95rem;
+}
+input,
+select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--accent);
+}
+
+.errorInput {
+  border-color: var(--error);
+}
+
+/* Hints & Inline Validation */
+.hintText {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.validationMsg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.validationMsg.error {
+  color: var(--error);
+}
+.validationMsg.success {
+  color: var(--success);
+}
+.validationMsg svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Strength Bar */
+.strengthBar {
+  height: 4px;
+  background: var(--success);
+  border-radius: 2px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+/* Footer & Submit */
+.divider {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background: var(--border);
+}
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+.termsText {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+.termsText a,
+.loginLink a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.loginLink {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.btnSubmit {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.btnSubmit:hover { background: var(--accent-hover); }
+
+.serverErrorBox {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid var(--error);
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 0 8px 8px 0;
+}
+
+.serverErrorBox p { font-size: 0.85rem; margin: 4px 0; }
+
+.pageContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  background: transparent;
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.headerIcon {
+  width: 56px;
+  height: 56px;
+  background: var(--bg-card);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1rem;
+}
+
+.headerIcon svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--accent);
+}
+
+.headerSection h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.headerSection p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.formCard {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 460px;
+  padding: 2.4rem 2rem;
+  border-radius: 18px;
+  box-sizing: border-box;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+}
+
+.formCard h2 {
+  font-size: 1.55rem;
+  margin: 0 0 0.3rem;
+}
+
+.formSubtitle {
+  color: var(--text-muted);
+  font-size: 0.94rem;
+  margin-bottom: 2rem;
+}
+
+.profileSection {
+  margin-bottom: 1.5rem;
+}
+
+.profileSection label {
+  margin-bottom: 0.75rem;
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.profileUploadRow {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.avatarCircle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-input);
+  overflow: hidden;
+}
+
+.avatarCircle svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--text-muted);
+}
+
+.avatarPreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uploadColumn {
+  flex: 1;
+  min-width: 180px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.uploadBtn {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.uploadBtn:hover {
+  background: var(--accent-hover);
+}
+
+.uploadHint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.65rem;
+}
+
+.formGroup {
+  margin-bottom: 1.35rem;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.errorLabel {
+  color: var(--error);
+}
+
+input,
+select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 0.92rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
+}
+
+.errorInput {
+  border-color: var(--error);
+}
+
+.validationMsg {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  margin-top: 0.55rem;
+}
+
+.validationMsg.error {
+  color: var(--error);
+}
+
+.validationMsg svg {
+  width: 16px;
+  height: 16px;
+}
+
+.divider {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 42%;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.termsText,
+.loginLink {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.termsText a,
+.loginLink a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.loginLink {
+  margin-bottom: 1.5rem;
+}
+
+.btnSubmit {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background 0.2s ease;
+}
+
+.btnSubmit:hover {
+  background: var(--accent-hover);
+}
+
+.serverErrorBox {
+  background: rgba(239, 68, 68, 0.11);
+  border-left: 4px solid var(--error);
+  padding: 1rem 1rem 1rem 1.1rem;
+  margin-top: 1.5rem;
+  border-radius: 0 12px 12px 0;
+}
+
+.serverErrorBox p {
+  font-size: 0.86rem;
+  margin: 0.35rem 0;
+  color: var(--text-main);
+}

@@ -1,26 +1,53 @@
-/**
- * ============================================================================
- * APP BOOTSTRAP FILE PURPOSE
- * ============================================================================
- * Purpose: Creates and configures the Express application instance.
- * This is shared infrastructure, not feature business-logic code.
- *
- * Responsibilities:
- * 1) Register global middlewares.
- * 2) Mount module routes via module registry.
- * 3) Provide centralized not-found and error handling.
- */
 
 import express from "express";
 import cors from "cors";
-import registerModules from "./modules/index.js";
+import authRoutes from "./modules/auth/routes/auth.route.js";
+import userRoutes from "./modules/user/routes/user.route.js";
+import registerAdminModule from "./modules/admin/index.js";
+import gameRoutes from "./modules/game/routes/game.route.js";
 import AppError from "./shared/errors/AppError.js";
+import registerBillingModule from "./modules/billing/index.js";
+import registerMultiplayerModule from "./modules/multiplayer/index.js";
+
+// Register Mongoose models so they are available globally
+import "./modules/user/models/user.model.js";
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+// middleware
+// CORS: allow local dev ports and the production frontend origin
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:5174", "https://group9-frontend.onrender.com"], // Allow dev ports and production front-end
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+// Parse JSON for all routes EXCEPT Stripe webhook (needs raw body)
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/billing/webhook/stripe") {
+    // Stripe requires the raw request body for signature verification.
+    // Use `express.raw()` for the webhook path and `express.json()` elsewhere.
+    express.raw({ type: "application/json" })(req, res, next);
+  } else {
+    express.json()(req, res, next);
+  }
+});
 
+// routes
+
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/game", gameRoutes);
+
+// Register admin module routes
+registerAdminModule(app);
+
+// Register billing module routes
+registerBillingModule(app);
+
+// Register multiplayer module routes
+registerMultiplayerModule(app);
+
+// test route
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -28,12 +55,13 @@ app.get("/", (req, res) => {
   });
 });
 
-registerModules(app);
-
+// 404 fallback for unhandled routes
 app.use((req, res, next) => {
   next(new AppError("Route not found", 404));
 });
 
+// Central error handler: normalizes AppError instances into consistent JSON
+// responses and only includes stack traces in non-production environments.
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
 
@@ -45,5 +73,7 @@ app.use((err, req, res, next) => {
     ...(process.env.NODE_ENV !== "production" ? { stack: err.stack } : {}),
   });
 });
+
+// CORS is already applied above; environment-specific CORS rules can be set in server startup if needed.
 
 export default app;

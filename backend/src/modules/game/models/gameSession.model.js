@@ -1,21 +1,37 @@
 import mongoose from "mongoose";
 
+// Schema for a single game session, including players, outcome, and board state.
 const gameSessionSchema = new mongoose.Schema(
 	{
 		sessionNumber: {
 			type: Number,
 			index: true,
 		},
-		players: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "UserAccount",
-			},
-		],
+		player1: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserAccount",
+			required: true,
+		},
+		player2: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserAccount",
+			default: null,
+		},
+		player2Name: {
+			type: String,
+			default: "",
+			trim: true,
+		},
 		winner: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "UserAccount",
 			default: null,
+		},
+		winnerMarker: {
+			type: String,
+			default: null,
+			trim: true,
+			maxlength: 8,
 		},
 		result: {
 			type: String,
@@ -32,34 +48,34 @@ const gameSessionSchema = new mongoose.Schema(
 		},
 		board: {
 			type: [String],
-			default: Array(9).fill(null),
+			default: [],
 		},
 		boardSize: {
 			type: Number,
-			default: 3,
-			min: 3,
-			max: 3,
+			default: 10,
+			min: 10,
+			max: 15,
+			validate: {
+				validator: (v) => [10, 15].includes(v),
+				message: "Invalid board size",
+			},
 		},
 		gameType: {
 			type: String,
 			enum: ["classic", "ai", "multiplayer"],
 			default: "classic",
 		},
-		botName: {
-			type: String,
-			default: "",
-			trim: true,
-		},
-		localPlayer2Name: {
-			type: String,
-			default: "",
-			trim: true,
-		},
 	},
 	{
 		timestamps: true,
 		collection: process.env.MONGO_GAME_SESSION_COLLECTION || "GameSessions",
 	}
+);
+
+// Prevent duplicate sessions: same player, same opponent, same start time (within 1 second)
+gameSessionSchema.index(
+	{ player1: 1, player2: 1, player2Name: 1, startTime: 1 },
+	{ unique: true, sparse: true }
 );
 
 const GameSession =

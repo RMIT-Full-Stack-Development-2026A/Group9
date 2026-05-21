@@ -1,21 +1,28 @@
-/**
- * ============================================================================
- * BILLING REPOSITORY (The Vault Manager / Data Access Layer)
- * ============================================================================
- * Purpose: This file is the ONLY place in the Billing module allowed to talk 
- * directly to the database (MongoDB/Mongoose) regarding financial records. 
- * It abstracts away the Mongoose queries so the Service layer doesn't have 
- * to know exactly how data is stored on the hard drive.
- * * Key Responsibilities:
- * 1. Save new transaction receipts to the database.
- * 2. Fetch billing history for a specific user.
- * 3. Ensure idempotency (preventing the same payment from being saved twice).
- * * CRITICAL RULE: A Repository must NEVER contain business rules (e.g., it 
- * shouldn't calculate taxes or check if a user is already premium) and NEVER 
- * know about HTTP. It simply executes the queries the Service asks for.
- */
+import Transaction from "../models/transaction.model.js";
 
-// Implementation contract:
-// 1) Keep payment persistence idempotent via unique transaction references.
-// 2) Never compute business totals here; only store/retrieve raw financial data.
-// 3) Expose focused query functions with predictable names.
+// ── Transaction Queries ───────────────────────────────────────────────
+// Create and persist a new transaction document.
+export const createTransaction = (data) =>
+	Transaction.create(data);
+
+// Look up a single transaction by id and return a plain object.
+export const findTransactionById = (id) =>
+	Transaction.findById(id).lean();
+
+// Update transaction status and return the updated plain object.
+export const updateTransactionStatus = (id, status) =>
+	Transaction.findByIdAndUpdate(id, { $set: { status } }, { returnDocument: "after" }).lean();
+
+// Find the latest pending Stripe subscription transaction for a session id.
+export const findLatestPendingSubscriptionBySessionId = (sessionId) =>
+	Transaction.findOne({
+		type: "subscription",
+		status: "pending",
+		description: new RegExp(`Stripe checkout ${sessionId}$`),
+	})
+		.sort({ createdAt: -1 })
+		.lean();
+
+// Return a user's transaction history sorted from newest to oldest.
+export const findTransactionsByUser = (userId) =>
+	Transaction.find({ userId }).sort({ createdAt: -1 }).lean();

@@ -1,23 +1,19 @@
-/**
- * Auth routes boundary:
- * - This file is only for Authentication endpoints.
- */
+import express from 'express';
+import multer from 'multer';
+import { register, login } from '../controllers/auth.controller.js';
+import { uploadToCloudinary } from '../../../middlewares/upload.middleware.js';
 
-import { Router } from "express";
-import { authenticate } from "../../../middlewares/auth.middleware.js";
-import { login, logout, me, register } from "../controllers/auth.controller.js";
+const router = express.Router();
+// Use memory storage for small file uploads (avatars) and stream to Cloudinary.
+const upload = multer({ storage: multer.memoryStorage() });
 
-const router = Router();
+// Route: POST /api/auth/register
+// - `upload.single('avatar')` parses multipart form-data and places file in `req.file`
+// - `uploadToCloudinary` streams the in-memory buffer to Cloudinary and sets `req.file.cloudinaryUrl`
+router.post('/register', upload.single('avatar'), uploadToCloudinary, register);
 
-// Public endpoint used by health monitors.
-router.get("/health", (req, res) => {
-	res.status(200).json({ module: "auth", status: "ok" });
-});
-
-// Keep route handlers thin; all business logic stays in service layer.
-router.post("/register", register);
-router.post("/login", login);
-router.get("/me", authenticate, me);
-router.post("/logout", authenticate, logout);
+// Route: POST /api/auth/login
+// - Simple JSON body expected: { identifier, password }
+router.post('/login', login);
 
 export default router;

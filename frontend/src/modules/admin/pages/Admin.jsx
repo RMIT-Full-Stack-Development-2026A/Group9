@@ -14,6 +14,8 @@
  * prevent standard players from accessing sensitive tools.
  */
 
+import AdminDashboard from '../components/AdminDashboard/AdminDashboard.jsx';
+
 export default function Admin() {
-	return <div>Admin</div>;
+	return <AdminDashboard />;
 }

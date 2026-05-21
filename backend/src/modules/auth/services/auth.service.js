@@ -1,187 +1,218 @@
-/**
- * ============================================================================
- * AUTH SERVICE (The Brain / Security Core)
- * ============================================================================
- * Purpose: This file contains the absolute core business logic for Authentication. 
- * It is responsible for enforcing security rules, hashing passwords, comparing 
- * credentials, and generating JSON Web Tokens (JWTs).
- * * Key Responsibilities:
- * 1. Enforce business rules (e.g., "Passwords must be hashed before saving").
- * 2. Handle cryptography (bcrypt for passwords, jsonwebtoken for sessions).
- * 3. Coordinate with the AuthRepository to fetch or save user data.
- * 4. Keep Admin feature logic out of this file (Admin belongs to admin service).
- * * CRITICAL RULE: The Service layer knows NOTHING about HTTP. You will never 
- * see 'req', 'res', or 'status(200)' here. If a user provides a bad password, 
- * the Service throws an 'AppError' and trusts the Controller to catch it.
- */
-
+import * as loginAttemptService from "../../../shared/security/loginAttempt.service.js";
+import * as tokenBlacklistService from "../../../shared/security/tokenBlacklist.service.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import AppError from "../../../shared/errors/AppError.js";
-import {
-	createAuthResponseDTO,
-	createLoginDTO,
-	createRegisterDTO,
-	validateLoginPayload,
-	validateRegisterPayload,
-} from "../dto/auth.dto.js";
+import * as validators from "../../../shared/utils/validators.js";
 import { hashSessionToken } from "../utils/sessionToken.util.js";
 import * as authRepository from "../repositories/auth.repository.js";
+import * as userInterface from "../../user/interface/user.interface.js";
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 10);
 
-// JWT payload is the canonical identity contract used by auth middleware.
-const signAccessToken = (user) => {
-	return jwt.sign(
-		{
-			sub: user._id?.toString(),
-			email: user.email,
-			role: user.role,
-		},
-		process.env.JWT_SECRET || "dev_jwt_secret",
-		{
-			expiresIn: process.env.JWT_EXPIRES_IN || "7d",
-		}
-	);
-};
+// ── JWT helpers ───────────────────────────────────────────────────────
+// Create a signed JWT access token with subject, email and role
+const signAccessToken = (user) => jwt.sign(
+	{ sub: user._id?.toString(), email: user.email, role: user.role },
+	process.env.JWT_SECRET || "dev_jwt_secret",
+	{ expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
+);
 
+// Resolve `expiresAt` Date based on `JWT_EXPIRES_IN` env (supports seconds or s/m/h/d)
 const resolveExpiresAt = () => {
 	const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
-	const now = Date.now();
-
-	if (/^\d+$/.test(expiresIn)) {
-		return new Date(now + Number(expiresIn) * 1000);
-	}
-
+	if (/^\d+$/.test(expiresIn)) return new Date(Date.now() + Number(expiresIn) * 1000);
 	const match = expiresIn.match(/^(\d+)([smhd])$/i);
-	if (!match) {
-		return new Date(now + 7 * 24 * 60 * 60 * 1000);
-	}
-
-	const amount = Number(match[1]);
-	const unit = match[2].toLowerCase();
+	if (!match) return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 	const multipliers = { s: 1000, m: 60000, h: 3600000, d: 86400000 };
-
-	return new Date(now + amount * multipliers[unit]);
+	return new Date(Date.now() + Number(match[1]) * multipliers[match[2].toLowerCase()]);
 };
 
-export const register = async (payload, sessionContext = {}) => {
-	// Validate early so downstream layers only receive trusted input shape.
-	const { valid, errors } = validateRegisterPayload(payload);
-	if (!valid) {
-		throw new AppError("Invalid register payload", 400, errors);
-	}
+// ── Input helpers (sanitization + validation) ──────────────────────────
+function normalizeRegisterInput({ username, email, password, country }) {
+	return {
+		username: validators.sanitizeString(username),
+		email: validators.sanitizeString(email)?.toLowerCase(),
+		password,
+		country: validators.sanitizeString(country),
+	};
+}
 
-	const dto = createRegisterDTO(payload);
-	const existingUser = await authRepository.findUserByEmail(dto.email);
-	if (existingUser) {
-		throw new AppError("Email is already registered", 409);
-	}
+function validateRegister(payload) {
+	const value = normalizeRegisterInput(payload);
+	const errors = [];
+	// Ensure required fields are present
+	const required = validators.assertRequiredFields(value, ["username", "email", "password", "country"]);
+	if (!required.valid) errors.push({
+		error: "Missing required fields",
+		cause: `The following fields are required: ${required.missing.join(", ")}.`,
+		example: "Fill in all required fields: username, email, password, confirm password, and country.",
+	});
+	// Validate username format
+	if (value.username && !validators.isValidUsername(value.username)) errors.push({
+		error: "Invalid username",
+		cause: "Username must only contain letters, numbers, underscores, or hyphens.",
+		example: "Valid: user_123, player-1",
+	});
+	// Validate email format
+	if (value.email && !validators.isEmail(value.email)) errors.push({
+		error: "Invalid email",
+		cause: "The email address format is invalid or missing a valid domain or '@' symbol.",
+		example: "Valid: player1@gmail.com, admin@domain.net",
+	});
+	// Enforce password strength policy
+	if (value.password && !validators.isStrongPassword(value.password)) errors.push({
+		error: "Weak password",
+		cause: "Password must be at least 8 characters, include one uppercase letter, one number, and one special character.",
+		example: "Try a password like: My$ecureP@ss1!",
+	});
+	return { valid: errors.length === 0, errors, value };
+}
 
-	const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
+function normalizeLoginInput(payload = {}) {
+	const raw = validators.sanitizeString(payload.identifier || payload.email || payload.username || "") || "";
+	const loginType = raw.includes("@") ? "email" : "username";
+	return {
+		identifier: loginType === "email" ? raw.toLowerCase() : raw,
+		password: payload.password,
+		loginType,
+	};
+}
 
-	const createdUser = await authRepository.createUser({
-		username: dto.username,
-		email: dto.email,
+function validateLogin(payload) {
+	const value = normalizeLoginInput(payload);
+	const errors = [];
+	const required = validators.assertRequiredFields(value, ["identifier", "password"]);
+	if (!required.valid) errors.push({
+		error: "Missing required fields",
+		cause: `The following fields are required: ${required.missing.join(", ")}.`,
+		example: "Please provide both your identifier (email or username) and password.",
+	});
+	if (value.loginType === "email" && value.identifier && !validators.isEmail(value.identifier)) errors.push({
+		error: "Invalid email address",
+		cause: "The email format is incorrect.",
+		example: "Valid: player1@gmail.com, admin@domain.net",
+	});
+	if (value.loginType === "username" && value.identifier && !validators.isValidUsername(value.identifier)) errors.push({
+		error: "Invalid username",
+		cause: "Username must only contain letters, numbers, underscores, or hyphens.",
+		example: "Valid: user_123, player-1",
+	});
+	return { valid: errors.length === 0, errors, value };
+}
+
+// ── Public API ───────────────────────────────────────────────────────
+
+// Register a new user:
+// - Validate and sanitize input
+// - Hash password
+// - Create user record via `userInterface`
+// - Issue JWT access token and persist a hashed session for revocation
+export const register = async (payload, file, sessionContext = {}) => {
+	const { valid, errors } = validateRegister(payload);
+	if (!valid) throw new AppError("Invalid register payload", 400, errors);
+
+	const input = normalizeRegisterInput(payload);
+	const existingUser = await userInterface.findUserByEmail(input.email);
+	if (existingUser) throw new AppError("Email is already registered", 409);
+
+	const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
+	const createdUser = await userInterface.createUser({
+		username: input.username,
+		email: input.email,
 		password: passwordHash,
+		country: input.country,
+		avatar: file?.cloudinaryUrl || "",
 	});
 
+	// Issue token and store a hashed session for server-side revocation
 	const accessToken = signAccessToken(createdUser);
-	const token = hashSessionToken(accessToken);
 	await authRepository.createAuthSession({
 		userId: createdUser._id,
-		token,
+		token: hashSessionToken(accessToken),
 		expiresAt: resolveExpiresAt(),
 		userAgent: sessionContext.userAgent,
 		ipAddress: sessionContext.ipAddress,
 	});
 
-	return createAuthResponseDTO({
-		accessToken,
-		   user: {
-			   id: createdUser._id,
-			   username: createdUser.username,
-			   email: createdUser.email,
-			   role: createdUser.role,
-			   premiumUntil: createdUser.premiumUntil,
-			   avatar: createdUser.avatar,
-		   },
-	});
+	return { accessToken, user: createdUser };
 };
 
+// Authenticate a user and create a session record
 export const login = async (payload, sessionContext = {}) => {
-	// Use shared DTO rules for consistent auth validation errors.
-	const { valid, errors } = validateLoginPayload(payload);
-	if (!valid) {
-		throw new AppError("Invalid login payload", 400, errors);
-	}
+	const identifier = payload.identifier || payload.email || payload.username;
+	// Rate-limiting / lockout check based on previous failed attempts
+	if (loginAttemptService.isLocked(identifier, sessionContext.ipAddress))
+		throw new AppError("Too many failed login attempts. Please try again later.", 429);
 
+	const { valid, errors } = validateLogin(payload);
+	if (!valid) throw new AppError("Invalid login payload", 400, errors);
+
+	const input = normalizeLoginInput(payload);
+	let user = await userInterface.findUserByIdentifier(input.identifier, input.loginType);
 	if (!user) {
+		// Record failed attempt for lockout heuristics
+		loginAttemptService.recordFailedAttempt(identifier, sessionContext.ipAddress);
 		throw new AppError("Invalid username/email or password", 401);
 	}
+	if (user.isActive === false) throw new AppError("Account is inactive", 403);
+	if (user.lockUntil && user.lockUntil > Date.now()) throw new AppError("Account locked. Try again in 60s.", 429);
 
-	if (user.isActive === false) {
-		throw new AppError("Account is inactive", 403);
+	const isMatch = await bcrypt.compare(input.password, user.password);
+	if (!isMatch) {
+		loginAttemptService.recordFailedAttempt(identifier, sessionContext.ipAddress);
+		const attempts = (user.loginAttempts || 0) + 1;
+		await userInterface.updateLoginMetadata(user._id, {
+			loginAttempts: attempts,
+			lockUntil: attempts >= 5 ? Date.now() + 60000 : null,
+		});
+		throw new AppError("The username or password you entered is incorrect. Please try again", 401);
 	}
 
-	const isPasswordValid = await bcrypt.compare(dto.password, user.password);
-	if (!isPasswordValid) {
-		throw new AppError("Invalid username/email or password", 401);
-	}
+	// Successful login: reset attempt counters
+	await userInterface.updateLoginMetadata(user._id, { loginAttempts: 0, lockUntil: null });
+	loginAttemptService.resetAttempts(identifier, sessionContext.ipAddress);
 
+	// Issue token and persist session
 	const accessToken = signAccessToken(user);
-	const token = hashSessionToken(accessToken);
 	await authRepository.createAuthSession({
 		userId: user._id,
-		token,
+		token: hashSessionToken(accessToken),
 		expiresAt: resolveExpiresAt(),
 		userAgent: sessionContext.userAgent,
 		ipAddress: sessionContext.ipAddress,
 	});
 
-	return createAuthResponseDTO({
-		accessToken,
-		   user: {
-			   id: user._id,
-			   username: user.username,
-			   email: user.email,
-			   role: user.role,
-			   premiumUntil: user.premiumUntil,
-			   avatar: user.avatar,
-		   },
-	});
+	return { accessToken, user };
 };
 
 export const getMyProfile = async (userId) => {
-	// Keep profile response minimal; add fields intentionally to avoid API drift.
-	const user = await authRepository.findUserById(userId);
-	if (!user) {
-		throw new AppError("User not found", 404);
-	}
-
+	const user = await userInterface.findUserById(userId);
+	if (!user) throw new AppError("User not found", 404);
 	return {
-		id: user._id,
-		username: user.username,
-		email: user.email,
-		role: user.role,
-		premiumUntil: user.premiumUntil,
-		avatar: user.avatar,
-		country: user.country,
-		walletBalance: user.walletBalance,
+		_id: user._id, username: user.username, email: user.email,
+		role: user.role, premiumUntil: user.premiumUntil,
+		avatar: user.avatar, country: user.country, walletBalance: user.walletBalance,
 	};
 };
 
+// Logout by revoking the stored hashed session and blacklisting the token expiry
 export const logout = async (accessToken) => {
-	if (!accessToken) {
-		throw new AppError("Authentication token is required", 400);
-	}
-
-	const token = hashSessionToken(accessToken);
-	const revokedSession = await authRepository.revokeAuthSessionByTokenHash(token);
-
-	if (!revokedSession) {
-		throw new AppError("Authentication session not found or already revoked", 404);
-	}
-
+	if (!accessToken) throw new AppError("Authentication token is required", 400);
+	const tokenHash = hashSessionToken(accessToken);
+	const revokedSession = await authRepository.revokeAuthSessionByTokenHash(tokenHash);
+	try {
+		// Add to in-memory blacklist to prevent reuse until expiry (best-effort)
+		const decoded = jwt.decode(accessToken);
+		if (decoded?.exp) tokenBlacklistService.add(accessToken, decoded.exp);
+	} catch {}
+	if (!revokedSession) throw new AppError("Authentication session not found or already revoked", 404);
 	return { loggedOut: true };
 };
+
+export const revokeAllSessionsForUser = async (userId) => {
+	return authRepository.revokeAuthSessionsByUserId(userId);
+};
+
+export const findActiveSession = (tokenHash) =>
+	authRepository.findActiveAuthSessionByTokenHash(tokenHash);

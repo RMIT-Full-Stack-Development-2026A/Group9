@@ -1,19 +1,41 @@
-/**
- * ============================================================================
- * TOKEN BLACKLIST SERVICE (The Logout & Security Guard)
- * ============================================================================
- * Purpose: This file manages "Revoked" JSON Web Tokens (JWTs). In a standard 
- * JWT setup, tokens are valid until they expire. This service allows 
- * TicTacToang to "Kill" a token immediately when a user logs out or if 
- * a security breach is detected.
- * * Key Responsibilities:
- * 1. Logout Execution: Adding a valid token to the blacklist so it can't 
- * be used again.
- * 2. Token Validation: Checking every incoming request to see if the 
- * provided token has been "Blacklisted."
- * 3. Automatic Cleanup: Removing expired tokens from the blacklist to 
- * keep the database small.
- * * CRITICAL RULE: This service is a "Gatekeeper" in your Auth Middleware. 
- * If a token is in this list, the request is rejected with a 401 Unauthorized, 
- * even if the signature is technically "Valid."
- */
+
+// Simple in-memory token blacklist used to revoke JWTs before their natural
+// expiry. This is suitable for single-process deployments and small-scale
+// applications — for production or multi-instance setups prefer a shared
+// store (Redis) so revocations propagate across instances.
+// Shape: { token: expiryTimestampMillis }
+const blacklist = {};
+
+// Add a token to the blacklist. `exp` is the token expiry timestamp (in seconds)
+// typically taken from the JWT `exp` claim; we convert it to milliseconds.
+export const add = (token, exp) => {
+	// exp: expiry timestamp (seconds)
+	if (token && exp) {
+		blacklist[token] = exp * 1000; // convert to ms
+	}
+};
+
+// Check whether a token is blacklisted and still within its blacklist window.
+// Expired entries are cleaned up on read to avoid memory growth.
+export const isBlacklisted = (token) => {
+	if (!token) return false;
+	const expiry = blacklist[token];
+	if (!expiry) return false;
+	if (Date.now() > expiry) {
+		// Clean up expired blacklist entries
+		delete blacklist[token];
+		return false;
+	}
+	return true;
+};
+
+// Remove expired tokens from the blacklist. Run periodically in long-lived
+// processes to prevent unbounded growth.
+export const cleanup = () => {
+	const now = Date.now();
+	for (const token in blacklist) {
+		if (blacklist[token] < now) {
+			delete blacklist[token];
+		}
+	}
+};

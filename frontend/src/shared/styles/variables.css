@@ -1,8 +1,4 @@
 /**
- * ============================================================================
- * CSS VARIABLES (The Design System)
- * ============================================================================
- * Location: src/styles/variables.css
  * Purpose: This file acts as the single source of truth for the TicTacToang 
  * visual language. It centralizes atomic design values like colors, 
  * shadows, and spacing to ensure a consistent experience across all 
@@ -18,6 +14,7 @@
 	--color-primary: #13c2ff;
 	--color-success: #18b67a;
 	--color-warning: #f2b530;
+	--premium-orange: #f97316;
 	--color-danger: #f05454;
 	--radius-sm: 8px;
 	--radius-md: 12px;

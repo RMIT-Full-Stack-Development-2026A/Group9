@@ -1,13 +1,64 @@
-/**
- * ============================================================================
- * GAME BOARD COMPONENT (The Grid)
- * ============================================================================
- * Location: src/modules/game/components/GameBoard.jsx
- * Purpose: This is the visual representation of the TicTacToang match. It 
- * renders a 10x10 (or 15x15) grid and handles the "Click" events for player moves.
- * * Key Responsibilities:
- * 1. Grid Rendering: Mapping a simple array of 9 values into a CSS Grid.
- * 2. Interaction: Capturing which index (0-8) the player clicked.
- * 3. Visual Feedback: Displaying "X", "O", or an empty space with animations.
- * 4. State Sync: Reflecting the 'board' state received from the backend.
- */
+
+import React, { useMemo } from 'react';
+import Cell from '../Cell/Cell';
+import styles from './GameBoard.module.css';
+
+/*
+    GameBoard
+    - Renders the board grid and axis labels (algebraic notation like a-j, 1-10).
+    - Responsibilities:
+        * Compute axis labels from `size` and memoize for performance.
+        * Render `Cell` components and pass `isWinningCell` flags for
+            highlight styling.
+        * Avoid embedding game logic; `onCellClick` is an imperative callback
+            provided by parent pages which call `useGame` actions.
+*/
+export default function GameBoard({ size, styleType, markerIndex, boardState, onCellClick, winningLine, isLocked }) {
+    // Generate axis labels for algebraic notation
+    const axisLetters = useMemo(() => {
+        return Array.from({ length: size }, (_, i) => String.fromCharCode(97 + i));
+    }, [size]);
+
+    const axisNumbers = useMemo(() => {
+        return Array.from({ length: size }, (_, i) => size - i);
+    }, [size]);
+
+    // look for selected theme style in the module.css file
+    const boardClass = `${styles['game-board']} ${styles[`${styleType}-style`] || ''}`;
+
+    return (
+        <div className={styles['boardContainer']}>
+            {/* Top axis labels (a-j or a-o) */}
+            <div className={`${styles['xAxis']} ${styles[`xAxis-${styleType}`] || ''}`} style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}>
+                {axisLetters.map((letter) => (
+                    <span key={`x-${letter}`}>{letter}</span>
+                ))}
+            </div>
+
+            {/* Main board with side axis labels */}
+            <div className={styles['gridAndYAxis']}>
+                {/* Left axis labels (1-10 or 1-15) */}
+                <div className={`${styles['yAxis']} ${styles[`yAxis-${styleType}`] || ''}`} style={{ gridTemplateRows: `repeat(${size}, 1fr)` }}>
+                    {axisNumbers.map((num) => (
+                        <span key={`y-${num}`}>{num}</span>
+                    ))}
+                </div>
+
+                {/* Game grid */}
+                <div className={boardClass} style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}>
+                    {(boardState || []).map((cellValue, index) => (
+                        <Cell
+                            key={index}
+                            value={cellValue}
+                            markerIndex={markerIndex}
+                            onClick={() => onCellClick(index)}
+                            className={`${styles['game-cell']} ${styles[`${styleType}-style`] || ''}`}
+                            isWinningCell={Array.isArray(winningLine) && winningLine.includes(index)}
+                            isLocked={isLocked}
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}

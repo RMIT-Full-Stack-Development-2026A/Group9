@@ -1,9 +1,207 @@
-/**
- * ============================================================================
- * NAVBAR STYLES (The Navigation Hub)
- * ============================================================================
- * Location: src/shared/components/Navbar/Navbar.css
- * Purpose: Provides a sleek, high-tech navigation bar that feels like a 
- * "Gaming HUD". It uses glassmorphism and neon accents to match the 
- * TicTacToang aesthetic.
- */
+ .topNavbar {
+	min-height: 68px;
+	padding: 0 28px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	align-items: center;
+	background: linear-gradient(180deg, #182437 0%, #162236 100%);
+	border-bottom: 1px solid rgba(122, 147, 177, 0.22);
+}
+
+.brandBlock {
+	display: inline-flex;
+	align-items: center;
+	gap: 14px;
+	justify-self: start;
+}
+
+.brandIconFrame {
+	width: 48px;
+	height: 48px;
+	border-radius: 10px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: #071b33;
+	border: 1px solid rgba(86, 116, 153, 0.3);
+	box-shadow: 0 12px 24px rgba(3, 10, 22, 0.55);
+}
+
+.brandIconImage {
+	width: 42px;
+	height: 42px;
+	display: block;
+	object-fit: contain;
+}
+
+.brandText {
+	font-size: 28px;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: -0.02em;
+}
+
+.brandTextLight {
+	color: #ffffff;
+}
+
+.brandTextAccent {
+	color: var(--premium-orange);
+}
+
+.mainNav {
+	display: inline-flex;
+	gap: 28px;
+	justify-self: center;
+}
+
+.mainNavLink {
+	color: #8ea1b9;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 500;
+	transition: color 0.15s ease;
+}
+
+.mainNavLink:hover {
+	color: #d2deec;
+}
+
+.mainNavLink--active {
+	color: #00c2ff;
+	font-weight: 600;
+}
+
+.authActions {
+	justify-self: end;
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.userPill {
+	min-width: 109px;
+	height: 48px;
+	padding: 0 14px 0 60px;
+	border-radius: 999px;
+	background: var(--cyan);
+	display: inline-flex;
+	align-items: center;
+	gap: 0;
+	max-width: 220px;
+	overflow: visible;
+	position: relative;
+}
+
+.userPillAvatar {
+	width: 47px;
+	height: 49px;
+	border-radius: 50%;
+	overflow: hidden;
+	background: #001b3a;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	position: absolute;
+	left: -1px;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+}
+
+.userPillAvatarImage {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+	display: block;
+}
+
+.userPillAvatarFallback {
+	font-size: 30px;
+	font-weight: 700;
+	color: var(--cyan);
+}
+
+.userPillName {
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.25;
+	display: inline-block;
+	padding-bottom: 1px;
+	color: #021b34;
+	max-width: 146px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.logoutIconBtn {
+	width: 48px;
+	height: 48px;
+	border-radius: 14px;
+	border: 2px solid #8b5cf6;
+	background: rgba(91, 33, 182, 0.12);
+	color: #8b5cf6;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.logoutIconBtn .bi {
+	font-size: 22px;
+	color: #8b5cf6;
+}
+
+.logoutIconBtn:hover,
+.logoutIconBtn:focus-visible {
+	transform: translateY(-2px);
+	filter: brightness(1.12);
+}
+
+.authBtn {
+	border-radius: 8px;
+	height: 30px;
+	padding: 0 14px;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.authBtn:hover,
+.authBtn:focus-visible {
+	transform: translateY(-2px);
+	filter: brightness(1.06);
+}
+
+.authBtn--ghost {
+	background: transparent;
+	color: #00c2ff;
+	border: 1px solid #00c2ff;
+}
+
+.authBtn--solid {
+	background: #00c2ff;
+	color: #ffffff;
+	border: 1px solid #00c2ff;
+}
+
+@media (max-width: 900px) {
+	.topNavbar {
+		grid-template-columns: 1fr;
+		row-gap: 10px;
+		padding: 12px 14px;
+	}
+
+	.brandBlock,
+	.mainNav,
+	.authActions {
+		justify-self: center;
+	}
+}
+
+

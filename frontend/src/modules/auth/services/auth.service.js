@@ -23,7 +23,7 @@ export const getMe = async () => {
 };
 
 export const registerPlayer = async (submitData) => {
-	const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+	const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://group9-backend.onrender.com';//'http://localhost:3000';
 	try {
 		const response = await fetch(`${apiBase}${API_ROUTES.auth.register}`, {
 			method: 'POST',

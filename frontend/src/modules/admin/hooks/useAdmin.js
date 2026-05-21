@@ -53,6 +53,13 @@ export const useAdmin = () => {
             if (!partial) setLoading(false);
         }
     }
+    // The hook exposes a couple of imperative helpers used by the admin UI
+    // - `refreshDashboard(partial)` will re-fetch players and metrics. When
+    //    `partial` is true, loading indicators are not toggled so UI can
+    //    refresh quietly (useful for background polling).
+    // - `refreshRooms()` fetches active multiplayer rooms and returns the
+    //    latest array. It's separated because room updates are higher-frequency
+    //    and conceptually distinct from player/metric snapshots.
     return {
         activeTab,
         setActiveTab,
@@ -61,6 +68,9 @@ export const useAdmin = () => {
         metrics,
         rooms,
         loading,
+        // Refresh only metrics/players without toggling the main loading
+        // indicator (pass `true` to `fetchDashboardData`). This lets buttons
+        // trigger a fast refresh without blocking the whole page.
         refreshDashboard: () => fetchDashboardData(true),
         refreshRooms: async () => {
             try {

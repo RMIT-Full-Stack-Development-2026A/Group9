@@ -1,3 +1,15 @@
+/*
+    LoginForm.jsx
+    - Presentational login form with client-side validation and submission
+        logic delegated to `useLogin`. Responsibilities:
+        * Validate input using shared validators before submitting.
+        * Use `useLogin` to perform the HTTP login call and expose submission
+            state so the UI can show a loading indicator.
+        * On successful login, persist token/profile (done in service) and
+            call `AuthContext.login` to update global auth state.
+        * Redirect user to the originally requested location or home.
+*/
+
 import { validateLogin } from "/src/shared/utils/validators.js";
 import Input from "/src/shared/ui/Input/Input.jsx";
 import Button from "/src/shared/ui/Button/Button.jsx";
@@ -40,6 +52,8 @@ export default function Login() {
                 setLoginError("Invalid credentials");
                 return;
             }
+            // Persist token locally (service already does this) and attempt
+            // to fetch a full profile in case the login response is minimal.
             localStorage.setItem("authToken", accessToken);
             // Always fetch latest profile after login to get country and other fields
             try {
@@ -50,6 +64,7 @@ export default function Login() {
                     user = await profileRes.json();
                 }
             } catch (e) { /* ignore profile fetch errors */ }
+            // Update global auth state so other components re-render accordingly.
             login(user);
             // Redirect admin users to /admin, others to previous logic
             if (user && user.role && user.role.toLowerCase() === 'admin') {
@@ -58,6 +73,7 @@ export default function Login() {
                 navigate(from, { replace: true });
             }
         } catch (err) {
+            // Surface either the hook error or the thrown exception message
             setLoginError(err?.message || error || "Login failed");
         }
     };

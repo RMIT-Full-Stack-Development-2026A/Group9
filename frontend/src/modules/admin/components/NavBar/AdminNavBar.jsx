@@ -1,7 +1,10 @@
 import styles from './AdminNavBar.module.css';
 
+// Simple nav used by the AdminDashboard. Each item is a client-side tab
+// that toggles the `activeTab` state in the parent. Kept keyboard-access
+// considerations limited — this is a focused internal tool for moderators.
 const icons = {
-    players: <i className="bi bi-people" style={{ fontSize: 20, color: '#9ca3af' }}></i>
+  players: <i className="bi bi-people" style={{ fontSize: 20, color: '#9ca3af' }}></i>
 };
 const Navbar = ({ activeTab, onTabChange }) => {
     return (

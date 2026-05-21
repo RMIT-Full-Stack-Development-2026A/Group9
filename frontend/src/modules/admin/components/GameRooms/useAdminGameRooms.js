@@ -22,6 +22,11 @@ export function useAdminGameRooms(initialRooms = [], parentRefresh) {
         // No synchronous setState here — initialRooms is already used by useState initializer
     }, [initialRooms, fetchRooms]);
 
+    // Note: we use a deferred `setTimeout(..., 0)` to avoid triggering a
+    // synchronous state update during render when initialRooms is empty.
+    // This pattern reduces React warning noise and keeps the initial render
+    // faster on slower connections.
+
     const refresh = useCallback(async () => {
         await fetchRooms();
         if (typeof parentRefresh === 'function') parentRefresh();
@@ -50,6 +55,13 @@ export function useAdminGameRooms(initialRooms = [], parentRefresh) {
             player1Name.toLowerCase().includes(s) ||
             player2Name.toLowerCase().includes(s);
     });
+
+    // Exposed API:
+    // - `rooms`: current local copy of fetched rooms
+    // - `filtered`: rooms filtered by search query
+    // - `q` / `setQ`: query state
+    // - `refresh`: refetch and call parent's refresh if provided
+    // - `handleClose`: confirm + close a room via API and update local array
 
     return {
         rooms,

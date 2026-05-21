@@ -12,6 +12,7 @@ const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
                 await refreshDashboard();
             }
         } catch (err) {
+            // Keep UI simple: on error, inform the admin and allow retry.
             alert("Failed to update player status.");
         }
     };
@@ -32,6 +33,11 @@ const PlayerTable = ({ gamers, setgamers, refreshDashboard }) => {
         const time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
         return `${day} ${mon} ${year}, ${time}`;
     }
+
+    // `filteredPlayers` narrowing: ensures case-insensitive searching by
+    // username or email. This client-side filtering is fast for typical
+    // admin datasets; if the player list grows very large, consider
+    // server-side search with pagination to avoid memory/CPU pressure.
 
     return (
         <div className={styles.adminCard}>

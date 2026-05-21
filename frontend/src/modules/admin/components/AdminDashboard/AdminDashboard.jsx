@@ -48,6 +48,12 @@ export default function Admin() {
         navigate('/');
     };
 
+    // `handleLogout` first calls the `logout` helper from `AuthProvider`,
+    // which attempts server-side session revocation and always clears
+    // client-side storage. We then navigate to the public home page. This
+    // sequence ensures server invalidation is attempted while keeping the
+    // UI responsive.
+
     if (loading) {
         return (
             <div className={styles.adminLoading}>
@@ -75,6 +81,7 @@ export default function Admin() {
                         <i className="bi bi-box-arrow-right" style={{ fontSize: 22 }}></i>
                     </button>
                 </header>
+                {/* AdminNavBar controls which panel is visible (players / rooms) */}
                 <AdminNavBar activeTab={activeTab} onTabChange={setActiveTab} />
                 {activeTab === 'players' && (
                     <div className={styles.adminStatsRow}>
@@ -85,6 +92,10 @@ export default function Admin() {
                     </div>
                 )}
                 <main className={styles.adminMainContent}>
+                    {/* Player management view: lists all players and allows
+                        moderators to toggle active status. The PlayerTable gets
+                        a `setgamers` callback so it can optimistically update
+                        local state when performing actions. */}
                     {activeTab === 'players' && (
                         <PlayerTable gamers={players} setgamers={setPlayers} refreshDashboard={refreshDashboard} />
                     )}

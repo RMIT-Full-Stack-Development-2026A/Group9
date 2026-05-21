@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import playerStyles from '../PlayerTable/PlayerTable.module.css';
 import { useAdminGameRooms } from './useAdminGameRooms.js';
 
+// Format helpers: small, local helpers to keep the JSX markup readable.
+// They intentionally fall back to raw values if parsing fails to avoid
+// throwing in the render path.
 const formatTime = (iso) => {
     if (!iso) return '-';
     try {
@@ -81,7 +84,7 @@ export default function AdminGameRooms({ rooms: initialRooms = [], refreshRooms 
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.length === 0 && <tr><td colSpan={7}>No rooms found</td></tr>}
+                                {filtered.length === 0 && <tr><td colSpan={7}>No rooms found</td></tr>}
                         {filtered.map(room => (
                             <tr key={room._id}>
                                 <td className={playerStyles.adminTableUsername}>#{room.roomNumber || (room._id?.slice?.(0,8) || '-')}</td>

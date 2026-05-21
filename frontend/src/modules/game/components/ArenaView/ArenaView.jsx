@@ -4,6 +4,15 @@ import EndGameModal from '../GameModals/EndGameModal';
 import { buildMatchDisplayData } from '../../services/game.service.js';
 import styles from "./ArenaView.module.css";
 
+/*
+    ArenaView
+    - High-level page shell combining the main match stage (`GameStatus`),
+        sidebar (match details, optional chat), and end-of-match modal.
+    - Keeps rendering concerns isolated: it expects `matchData` and simple
+        callbacks (e.g., `onCellClick`, `onAbort`) from the parent page.
+    - Uses `buildMatchDisplayData` (service) to derive UI-friendly labels
+        and room info from `matchData`.
+*/
 export default function ArenaView({
     matchData,
     xIsNext,

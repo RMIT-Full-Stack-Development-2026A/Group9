@@ -37,6 +37,14 @@ const Registration = () => {
   const emailValid = isEmail(email);
   return (
     <div className={styles.pageContainer}>
+      {/*
+        RegistrationForm
+        - Uses `useRegistration` for state and submission.
+        - Responsibilities:
+          * Render form inputs + client-side hints for username/email/password
+          * Show field-level server validation errors received via `apiError`
+          * Provide a seamless avatar upload + preview experience
+      */}
       {showSuccess && (
         <div className={styles.successNotification}>
           <SuccessIcon />

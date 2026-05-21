@@ -14,7 +14,9 @@ export const adminRepository = {
 
     
     findAllUsers: async () => {
-        // Aggregate to join UserProfile and include premiumUntil, filter only players
+        // Aggregate to join the UserProfile document and return a
+        // denormalized result. This allows the admin UI to show profile
+        // fields (like premiumUntil) alongside the account document.
         return await getUserModel().aggregate([
             { $match: { role: "player" } },
             { $sort: { createdAt: -1 } },
@@ -26,21 +28,25 @@ export const adminRepository = {
                     as: "profile"
                 }
             },
+            // Use unwind with preserveNull to avoid dropping accounts
             { $unwind: { path: "$profile", preserveNullAndEmptyArrays: true } }
         ]);
     },
 
+    // Return a lean user doc (no mongoose getter/setter overhead)
     findUserById: async (userId) => {
         return await getUserModel().findById(userId).lean();
     },
 
+    // Update active flag, then re-query using aggregation to return
+    // the denormalized shape expected by the admin DTO.
     updateUserActiveStatus: async (userId, isActive) => {
         await getUserModel().findByIdAndUpdate(
             userId,
             { isActive },
             { returnDocument: "after" }
         );
-        // Ensure userId is an ObjectId
+        // Ensure userId is an ObjectId for aggregation match
         const objectId = (typeof userId === 'string' || typeof userId === 'number') ? new mongoose.Types.ObjectId(userId) : userId;
         const users = await getUserModel().aggregate([
             { $match: { _id: objectId } },
@@ -54,7 +60,6 @@ export const adminRepository = {
             },
             { $unwind: { path: "$profile", preserveNullAndEmptyArrays: true } }
         ]);
-        // Debug log removed
         if (!users[0]) {
             throw new Error('User not found after update. objectId: ' + objectId);
         }
@@ -62,6 +67,7 @@ export const adminRepository = {
     },
 
   
+    // Persist an admin action log for auditing
     createActionLog: async (logData) => {
         const log = new AdminActionLog(logData);
         return await log.save();
@@ -78,7 +84,8 @@ export const adminRepository = {
     },
 
     countPremiumUsers: async () => {
-        // Join UserProfile and count where premiumUntil is in the future (handle string or Date)
+        // Count players whose profile.premiumUntil is a future date.
+        // Uses $toDate to defensively handle string or Date storage.
         const result = await getUserModel().aggregate([
             { $match: { role: "player" } },
             {

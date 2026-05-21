@@ -1,6 +1,10 @@
 
 import mongoose from "mongoose";
 
+// Schema for server-side stored auth sessions. Notes:
+// - `token` holds a hashed digest (never store raw JWTs)
+// - `expiresAt` is used by a TTL index to automatically purge expired sessions
+// - `isRevoked` allows safely invalidating sessions without waiting for expiry
 const authSessionSchema = new mongoose.Schema(
   {
     userId: {

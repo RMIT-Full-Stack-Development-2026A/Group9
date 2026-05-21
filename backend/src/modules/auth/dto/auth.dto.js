@@ -1,3 +1,5 @@
+// Normalize authentication response for clients. Keep token together with a
+// minimal user object (no passwords or sensitive metadata).
 export const createAuthResponseDTO = ({ accessToken, user }) => ({
 	accessToken,
 	user: {

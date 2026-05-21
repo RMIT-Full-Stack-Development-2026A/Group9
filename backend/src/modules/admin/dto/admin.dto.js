@@ -2,7 +2,9 @@
 export const adminDto = {
     
     toPlayerResponse: (user) => {
-        // Use premiumUntil from joined profile if available
+        // Map DB document to the response shape expected by the admin UI.
+        // Normalizes `_id` to string and derives `isPremium` using
+        // the joined profile.premiumUntil when available.
         const premiumUntil = user.profile?.premiumUntil;
         return {
             id: (user._id && typeof user._id.toString === 'function') ? user._id.toString() : String(user._id),
@@ -22,6 +24,7 @@ export const adminDto = {
             activeAccounts,
             inactiveAccounts,
             premiumUsers,
+            // Lightweight, approximate server-load string for the admin UI.
             serverLoad: `${Math.min(100, Math.round((activeAccounts / 100) * 100))}%`
         };
     }

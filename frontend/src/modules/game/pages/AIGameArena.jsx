@@ -5,6 +5,17 @@ import ArenaView from '../components/ArenaView/ArenaView';
 import { useGame } from '../hooks/useGame';
 import useAI from '../hooks/useAI';
 
+/*
+	AIGameArena
+	- Page mounting an AI-powered match. It composes `useGame` (session
+		lifecycle) and `useAI` (AI orchestration) to keep game logic out of the
+		UI. The page tracks the last human move index to provide context for
+		server-side AI heuristics.
+	- Design points:
+		* The AI is triggered by `useAI` when it's player2's turn and other
+			guards are satisfied.
+		* We fetch the username from `AuthContext` for player1 display.
+*/
 export default function AIGameArena() {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -43,6 +54,7 @@ export default function AIGameArena() {
 		}
 	}, [settings, startSession, navigate, session]);
 
+	// Configure the AI orchestrator to call `playAIMove` when appropriate.
 	useAI({
 		enabled: true,
 		session,

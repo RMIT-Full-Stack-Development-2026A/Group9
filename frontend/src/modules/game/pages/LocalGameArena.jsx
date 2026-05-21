@@ -3,6 +3,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ArenaView from '../components/ArenaView/ArenaView';
 import { useGame } from '../hooks/useGame';
 
+/*
+    LocalGameArena
+    - Page component mounting a local (offline) game session.
+    - Responsibilities:
+        * Read `settings` from `location.state` (caller must provide these).
+        * Start a new session exactly once per mount using `useGame`.
+        * Map hook state into the `matchData` shape expected by `ArenaView`.
+        * Provide callbacks for cell clicks, abort, replay, and exit.
+    - Important: This page relies on the navigation caller to pass `settings`.
+        If missing, it redirects back to home to avoid rendering the arena
+        without configuration.
+*/
 export default function LocalGameArena() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -38,6 +50,10 @@ export default function LocalGameArena() {
         }
     }, [settings, startSession, navigate, session]);
 
+    // Map internal hook state and settings into the UI-friendly matchData
+    // shape consumed by `ArenaView`. Keep this mapping local so other pages
+    // can construct their own variants (AI/multiplayer) without affecting
+    // LocalGameArena.
     const matchData = {
         size: settings?.boardSize || 10,
         style: settings?.boardStyle?.toLowerCase() || 'classic',

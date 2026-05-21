@@ -5,6 +5,12 @@ import styles from "./GameModals.module.css";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../../app/providers/AuthProvider.jsx";
 
+/*
+  LocalGameModal
+  - Collects settings for an offline two-player match and navigates to
+    `LocalGameArena` with a `settings` object. Keeps the modal focused on
+    input gathering — session creation is delegated to the arena page.
+*/
 export default function LocalGameModal({ open, onClose }) {
   const { user } = useContext(AuthContext) || {};
 

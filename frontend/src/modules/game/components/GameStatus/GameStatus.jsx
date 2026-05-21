@@ -3,6 +3,16 @@ import GameBoard from '../GameBoard/GameBoard';
 import GameControl from '../GameControl/GameControl';
 import styles from './GameStatus.module.css';
 
+/*
+    GameStatus
+    - Combines player cards, the main `GameBoard`, and controls into a single
+        match stage layout. This component is purely presentational: it expects
+        `matchData` and `matchDisplay` to be prepared by the parent page.
+    - Responsibilities:
+        * Display player avatars/names/markers with fallbacks for offline mode.
+        * Render `GameBoard` with the current board state and winning line.
+        * Render `GameControl` for actions like aborting the match.
+*/
 export default function GameStatus({
     matchData,
     matchDisplay,

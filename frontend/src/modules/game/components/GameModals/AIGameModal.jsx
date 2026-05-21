@@ -3,6 +3,14 @@ import { useNavigate } from "react-router-dom";
 import SimpleModal from "../../../../shared/ui/SimpleModal.jsx";
 import styles from "./GameModals.module.css";
 
+/*
+  AIGameModal
+  - Modal UI that collects AI match settings (difficulty, markers,
+    board size/style) and navigates to the AI arena with a structured
+    `settings` object. The modal is purely presentational and navigates
+    rather than invoking game hooks directly so the arena page owns
+    session lifecycle.
+*/
 export default function AIGameModal({ open, onClose }) {
 
   const [difficulty, setDifficulty] = useState("Easy");

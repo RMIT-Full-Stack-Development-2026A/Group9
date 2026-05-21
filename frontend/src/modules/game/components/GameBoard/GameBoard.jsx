@@ -3,6 +3,16 @@ import React, { useMemo } from 'react';
 import Cell from '../Cell/Cell';
 import styles from './GameBoard.module.css';
 
+/*
+    GameBoard
+    - Renders the board grid and axis labels (algebraic notation like a-j, 1-10).
+    - Responsibilities:
+        * Compute axis labels from `size` and memoize for performance.
+        * Render `Cell` components and pass `isWinningCell` flags for
+            highlight styling.
+        * Avoid embedding game logic; `onCellClick` is an imperative callback
+            provided by parent pages which call `useGame` actions.
+*/
 export default function GameBoard({ size, styleType, markerIndex, boardState, onCellClick, winningLine, isLocked }) {
     // Generate axis labels for algebraic notation
     const axisLetters = useMemo(() => {
@@ -13,7 +23,7 @@ export default function GameBoard({ size, styleType, markerIndex, boardState, on
         return Array.from({ length: size }, (_, i) => size - i);
     }, [size]);
 
-    //look for selected theme style in the module.css file
+    // look for selected theme style in the module.css file
     const boardClass = `${styles['game-board']} ${styles[`${styleType}-style`] || ''}`;
 
     return (

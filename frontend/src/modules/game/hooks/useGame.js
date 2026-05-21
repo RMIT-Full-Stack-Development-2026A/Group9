@@ -2,7 +2,20 @@ import { useState } from 'react';
 import { abortSession, createSession, makeAIMove, makeMove } from '../services/game.api.js';
 import { buildSessionPayload, normalizeBackendGameType } from '../services/game.service.js';
 
-// useGame hook: wires up backend session and move logic
+/*
+	useGame hook
+	- Orchestrates the lifecycle of a single game session (create, move, AI
+		move, abort). It keeps local UI state (board, turn, winner, loading,
+		error) and exposes imperative actions that pages/components call.
+	- Responsibilities and design notes:
+		* All server interactions are wrapped with consistent loading/error
+			state updates so the UI can disable interactions when necessary.
+		* The hook returns the raw session and board state from the backend
+			which makes it simpler to render replay/history views.
+		* The hook intentionally does not implement optimistic updates — the
+			server is the source of truth for board state to avoid divergence
+			between clients in multiplayer scenarios.
+*/
 export function useGame(initialSessionData) {
 	const [session, setSession] = useState(null);
 	const [board, setBoard] = useState([]);
@@ -13,7 +26,7 @@ export function useGame(initialSessionData) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
-	// Start a new session
+	// Start a new session by sending normalized payload to backend.
 	async function startSession(sessionData = initialSessionData) {
 		console.log("startSession called with:", sessionData);
 		setLoading(true);
@@ -23,6 +36,7 @@ export function useGame(initialSessionData) {
 			const res = await createSession(payload);
 			setSession(res.data.session);
 			setBoard(res.data.session.board);
+			// Who moves first is provided by the UI settings; default to player1
 			setTurn(sessionData?.firstPlayer === "Player 2" ? "player2" : "player1");
 			setWinner(null);
 			setWinLine(null);
@@ -40,7 +54,8 @@ export function useGame(initialSessionData) {
 		}
 	}
 
-	// Make a move
+	// Play a move by sending the index and marker to the server, then
+	// updating local UI state from the returned canonical board.
 	async function playMove(idx, marker, playerId = "player1") {
 		if (!session || winner || draw || loading) return;
 		setLoading(true);
@@ -69,7 +84,8 @@ export function useGame(initialSessionData) {
 		}
 	}
 
-	// Ask backend to compute + apply AI move
+	// Ask the server to compute the AI's move and apply it. The helper returns
+	// the server response to allow callers to inspect AI reasoning if needed.
 	async function playAIMove(lastPlayerMoveIdx, marker, aiLevel) {
 		if (!session) return null;
 		setLoading(true);
@@ -100,7 +116,7 @@ export function useGame(initialSessionData) {
 		}
 	}
 
-	// Abort the current session on the backend
+	// Abort the current session and clear winners/draw flags locally.
 	async function abortCurrentSession() {
 		if (!session) return null;
 		setLoading(true);

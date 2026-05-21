@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
 import styles from './ChatPanel.module.css';
 
+/*
+  ChatPanel
+  - Simple, presentational chat panel used in the multiplayer arena sidebar.
+  - Props:
+	- `messages`: array of { username, text, timestamp }
+	- `onSend(text)`: callback to send a chat message
+	- `messagesEndRef`: ref element used for auto-scrolling to bottom
+  - Behavior:
+	- Enter (no shift) sends message, Shift+Enter allows newline
+	- `handleSend` validates and clears the input after sending
+*/
 export default function ChatPanel({ messages, onSend, messagesEndRef }) {
 	const [text, setText] = useState('');
 
+	// Send current text through provided `onSend` callback and clear input
 	const handleSend = () => {
 		if (!text.trim()) return;
 		onSend(text);
 		setText('');
 	};
 
+	// Intercept Enter for quick send (Shift+Enter stays as newline)
 	const handleKeyDown = (e) => {
 		if (e.key === 'Enter' && !e.shiftKey) {
 			e.preventDefault();
@@ -17,6 +30,7 @@ export default function ChatPanel({ messages, onSend, messagesEndRef }) {
 		}
 	};
 
+	// Format timestamp for display (fallbacks to empty string on error)
 	const formatTime = (timestamp) => {
 		try {
 			return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -42,6 +56,7 @@ export default function ChatPanel({ messages, onSend, messagesEndRef }) {
 						<span className={styles.time}>{formatTime(msg.timestamp)}</span>
 					</div>
 				))}
+				{/* Anchor used by `useChat` to scroll to latest message */}
 				<div ref={messagesEndRef} />
 			</div>
 			<div className={styles.inputRow}>

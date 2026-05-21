@@ -1,8 +1,15 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Centralized AI-turn orchestrator for the game board.
- * Keeps AI trigger logic out of components and prevents double-fires.
+ * useAI
+ * - Orchestrates when the AI should play to avoid embedding timing and
+ *   duplicate-call logic inside UI components.
+ * - Guards:
+ *   1. Only triggers when `enabled` and session exists.
+ *   2. Skips when there is a winner/draw or when it's not the AI's turn.
+ *   3. Prevents duplicate in-flight requests via `aiRequestInFlightRef`.
+ *   4. Prevents re-playing the same move count using
+ *      `lastAiCompletedAtMoveCountRef` (useful with React strict mode).
  */
 export default function useAI({
 	enabled,
@@ -32,7 +39,7 @@ export default function useAI({
 		if (!enabled) return;
 		if (!session) return;
 		if (winner || draw) return;
-		if (turn !== "player2") return;
+		if (turn !== "player2") return; // AI is always player2 in this design
 		if (loading) return;
 		if (typeof onAIMove !== "function") return;
 
@@ -50,6 +57,7 @@ export default function useAI({
 			try {
 				const result = await onAIMove(lastPlayerMoveIdx, aiMarker, aiLevel);
 				if (result) {
+					// Mark completed move count so subsequent renders won't re-fire
 					lastAiCompletedAtMoveCountRef.current = moveCount;
 				}
 			} finally {

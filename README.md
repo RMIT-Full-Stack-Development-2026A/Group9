@@ -38,26 +38,10 @@ npm.cmd run dev
 ## ☁️ Deploy on Render
 
 ### 1. Deploy Backend (Render Web Service)
-
-1. Push your project to GitHub.
-2. In Render dashboard, click New + and select Web Service.
-3. Connect your repository and set the Root Directory to backend.
-4. Configure service settings:
-    - Runtime: Node
-    - Build Command: npm install
-    - Start Command: npm start
-5. Deploy URL:
-    - https://group9.onrender.com
+- Deploy URL: https://group9.onrender.com
 
 ### 2. Deploy Frontend (Render Static Site)
-
-1. In Render dashboard, click New + and select Static Site.
-2. Connect the same repository and set the Root Directory to frontend.
-3. Configure static site settings:
-    - Build Command: npm install && npm run build
-    - Publish Directory: dist
-4. Deploy URL:
-    - https://group9-frontend.onrender.com
+- Deploy URL: https://group9-frontend.onrender.com
 
 ### 3. Connect Frontend and Backend
 

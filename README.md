@@ -1,169 +1,195 @@
-# TicTacToang
+# TicTacToang 🎮
+**Online TicTacToe Gaming Platform** - COSC2769/2808 Full Stack Development
 
-TicTacToang is a multiplayer and single-player strategic board game web application built with a React + Vite frontend and a Node/Express backend. It supports local play, AI opponents, real-time multiplayer (Socket.IO), replay viewing, user profiles, and an admin dashboard.
-
----
-
-## Features
-
-- Local matches with configurable board sizes (10x10, 15x15)
-- Play vs AI (configurable difficulty/board style)
-- Real-time multiplayer rooms using WebSockets (Socket.IO)
-- Player profiles, session replays, and match history
-- Admin dashboard for monitoring active rooms and metrics
-- Payments integration (Stripe) and email notifications (SMTP)
+A high-performance web platform for advanced TicTacToe gameplay with local, AI, and real-time online multiplayer.
 
 ---
 
-## Tech Stack
+## 🚀 Quick Start
 
-- Frontend: React (Vite) with plain CSS and CSS Modules
-- Backend: Node.js + Express
-- Database: MongoDB (via Mongoose)
-- Real-time: Socket.IO
-- Payments: Stripe
-- Icons: `bootstrap-icons`, `react-icons`
+### Prerequisites
+- Node.js 18+
+- MongoDB (local or Atlas)
 
----
-
-## Repository Layout (important paths)
-
-- `frontend/` — React app (Vite)
-	- `src/` — React source code, modules, and styles
-	- `package.json` — frontend scripts (`dev`, `build`, `preview`)
-
-- `backend/` — Node/Express server
-	- `src/` — server source (routes, modules, socket, config)
-	- `package.json` — backend scripts (`start`, `dev`)
-
-- Root: minimal `package.json` (shared deps)
-
----
-
-## Layout & Responsiveness (summary)
-
-- The app uses a hybrid CSS approach: page-level layout and the game board use CSS Grid where precise spatial control is required, while Flexbox is used for component-level alignment and stacking.
-- Major anchors:
-	- `Navbar` uses a 3-column CSS Grid in `frontend/src/shared/ui/Navbar/Navbar.css` and collapses to a single column at `max-width: 900px`.
-	- The multiplayer `ArenaView` is a two-column grid (board + sidebar) in `frontend/src/modules/game/components/ArenaView/ArenaView.module.css` and switches to a single-column layout at `max-width: 900px`.
-	- The `GameBoard` is rendered as a dynamic CSS Grid sized by board dimensions in `frontend/src/modules/game/components/GameBoard/GameBoard.module.css` and constrained by viewport-based sizing (e.g., `max-width: 85vh`).
-	- Lobby, cards and lists use Flexbox with wrap strategies and have breakpoints at `760px`, `720px`, and `600px` for progressively stacked/mobile-friendly layouts.
-
----
-
-## Prerequisites
-
-- Node.js (18+ recommended)
-- npm or yarn
-- MongoDB (connection string for production or Atlas)
-
----
-
-## Getting Started — Backend
-
-1. Copy the example env or create a `.env` file in `backend/` with the required variables:
-
-```env
-MONGO_URI=your-mongo-uri
-PORT=3000
-JWT_SECRET=your_jwt_secret
-CLOUDINARY_CLOUD_NAME=...
-CLOUDINARY_API_KEY=...
-CLOUDINARY_API_SECRET=...
-STRIPE_SECRET_KEY=...
-STRIPE_WEBHOOK_SECRET=...
-EMAIL_HOST=smtp.example.com
-EMAIL_PORT=587
-EMAIL_USER=your@email.com
-EMAIL_PASS=your-email-password
-CLIENT_URL=http://localhost:5173
-BCRYPT_SALT_ROUNDS=10
-JWT_EXPIRES_IN=7d
-```
-
-2. Install dependencies and run the server in development mode:
-
+### 1. Backend Setup
 ```bash
 cd backend
-npm install
-npm run dev
+npm.cmd install
+
+# Create backend/.env and configure required values:
+# MONGO_URI=<your_mongodb_connection_string>
+# JWT_SECRET=<your_secret>
+# PORT=3000
+
+npm.cmd run dev
+# Backend runs on http://localhost:3000 by default
 ```
 
-The backend exposes the API (default `http://localhost:3000`) and starts the Socket.IO server on the same HTTP server.
-
----
-
-## Getting Started — Frontend
-
-1. Configure the frontend API base URL (optional) by setting `VITE_API_BASE_URL` when building or running dev. It defaults to `http://localhost:3000`.
-
-2. Install and run:
-
+### 2. Frontend Setup
 ```bash
 cd frontend
-npm install
-npm run dev
-```
-
-3. Build for production:
-
-```bash
-npm run build
-npm run preview
+npm.cmd install
+npm.cmd run dev
+# Frontend runs on http://localhost:5173
 ```
 
 ---
 
-## Running Locally (Both)
+## ☁️ Deploy on Render
 
-Start backend and frontend in separate terminals:
+### 1. Deploy Backend (Render Web Service)
 
-```bash
-# Terminal 1
-cd backend
-npm run dev
+1. Push your project to GitHub.
+2. In Render dashboard, click New + and select Web Service.
+3. Connect your repository and set the Root Directory to backend.
+4. Configure service settings:
+    - Runtime: Node
+    - Build Command: npm install
+    - Start Command: npm start
+5. Deploy URL:
+    - https://group9.onrender.com
 
-# Terminal 2
-cd frontend
-npm run dev
+### 2. Deploy Frontend (Render Static Site)
+
+1. In Render dashboard, click New + and select Static Site.
+2. Connect the same repository and set the Root Directory to frontend.
+3. Configure static site settings:
+    - Build Command: npm install && npm run build
+    - Publish Directory: dist
+4. Deploy URL:
+    - https://group9-frontend.onrender.com
+
+### 3. Connect Frontend and Backend
+
+1. Update backend CORS allowlist to include your frontend Render domain.
+2. Set backend CLIENT_URL to your frontend Render URL.
+3. Set frontend API base URL to your backend Render URL.
+4. Redeploy both services after any environment variable change.
+
+### 4. Optional: Enable Auto Deploy
+
+- In both Render services, keep Auto-Deploy enabled for your main branch so each push triggers a new deployment.
+- Use Preview Environments if you want per-branch deployment testing.
+
+---
+
+## 🧪 Demo Accounts
+
+Demo account data can be added based on your seeded dataset or manual test users.
+
+| Username | Email | Password |
+|------|-------|----------|
+| Admin | admin@gmail.com | Admin@1234|
+| Player1 | player1@gmail.com | palyer1@1234 |
+| Player2 | player2@gmail.com | player2@1234 |
+
+---
+
+## 🏗️ Architecture
+
+### Backend - Modular Monolith (N-Tier per module)
+```text
+backend/src/
+├── index.js                     # Entrypoint (imports server)
+├── server.js                    # HTTP + Socket.IO bootstrap
+├── app.js                       # Express app and route registration
+├── config/
+│   └── db.js                    # MongoDB connection
+├── middlewares/                 # Auth and upload middleware
+├── shared/
+│   ├── errors/                  # AppError and error primitives
+│   ├── security/                # Login attempts, token blacklist
+│   └── utils/                   # Shared validators and helpers
+├── socket/
+│   ├── index.js                 # Socket.IO initialization
+│   └── handlers/                # Multiplayer socket handlers
+└── modules/
+    ├── auth/                    # Register, login, session handling
+    ├── user/                    # Profile and user account operations
+    ├── game/                    # Game engine, AI, game sessions
+    ├── multiplayer/             # Online rooms and match coordination
+    ├── billing/                 # Subscription and payment workflows
+    └── admin/                   # Player and room administration
+```
+Each module follows: `routes -> controller -> service -> repository -> model -> dto`
+
+### Frontend - Componentized React Structure
+```text
+frontend/src/
+├── app/
+│   ├── App.jsx                  # App shell
+│   ├── Router.jsx               # Route map
+│   └── providers/
+│       └── AuthProvider.jsx     # Auth state provider
+├── config/
+│   ├── api.config.js            # API base configuration
+│   └── apiRoutes.js             # Route constants by domain
+├── modules/
+│   ├── auth/                    # Authentication pages/components/hooks/services
+│   ├── home/                    # Landing and mode selection
+│   ├── game/                    # Board, turns, move handling
+│   ├── multiplayer/             # Room and online match UI
+│   ├── profile/                 # Profile and player history
+│   ├── payment/                 # Billing and premium UI
+│   └── admin/                   # Admin dashboards and controls
+├── services/
+│   └── api.js                   # Shared API client
+└── shared/                      # Reusable UI, constants, and utilities
 ```
 
-Visit the app at the Vite dev server address (usually `http://localhost:5173`).
+### Security and Authorization
+- Uses JSON Web Signature (JWS) tokens for authentication and authorization.
+- Supports role-based access control between Player and Admin APIs.
+- Includes protections for hashed-password login and brute-force mitigation.
 
 ---
 
-## Environment Variables (quick reference)
+## ✅ Requirements Coverage
 
-- Backend: `MONGO_URI`, `PORT`, `JWT_SECRET`, `CLOUDINARY_*`, `STRIPE_*`, `EMAIL_*`, `CLIENT_URL`, `BCRYPT_SALT_ROUNDS`, `JWT_EXPIRES_IN`
-- Frontend: `VITE_API_BASE_URL` (optional)
-
----
-
-## Development Notes
-
-- Routing and layouts: player-facing routes use a shared `AppLayout` (renders `Navbar`) while admin routes use a separate `AdminDashboard` layout. See `frontend/src/app/Router.jsx` for the exact composition.
-- The game board is dynamically generated by `GameBoard.jsx` and uses CSS Grid templates to create an N×N grid based on match settings.
-- Real-time multiplayer depends on `Socket.IO` integration in `backend/src/socket` and client socket usage in `frontend/src/modules/multiplayer`.
-
----
-
-## Contributing
-
-Contributions are welcome. Suggested workflow:
-
-1. Fork the repo and create a feature branch.
-2. Run both backend and frontend locally.
-3. Create a pull request with a clear description.
-
-Please keep changes focused and follow existing code style (plain CSS, CSS Modules, React functional components).
-
----
-
-## License
-
-This project does not include a license file. Add a `LICENSE` to clarify reuse terms.
+| Feature | Status |
+|---------|--------|
+| Registration with validation | ✅ |
+| Login + brute-force protection | ✅ |
+| JWS auth + secure session flows | ✅ |
+| Profile management | ✅ |
+| Avatar upload support | ✅ |
+| Game history search/filter | ✅ |
+| Local 2-player game | ✅ |
+| AI Easy / Medium / Hard | ✅ |
+| Win detection for advanced board play | ✅ |
+| Online multiplayer (WebSocket) | ✅ |
+| Real-time multiplayer synchronization | ✅ |
+| Board customization (size/style/marker) | ✅ |
+| Match replay with algebraic notation | ✅ |
+| Premium chat capability | ✅ |
+| Admin player management | ✅ |
+| Admin room oversight and controls | ✅ |
+| N-Tier architecture | ✅ |
+| Modular Monolith backend | ✅ |
+| DTO usage in module structure | ✅ |
+| Role-based middleware/API access | ✅ |
 
 ---
 
-If you'd like, I can also add a minimal `.env.example` file, CI instructions, or a short developer checklist. Which would you prefer next?
+## 🛠️ Tech Stack
+- Frontend: React, Vite, Axios, Socket.IO Client, Bootstrap Icons
+- Backend: Node.js, Express.js, MongoDB, Mongoose, Socket.IO
+- Auth and Security: bcryptjs, jsonwebtoken (JWS)
+- Payments and Billing: Stripe
+- Email: Nodemailer
+- Media Upload: Multer, Cloudinary
+- Deployment: Render or local environment
 
+---
+
+## 📌 Project Development Requirements
+- Methodology: Developed using an iterative approach (SCRUM).
+- Version Control: Managed via GitHub project board for task tracking, commitments, and deliverables.
+
+---
+
+## 👥 Team
+- Lai Ho Thanh Hai (s4045378)
+- Nguyen Trong Khoa (3979298)
+- Tran Le Phi Long (4019570)
+- Nguyen Dung Tri (3979077)

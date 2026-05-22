@@ -182,7 +182,7 @@ frontend/src/
 
 ## GitHub Contribution Proof
 
-The repository commit history and contribution graph serve as evidence of active, iterative development across all seven sprints (Week 5 to Week 12). All commits were made under each member's registered GitHub account.
+The repository commit history and contribution graph serve as evidence of active, iterative development across all seven sprints. All commits were made under each member's registered GitHub account.
 
 To verify contributions, navigate to:
 

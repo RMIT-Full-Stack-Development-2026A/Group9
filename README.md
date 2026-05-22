@@ -32,41 +32,10 @@ npm.cmd run dev
 ## ☁️ Deploy on Render
 
 ### 1. Deploy Backend (Render Web Service)
-
-1. Push your project to GitHub.
-2. In Render dashboard, click New + and select Web Service.
-3. Connect your repository and set the Root Directory to backend.
-4. Configure service settings:
-    - Runtime: Node
-    - Build Command: npm install
-    - Start Command: npm start
-5. Add environment variables in Render to match backend/.env:
-   - PORT=3000
-   - NODE_ENV=production
-    - CLIENT_URL=https://<your-frontend-service>.onrender.com
-    - MONGO_URI=mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites=true&w=majority
-    - JWT_SECRET=<your_jwt_secret>
-    - CLOUDINARY_CLOUD_NAME=<your_cloudinary_name>
-    - CLOUDINARY_API_KEY=<your_cloudinary_api_key>
-    - CLOUDINARY_API_SECRET=<your_cloudinary_api_secret>
-    - STRIPE_SECRET_KEY=<your_stripe_secret_key>
-    - STRIPE_WEBHOOK_SECRET=<your_stripe_webhook_secret>
-    - EMAIL_HOST=smtp.gmail.com
-    - EMAIL_PORT=587
-    - EMAIL_USER=<your_smtp_email>
-    - EMAIL_PASS=<your_smtp_password>
-6. Deploy URL:
-    - https://group9.onrender.com
+ Deploy URL: https://group9.onrender.com
 
 ### 2. Deploy Frontend (Render Static Site)
-
-1. In Render dashboard, click New + and select Static Site.
-2. Connect the same repository and set the Root Directory to frontend.
-3. Configure static site settings:
-    - Build Command: npm install && npm run build
-    - Publish Directory: dist
-4. Deploy URL:
-    - https://group9-frontend.onrender.com
+- Deploy URL: https://group9-frontend.onrender.com
 
 ### 3. Connect Frontend and Backend
 

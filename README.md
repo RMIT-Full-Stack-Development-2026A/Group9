@@ -15,12 +15,6 @@ A high-performance web platform for advanced TicTacToe gameplay with local, AI, 
 ```bash
 cd backend
 npm.cmd install
-
-# Create backend/.env and configure required values:
-# MONGO_URI=<your_mongodb_connection_string>
-# JWT_SECRET=<your_secret>
-# PORT=3000
-
 npm.cmd run dev
 # Backend runs on http://localhost:3000 by default
 ```
@@ -46,7 +40,22 @@ npm.cmd run dev
     - Runtime: Node
     - Build Command: npm install
     - Start Command: npm start
-5. Deploy URL:
+5. Add environment variables in Render to match backend/.env:
+   - PORT=3000
+   - NODE_ENV=production
+    - CLIENT_URL=https://<your-frontend-service>.onrender.com
+    - MONGO_URI=mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites=true&w=majority
+    - JWT_SECRET=<your_jwt_secret>
+    - CLOUDINARY_CLOUD_NAME=<your_cloudinary_name>
+    - CLOUDINARY_API_KEY=<your_cloudinary_api_key>
+    - CLOUDINARY_API_SECRET=<your_cloudinary_api_secret>
+    - STRIPE_SECRET_KEY=<your_stripe_secret_key>
+    - STRIPE_WEBHOOK_SECRET=<your_stripe_webhook_secret>
+    - EMAIL_HOST=smtp.gmail.com
+    - EMAIL_PORT=587
+    - EMAIL_USER=<your_smtp_email>
+    - EMAIL_PASS=<your_smtp_password>
+6. Deploy URL:
     - https://group9.onrender.com
 
 ### 2. Deploy Frontend (Render Static Site)
@@ -80,7 +89,7 @@ Demo account data can be added based on your seeded dataset or manual test users
 | Username | Email | Password |
 |------|-------|----------|
 | Admin | admin@gmail.com | Admin@1234|
-| Player1 | player1@gmail.com | palyer1@1234 |
+| Player1(premium) | player1@gmail.com | palyer1@1234 |
 | Player2 | player2@gmail.com | player2@1234 |
 
 ---
@@ -166,7 +175,6 @@ frontend/src/
 | Admin room oversight and controls | ✅ |
 | N-Tier architecture | ✅ |
 | Modular Monolith backend | ✅ |
-| DTO usage in module structure | ✅ |
 | Role-based middleware/API access | ✅ |
 
 ---
@@ -188,8 +196,27 @@ frontend/src/
 
 ---
 
+## 🔗 GitHub Repository Link
+
+[TicTacToang Repository](https://github.com/RMIT-Full-Stack-Development-2026A/Group9)
+
+---
+
 ## 👥 Team
-- Lai Ho Thanh Hai (s4045378)
-- Nguyen Trong Khoa (3979298)
-- Tran Le Phi Long (4019570)
-- Nguyen Dung Tri (3979077)
+
+| Full Name | Student ID | GitHub Username | Key Responsibilities | Score |
+|-----------|------------|------------------|----------------------|-------|
+| Lai Ho Thanh Hai | s4045378 | ThanHai305 | Merge the first sprint; Homepage & Navigation UI (Front-end); Homepage & Navigation UI (Back-end); TicTacToe Game - AI Logic (Back-end); TicTacToe Local Game - Core Mechanics (Back-end); Merge the second sprint; Match Recording for All Game Type (Back-End); Match Replay Interface (Front-end) | 5 |
+| Nguyen Trong Khoa | 3979298 | NguyenTrongKhoa595| Design UI/UX using Figma (Authentication UIs + Admin UIs); Design System Architecture; Profile Management & Game History (Front-end); Profile Management & Game History (Back-end); Premium Subscription & Payments (Front-end); Premium Subscription & Payments (Back-end); Online Multiplayer & Real-Time Chat (Front-end); Online Multiplayer & Match Replay (Back-end) | 5 |
+| Tran Le Phi Long | 4019570 | APotato4325| Design Database Table Schemas (Data Models); Player Login & Authentication (Front-end); Player Login & Authentication (Back-end); TicTacToe Game - UI (Front-end); Deployment | 5 |
+| Nguyen Dung Tri | 3979077 | Knr0k0 | Design Sequence Diagrams; Admin Dashboard (Front-end)-Fetching Game Room List; Admin Dashboard (Back-end)-Fetching Game Room List; Player Registration (Back-end); Player Registration (Front-end); Admin Portal (Back-end)-Fetch User list; Admin Dashboard (Front-end)-Fetching User List | 5 |
+
+## GitHub Contribution Proof
+
+The repository commit history and contribution graph serve as evidence of active, iterative development across all seven sprints (Week 5 to Week 12). All commits were made under each member's registered GitHub account.
+
+To verify contributions, navigate to:
+
+[https://github.com/RMIT-Full-Stack-Development-2026A/Group9/graphs/contributors](https://github.com/RMIT-Full-Stack-Development-2026A/Group9/graphs/contributors)
+
+> Note: If GitHub usernames do not contain a member's first and last name, refer to the Contribution Table above for the mapping between full name and GitHub username.

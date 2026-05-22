@@ -58,8 +58,8 @@ Demo account data can be added based on your seeded dataset or manual test users
 | Username | Email | Password |
 |------|-------|----------|
 | Admin | admin@gmail.com | Admin@1234|
-| Player1(premium) | player1@gmail.com | palyer1@12345 |
-| Player2 | player2@gmail.com | player2@12345 |
+| Player1(premium) | player1@gmail.com | Palyer1@1234 |
+| Player2 | player2@gmail.com | Payer2@1234 |
 
 ---
 

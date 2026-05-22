@@ -188,4 +188,4 @@ To verify contributions, navigate to:
 
 [https://github.com/RMIT-Full-Stack-Development-2026A/Group9/graphs/contributors](https://github.com/RMIT-Full-Stack-Development-2026A/Group9/graphs/contributors)
 
-> Note: If GitHub usernames do not contain a member's first and last name, refer to the Contribution Table above for the mapping between full name and GitHub username.
+> Note: If GitHub usernames do not contain a member's first and last name, refer to the Contribution Table above for the mapping between full name and GitHub username. 
